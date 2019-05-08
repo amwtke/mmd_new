@@ -1,0 +1,16 @@
+﻿http://mmpintuan.com/api/conponent/getauthat/{appid}
+这个是获取公众号at的方法
+然后post： https://api.weixin.qq.com/cgi-bin/menu/create?access_token=bFuWFgqOb3HagGtVczrkxF9EOyGGukfiYVutxzrn5No9jiYBqpTcvwwNislcDpKYEV8Efo5l3PBPjhKsXUWvVoiee8XLTEjtw0nUntRP3klIwbKux4wCQiI5LzE3KnaoQTEdAJDHKV
+{
+     "button":[
+     {	
+          "type":"view",
+               "name":"公司介绍",
+               "url":"http://g.eqxiu.com/s/IHS5q1Y8"
+      },
+       {	
+          "type":"view",
+               "name":"产品介绍",
+               "url":"http://g.eqxiu.com/s/8aYDsyYb"
+      }]
+ }

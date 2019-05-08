@@ -1,0 +1,65 @@
+﻿@using MD.Lib.Util;
+@using MD.Model.DB.Code;
+@using MD.Model.DB.Activity;
+@model Mmd.Backend.Controllers.LadderGroupController.PartialParameter2
+@{
+    var pageIndex = Model.PageIndex;
+    var totalCount = Model.TotalCount;
+    var pageSize = Model.PageSize;
+    int status = Model.Status;
+    int row = (pageIndex - 1) * pageSize;//当前页的其实序号
+    double totalPages = Math.Ceiling(totalCount / 1.0 / pageSize);
+    int index = 1;
+}
+@functions{
+    private string GetStatusString(int status)
+    {
+        if (status == (int)ELadderGroupStatus.待发布) return "上线";
+        else if (status == (int)ELadderGroupStatus.已发布) return "下线";
+        else return "已下线";
+    }
+    private double GetMinPrice(List<LadderPrice> listPrice)
+    {
+        return listPrice.Min(l => l.group_price) / 100.00;
+    }
+}
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tbody>
+        <tr>
+            <td>序号</td>
+            <td>商品编号</td>
+            <td>活动名称</td>
+            <td>单购价格</td>
+            <td>最低拼团价格</td>
+            <td>提货截止日期</td>
+            <td>商品库存</td>
+            <td>操作</td>
+        </tr>
+        @foreach (var item in Model.List)
+        {
+            <tr>
+                <td>@(index++)</td>
+                <td>@item.pno</td>
+                <td>@item.title</td>
+                <td>@(item.origin_price/100.00)</td>
+                <td>@(GetMinPrice(item.PriceList))</td>
+                <td>@(CommonHelper.FromUnixTime(item.end_time).ToString("yyyy.MM.dd HH:mm"))</td>
+                <td>@item.product_count</td>
+                <td data-id="@item.gid">
+                    <a href="/LadderGroup/Modify/@item.gid">编辑</a>
+                    <a href="javascript:changeStatus('@item.gid',@((int)ELadderGroupStatus.已删除));">删除</a>
+                    @*<a href="javascript:onPreview('@item.gid');">预览</a>*@
+                    <a href="javascript:changeStatus('@item.gid',@((int)ELadderGroupStatus.已发布));">上线</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="Lorelei-commonTable-btnbox clearfix">
+    <div class="Lorelei-cT-btnbox-l">总计<span class="wine">@totalCount</span></div>
+    <div class="Lorelei-cT-btnbox-r">
+        <a href="javascript:;" onclick="onLeftClick()">◀</a><span class="wine mgl5" id="currentPage">@pageIndex</span>/<span class="mgr5" id="totalPages">@totalPages</span><a href="javascript:;" onclick="onRightClick()">▶</a>
+        <input class="pd5 mg7" name="" type="text"><a id="jump" href="javascript:;" onclick="onJump()">跳转</a>
+    </div>
+</div>

@@ -1,0 +1,44 @@
+﻿@model Mmd.Backend.Controllers.DistributionController.DistributionPatialObject
+@{
+    string appid = Session[ESessionStateKeys.AppId.ToString()].ToString();
+    var pageIndex = Model.PageIndex;
+    var totalCount = Model.TotalCount;
+    var pageSize = Model.PageSize;
+    int row = (pageIndex - 1) * pageSize;//当前页的其实序号
+    double totalPages = Math.Ceiling(totalCount/1.00/pageSize);    
+}
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td>序号</td>
+            <td>核销员</td>
+            <td>门店</td>
+            <td>姓名</td>
+            <td>电话</td>
+            <td>佣金余额</td>
+            <td>操作</td>
+        </tr>
+        @foreach (var v in Model.List)
+        {
+            row = row + 1;
+            <tr>
+                <td>@row</td>
+                <td>@v.nickName</td>
+                <td>@v.woname</td>
+                <td>@v.realname</td>
+                <td>@v.phone</td>
+                <td>@(v.commission/100.00)元</td>
+                <td data-woerid="@v.uid" data-woername="@v.nickName" data-realname="@v.realname" data-commission="@v.commission"><a href="javascript:;" onclick="onsettle(this);">结算</a>
+                <a href="javascript:;" onclick="getCommissionList(this, 1);">结算记录</a>
+                <a href="javascript:;" onclick="getCommissionList(this, 0);">佣金明细</a></td>           
+            </tr>
+        }
+</table>
+
+<div class="Lorelei-commonTable-btnbox clearfix">
+    <div class="Lorelei-cT-btnbox-l">总计<span id="spantotal" class="wine">@totalCount</span></div>
+    <div class="Lorelei-cT-btnbox-r">
+        <a id="left" href="javascript:;" onclick="onLeftClick()">◀</a><span id="currentPage" class="wine mgl5">@pageIndex</span>/<span id="totalPages" class="mgr5">@totalPages</span><a id="right" href="javascript:;" onclick="onRightClick()">▶</a>
+        <input class="pd5 mg7" id="page_count" type="text" /><a id="jump" href="javascript:;" onclick="onJump()">跳转</a>
+    </div>
+</div>

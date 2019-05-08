@@ -1,0 +1,156 @@
+﻿@using MD.Lib.Util
+@using MD.Model.DB.Code
+@model Mmd.Backend.Controllers.Backyard.MerchantCheckController.MerCheckPartialObject
+@{
+    var pageIndex = Model.PageIndex;
+    var totalCount = Model.TotalCount;
+    var pageSize = Model.PageSize;
+
+    int row = (pageIndex - 1) * pageSize;//当前页的其实序号
+
+    int totalPages = 0;
+    if (totalCount % pageSize == 0)
+    {
+        totalPages = totalCount / pageSize;
+    }
+    else
+    {
+        totalPages = totalCount / pageSize + 1;
+    }
+}
+
+<div class="Lorelei-topSearch clearfix">
+    <div class="Lorelei-search-r">
+        <input id="s_text" name="user_search" type="search" placeholder="输入商家名" value="@Model.Q" /><a class="wine" href="javascript:;" onclick="onSearch()"><i class="zonght i-search"></i></a>
+    </div>
+</div>
+<div class="Lorelei-commonTable">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td style="display:none;">mid</td>
+            <td style="display:none;">appid</td>
+            <td>商家</td>
+            <td>覆盖范围</td>
+            <td>联系人</td>
+            <td>联系电话</td>
+            <td>联系地址</td>
+            <td>注册时间</td>
+            <td>营业执照</td>
+            <td>剩余订单</td>
+            <td>状态</td>
+            <td>操作</td>
+            <td>充值</td>
+        </tr>
+        @foreach (var v in Model.List)
+        {
+            row = row + 1;
+            string m_url = $"/callback/login?appid={v.wx_appid}&code=mmpintuan.com";
+            var url = "http://mmpintuan.com/testapi/mer/s/get2?appid=" + v.wx_appid;
+            <tr>
+                <td style="display:none;" id="mid_@row">@v.mid</td>
+                <td style="display:none;" id="appid_@row">@v.wx_appid</td>
+                <td><a onclick="window.open('@(m_url)')">@v.name</a></td>
+                <td>@v.service_region</td>
+                <td>@v.contact_person</td>
+                <td>@v.cell_phone</td>
+                <td>@v.address</td>
+                <td>@(CommonHelper.FromUnixTime(v.register_date.Value).ToString())</td>
+                <td><a href=@v.biz_licence_url target="_blank">查看</a></td>
+                <td>@v.order_quota</td>
+                <td>@(((ECodeMerchantStatus)v.status).ToString())</td>
+
+                @if (v.status == (int)ECodeMerchantStatus.待审核 || v.status == (int)ECodeMerchantStatus.审核中)
+                {
+                    <td><a id="@row" href="javascript:;" onclick="onPass(this.id)">通过</a><a id="@row" class="mg7" href="javascript:;" onclick="onReject(this.id)">不通过</a></td>
+                    <td>
+                        <a id="@row" class="czAlert" appname="@v.name" appid="@v.wx_appid" mid="@v.mid" href="javascript:;">充值</a>
+                        <a id="@row" appname="@v.name" appid="@v.wx_appid" mid="@v.mid" class="logAlert mg7" href="javascript:;">充值记录</a>
+                    </td>
+                }
+
+                @if (v.status == (int)ECodeMerchantStatus.未通过)
+                {
+                    <td><a id="@row" href="javascript:;" onclick="onPass(this.id)">通过</a></td>
+                    <td>
+                        <a id="@row" class="czAlert" appname="@v.name" appid="@v.wx_appid" mid="@v.mid" href="javascript:;">充值</a>
+                        <a id="@row" appname="@v.name" appid="@v.wx_appid" mid="@v.mid" class="logAlert mg7" href="javascript:;">充值记录</a>
+                    </td>
+                }
+
+                @if (v.status == (int)ECodeMerchantStatus.已配置)
+                {
+                    <td><a id="@row" href=@url target="_blank">查看统计</a>
+                        <a id="@row" href="javascript:;" onclick="onRecovery(this.id)">关闭</a></td>
+                    <td>
+                        <a id="@row" class="czAlert" appname="@v.name" appid="@v.wx_appid" mid="@v.mid" href="javascript:;">充值</a>
+                        <a id="@row" appname="@v.name" appid="@v.wx_appid" mid="@v.mid" class="logAlert mg7" href="javascript:;">充值记录</a>
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+
+    <div class="Lorelei-commonTable-btnbox clearfix">
+        <div class="Lorelei-cT-btnbox-l">总计<span id="spantotal" class="wine">@totalCount</span></div>
+        <div class="Lorelei-cT-btnbox-r">
+            <a id="left" href="javascript:;" onclick="onLeftClick()">◀</a><span id="currentPage" class="wine mgl5">@pageIndex</span>/<span id="totalPages" class="mgr5">@totalPages</span><a id="right" href="javascript:;" onclick="onRightClick()">▶</a>
+            <input class="pd5 mg7" id="page_count" type="text" /><a id="jump" href="javascript:;" onclick="onJump()">跳转</a>
+        </div>
+    </div>
+</div>
+<!--layer-->
+<div id="ADialog" class="AlertDialog">
+    <p class="rela">充值<a href="javascript:;"><i onclick="closeClick()" class="zonght i-close"></i></a></p>
+    <div class="storeName"><span>商户名称</span><span id="span_merName"></span></div>
+    <div class="storeCZ"><span>充值订单</span><input class="czinput" id="czinput" name="czinput" type="text" /><span id="txmessage" class="red" style="display:none;">格式错误</span></div>
+    <input id="hidden_appid" type="hidden" />
+    <a class="sumbit" onclick="CDDClick()" href="javascript:;">提交</a>
+</div>
+
+<div id="BDialog" class="AlertDialog">
+    <p class="rela">充值记录<a href="javascript:;"><i onclick="closeClick()" class="zonght i-close"></i></a></p>
+    <div class="storeName"><span id="span_logTitle"></span></div>
+    <div class="storeCZ">
+        <ul id="ul_log" style="overflow:-Scroll;overflow-x:hidden">
+            <li><span>2016/04/19 23:00:00</span> 充值订单1<span>6000</span></li>
+            <li><span>2016/04/19 23:00:00</span> 充值订单<span>6000</span></li>
+            <li><span>2016/04/19 23:00:00</span> 充值订单<span>6000</span></li>
+            <li><span>2016/04/19 23:00:00</span> 充值订单<span>6000</span></li>
+            <li><span>2016/04/19 23:00:00</span> 充值订单<span>6000</span></li>
+            <li><span>2016/04/19 23:00:00</span> 充值订单<span>6000</span></li>
+            <li><span>2016/04/19 23:00:00</span> 充值订单<span>6000</span></li>
+            <li><span>2016/04/19 23:00:00</span> 充值订单<span>6000</span></li>
+            <li><span>2016/04/19 23:00:00</span> 充值订单<span>6000</span></li>
+            <li><span>2016/04/19 23:00:00</span> 充值订单<span>6000</span></li>
+            <li><span>2016/04/19 23:00:00</span> 充值订单9<span>6000</span></li>
+        </ul>
+
+    </div>
+
+</div>
+
+<div class="masklayer"></div>
+<script type="text/javascript">
+
+    $(function () {
+        //充值事件
+        $(".czAlert").click(function () {
+            var appname = $(this).attr("appname");
+            var appid = $(this).attr("appid");
+            var mid = $(this).attr("mid");
+            var currentPageNumber = parseInt($('#currentPage').text());
+            var q = $('#s_text').val();
+            $("#hidden_appid").val(appid);//保存当前选中的appid
+            $("#span_merName").text(appname);
+            $("#ADialog,.masklayer").css("display", "block");
+        });
+        //充值记录事件
+        $(".logAlert").click(function () {
+            var appname = $(this).attr("appname");
+            var appid = $(this).attr("appid");
+            var mid = $(this).attr("mid");
+
+            bindczlog(mid, appname);
+        });
+    })
+</script>

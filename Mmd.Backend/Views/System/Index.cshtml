@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>系统设置</title>
+    <link rel="stylesheet" type="text/css" href="/Content/main.css">
+    <link rel="stylesheet" type="text/css" href="/Content/ico.css">
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="/Scripts/qrcode.min.js"></script>
+    <script src="/Scripts/jquery.qrcode.min.js"></script>
+
+    <script src="/Scripts/sys/s_common.js"></script>
+    <script src="/Scripts/sys/s_paging.js"></script>
+
+    <style type="text/css">
+        .red {
+            color: #F00;
+        }    
+        .highlight{background:green;font-weight:bold;color:white;}
+    </style>
+</head>
+<body>
+    <!--header-->
+    @Html.Partial("Header/_headerSys")
+
+    <!--main-->
+    <div class="SYS-set">
+        <div class="SYS-set-c mgc">
+            <div class="SYSs-Nav">
+                <ul class="clearfix">
+                    <li><a id="label_m" @if (ViewBag.tag == 0) { @("class=cur") }  href="javascript:onM();">基本设置</a></li>
+                    <li><a id="label_w" @if (ViewBag.tag == 1) { @("class=cur") }  href="javascript:onW();">提货设置</a></li>
+                    <li><a id="label_mana" @if (ViewBag.tag == 4) { @("class=cur") } href="javascript:onManage();">核销员管理</a></li>
+                    <li><a href="/Logistics">运费设置</a></li>
+                    <li><a href="/Logistics/AddCompany">配送设置</a></li>
+                </ul>
+            </div>
+
+            <span id="s_tag" style="display: none"></span>
+            <div id="tag_content">
+               @Html.Action("SwichTag", "System", new {ViewBag.tag ,q="", indexPage =1,ViewBag.woid}) 
+            </div>
+        </div>
+    </div>
+
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+    <script src="http://api.map.baidu.com/api?v=2.0&ak=LSSGA2X3BddqbTU9tvtiaZ8xKwY8Ketr"></script>
+</body>
+</html>

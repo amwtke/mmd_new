@@ -1,0 +1,65 @@
+﻿@model MD.Model.DB.Merchant
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" type="text/css" href="/Content/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/Content/main.css" />
+    <link rel="stylesheet" type="text/css" href="/Content/ico.css" />
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    <style type="text/css">
+        .red {
+            color: #F00;
+        }
+    </style>
+</head>
+<body>
+	<!--header-->
+@{
+    ViewData["nav"] = true;
+}
+
+@Html.Partial("Header/_Header", @Model.name, this.ViewData)
+	
+	<div class="SYS-set">
+		<div class="SYS-set-c mgc">
+			<form class="ft14" action="Merchant_change" method="post">
+				
+
+				<div class="inputText-Tap mgb20 mgt19"><span class="w100">商家名称</span><span class="ft12 mgl19">@Model.name</span></div>
+
+				<div class="inputText-Tap mgb20 mgt19"><span class="w100">商家经营地区</span>@Html.TextBoxFor(model=>model.service_region, new { @class="coInp"})@Html.ValidationMessageFor(model=>model.service_region,"", new { @class="red"})</div>
+
+				<div class="inputText-Tap mgb20 mgt19"><span class="w100">联系人</span>@Html.TextBoxFor(model => model.contact_person, new { @class = "coInp" })@Html.ValidationMessageFor(model => model.contact_person, "", new { @class = "red" })</div>
+				
+				<div class="inputText-Tap mgb20 mgt19"><span class="w100">联系手机</span>@Html.TextBoxFor(model => model.cell_phone, new { @class = "coInp" })@Html.ValidationMessageFor(model => model.cell_phone, "", new { @class = "red" })</div>
+
+				<div class="inputText-Tap mgb20 mgt19"><span class="w100">联系地址</span>@Html.TextBoxFor(model => model.address, new { @class = "coInp" })@Html.ValidationMessageFor(model => model.address, "", new { @class = "red" })</div>
+
+				<div class="inputText-Tap mgb20 mgt19"><span class="w100">网站首页地址</span><span class="ft12 mgl19">@Model.wx_biz_dir</span></div>
+
+                @*<div class="inputText-Tap mgb20 mgt19"><span class="w100">社区域名地址</span><span class="ft12 mgl19">@ViewBag.communityUrl</span></div>*@
+
+				<div class="inputText-Tap mgb20 mgt19"><span class="w100">商家剩余订单</span><span class="ft12 mgl19 redBg">@ViewBag.quota</span></div>
+                @Html.TextBoxFor(model=>model.wx_appid, new { hidden="hidden"})
+				
+				<input class="inputBtn-Tap mgt19" name="" type="submit" value="确认" />
+
+		   </form>
+		</div>
+	</div>
+
+	<!--footer-->
+	<div class="footer" style="margin-top: 21%;">
+		<div class="footer-c mgc">
+			<p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+		</div>
+	</div>
+
+</body>
+</html>

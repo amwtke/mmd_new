@@ -1,0 +1,30 @@
+﻿@using MD.Model.DB.Code;
+@model Mmd.Backend.Controllers.Backyard.BrandController.BrandPartialObject
+@{
+    List<Codebrand> list = Model.List;
+    double totalPages = Math.Ceiling(Model.TotalCount / 1.00 / Model.PageSize);
+}
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td>序号</td>
+        <td>品牌</td>
+        <td>操作</td>
+    </tr>
+    @for (int i = 0; i < list.Count; i++)
+    {
+        <tr>
+            <td>@(i+1)</td>
+            <td>@list[i].value</td>
+            <td data-code="@list[i].code"><a class="czAlert" href="javascript:;" onclick="modify(this)">编辑</a><a class="logAlert mg7" href="javascript:;" onclick="del(this)">删除</a></td>
+        </tr>
+    }
+
+</table>
+<div class="Lorelei-commonTable-btnbox clearfix">
+    <div class="Lorelei-cT-btnbox-l">总计<span class="wine">@Model.TotalCount</span></div>
+    <div class="Lorelei-cT-btnbox-r">
+        <a href="javascript:;" onclick="onLeftClick()">◀</a><span class="wine mgl5" id="currentPage">@Model.PageIndex</span>/<span class="mgr5" id="totalPages">@totalPages</span><a href="javascript:;" onclick="onRightClick()">▶</a>
+        <input class="pd5 mg7" name="" type="text" id="page_count"/><a id="jump" href="javascript:;" onclick="onJump()">跳转</a>
+    </div>
+</div>
+

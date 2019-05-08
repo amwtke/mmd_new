@@ -1,0 +1,89 @@
+﻿@model MD.Model.DB.Merchant
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>支付配置</title>
+    <link rel="stylesheet" type="text/css" href="/Content/main.css" />
+    <link rel="stylesheet" type="text/css" href="/Content/ico.css" />
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    <style type="text/css">
+        .w183 {
+            width: 183px !important;
+        }
+    </style>
+    <style type="text/css">
+        .red {
+            color: #F00;
+        }
+    </style>
+</head>
+<body>
+    <!--header-->
+@{
+    ViewData["nav"] = false;
+}
+
+@Html.Partial("Header/_Header", @Model.name, this.ViewData)
+
+    <div class="SYS-set">
+        <div class="SYS-set-c mgc">
+
+            <form class="ft14" action="Upload_s2" method="post" enctype="multipart/form-data">
+
+                <div class="thisTitle clearfix" style="border-bottom:none;"><span class="fl">支付配置</span><sub class="mgl5 fr mgt5"><i class="green MMda i-gthao mgr5"></i>配置前请确保您的微信号服务号为已认证服务号，并已开通微信支付。<a class="green" href="javascript:;">如何开通？</a></sub></div>
+
+                <div class="thisTitle clearfix">
+                    <p class="stp fl">1、下载配置教程，按照配置教程自助完成以下配置<a class="mgl5" href=@Url.Action("DownloadGuid")>下载配置教程</a></p>
+                    <p class="stp fr">2、直接联系工作人员帮您进行配置，邱成 18108622329 </p>
+                </div>
+
+                <div class="thisTitle"><span style="margin-left: 55px;">微信支付配置</span><sub class="wine mgl15">请登录微信公众平台后台和微信支付商户平台获取以下信息</sub></div>
+
+                <div class="inputText-Tap mgb20 mgt19"><span class="w100 w183">商户号</span>@Html.TextBoxFor(model => model.wx_mch_id, new { @class = "coInp", type = "text" })@Html.ValidationMessageFor(model => model.wx_mch_id, "", new { @class = "red" })</div>
+                <div class="inputText-Tap mgb20"><span class="w100 w183">API密钥</span>@Html.TextBoxFor(model => model.wx_apikey, new { @class = "coInp", type = "text" })@Html.ValidationMessageFor(model => model.wx_apikey, "", new { @class = "red" })</div>
+
+                <div class="inputFile-Tap mgb20">
+                    <span class="w100 w183">API证书</span>@Html.TextBoxFor(model=>model.wx_p12_dir, new { @class="coInp",type="file"})@Html.ValidationMessageFor(model=>model.wx_p12_dir,"", new { @class="red"})<br><span class="ft12 mgl5" style="margin-left: 198px;">提示：先安装下载API证书，然后将下载包解压文件后缀P12的文件上传</span>
+                </div>
+                <div class="thisTitle"><span>MM拼团微信支付授权</span><sub class="wine mgl15">注：不与有赞、微盟等第三方应用冲突</sub></div>
+
+                <div class="inputText-Tap mgb20 mgt19 clearfix"><span class="w100 w183 fl">MM拼团支付<br>授权目录</span>@Html.TextBoxFor(model=>model.wx_pay_dir, new { style="width:450px;",@class="coInp",type="text",@readonly="readonly"})@Html.ValidationMessageFor(model=>model.wx_pay_dir,"", new { @class="red"})<span class="ft12 mgl5">请将此信息添加到微信公众平台微信支付开发配置中</span></div>
+
+                <div class="inputText-Tap mgb20 mgt19"><span class="w100 w183">JS接口安全域名<br>与公众号业务域名</span>@Html.TextBoxFor(model=>model.wx_jspay_dir, new { style = "width:315px;", @class ="coInp",type="text",@readonly="readonly"})@Html.ValidationMessageFor(model=>model.wx_jspay_dir,"", new { @class="red"})<span class="ft12 mgl5">请将此信息添加到微信公众平台公众号设置中</span></div>
+
+                <div class="inputText-Tap mgb20 mgt19" style="display: none"><span class="w100 w183">业务域名</span>@Html.TextBoxFor(model=>model.wx_biz_dir, new { style = "width:400px;", @class ="coInp",type="text",@readonly="readonly"})@Html.ValidationMessageFor(model=>model.wx_biz_dir,"", new { @class="red"})<span class="ft12 mgl5">请将此信息添加到微信公众平台公众号设置中</span></div>
+
+                <div class="thisTitle"><span style="margin-left: 78px;">其它配置</span></div>
+
+                <div class="inputText-Tap mgb20 mgt19 clearfix">
+                    <span class="w100 w183" style="float: left;display: inline-block;">微信公众号模板消息</span>
+                    <span class="ft12 mgl19" style="width:600px;display:inline-block;float: left;">设置微信模板消息通知，便于消费者接收拼团交易消息，查找订单状态。若已开通模板消息，检查模板消息选择的行业，行业选项必须是IT/科技电子商务，才能推送相关消息。若未开通模板消息，请按照要求进行申请开通。</span>
+                </div>
+
+                <div class="inputText-Tap mgb20 mgt19"><span class="w100 w183">微信公众号菜单设置</span>
+                    <input class="coInp" type="text" placeholder="" value="@Model.wx_biz_dir" disabled="disabled" readonly="readonly" style="width: 1000px;" />
+                    <br><span class="ft12 mgl5 mgt5" style="margin-left: 197px; display: inline-block;">请将上方团购网站网址复制添加到微信公众号底部菜单栏中，便于消费者找到拼团入口</span>
+                </div>
+
+                @Html.TextBoxFor(model => model.wx_appid,new {style="display: none",@readonly= "readonly"})
+                <input class="inputBtn-Tap mgt19" name="" type="submit" value="确认" />
+
+            </form>
+
+        </div>
+    </div>
+
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+
+</body>
+</html>

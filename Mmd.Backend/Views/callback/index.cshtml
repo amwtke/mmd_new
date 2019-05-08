@@ -1,0 +1,69 @@
+﻿@model MD.Model.DB.Merchant
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" type="text/css" href="/Content/main.css">
+    <link rel="stylesheet" type="text/css" href="/Content/ico.css">
+    @Scripts.Render("~/bundles/jquery")
+    <script src="/Scripts/upload/upload-common.js"></script>
+    <script src="/Scripts/upload/uploadfile.js"></script>
+
+</head>
+<body>
+@{
+    ViewData["nav"] = false;
+}
+
+@Html.Partial("Header/_Header", @Model.name, this.ViewData)
+
+
+<!--mian-->
+<div class="gongg-Box">
+    <div class="gongg-Box-c mgc">
+        <div class="zhuceTitle">
+            <p>完善商家信息</p>
+        </div>
+        <form id="FormUpload" action="/callback/Upload" method="post" enctype="multipart/form-data">
+            <div class="name-Tap mgb20"><span class="w100">商家名称</span><span class="coInp">@Model.name</span></div>
+
+            <div class="xiala-Tap mgb20">
+                <span class="w100">商家经营地区</span><input class="coInp" name="biz_region" type="text" placeholder="如：湖北省武汉市"/>
+            </div>
+            <div class="inputText-Tap mgb20"><span class="w100">商家Appid</span><input class="coInp" name="wx_appid" type="text" value="@Model.wx_appid"/>
+            </div>
+            <div class="inputText-Tap mgb20"><span class="w100">联系人</span><input class="coInp" name="contact_person" type="text" placeholder="请输入联系人姓名"/>
+            </div>
+            <div class="inputText-Tap mgb20"><span class="w100">手机号</span><input class="coInp" name="cell_phone" type="tel" placeholder="请输入联系人手机号码"/>
+            </div>
+            <div class="inputText-Tap mgb20"><span class="w100">联系地址</span><input class="coInp" name="address" type="text" placeholder="请输入联系地址"/>
+            </div>
+
+            <div class="inputFile-Tap mgb20">
+                <span class="w100">营业执照</span><input class="coInp" type="text" name="biz_licence_url" disabled="true" value="未选择任何文件"/>
+                <div class="Add-ImgCuber" style="position: relative; overflow: hidden;">
+                    <i id="cross" class="MMda i-add pdr5 green" style="margin-top: 72px;"></i>
+                    <input class="AddCub" type="file" name="UploadedFile">
+                </div>
+                <input class="MMxy" name="" type="checkbox" value="" checked="checked"/>MM拼团使用协议
+            </div>
+
+            <input class="inputBtn-Tap" type="submit" value="确认下一步"/>
+
+        </form>
+    </div>
+</div>
+
+<!--footer-->
+<div class="footer">
+    <div class="footer-c mgc">
+        <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+    </div>
+</div>
+
+</body>
+</html>

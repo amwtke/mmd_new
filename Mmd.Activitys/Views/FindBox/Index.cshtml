@@ -1,0 +1,74 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1" />
+    <title>寻宝</title>
+    <link href="/Content/style.css" rel="stylesheet" />
+    @Scripts.Render("~/bundles/jquery")
+    <script src="/Scripts/findbox/main.js"></script>
+    <script src="/Scripts/jquery.qrcode.min.js"></script>
+</head>
+<body>
+    <div class="loging">
+        <div class="logingBOx">
+            <div id="loading-center">
+                <div id="loading-center-absolute">
+                    <div class="object" id="object_one"></div>
+                    <div class="object" id="object_two" style="left:20px;"></div>
+                    <div class="object" id="object_three" style="left:40px;"></div>
+                    <div class="object" id="object_four" style="left:60px;"></div>
+                    <div class="object" id="object_five" style="left:80px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--popup-->
+    <div class="popupBOx">
+        <div class="popupBoxs">
+            <div class="erweima" id="code">
+
+            </div>
+            <p class="mtg20">到店后向店员出示二维码，店员扫码后即可领取宝贝。</p>
+            <p>领宝最后期限：2016.10.30</p>
+            <p>请在期限内到店领宝，否则宝贝会自动消失！</p>
+        </div>
+        <div class="endBtn">
+            <img src="/images/findbox/succEnd.png" />
+        </div>
+    </div>
+    <div class="war">
+        <div class="back">
+            <div class="bxBox bxNok">
+                <img src="/images/findbox/nobx.png" alt="">
+            </div>
+            <div class="fxbxBox">
+                <p class="p1">运气爆棚，发现了一个神秘宝箱！</p>
+                <p class="p2">赶紧打开看看！</p>
+            </div>
+            <div class="dkbx">
+                <img src="/images/findbox/openbx.png" alt="">
+            </div>
+            <p class="p4">宝箱里还有宝贝，快去喊姐妹们来寻宝！</p>
+            <div class="line"></div>
+            <div class="zjListBox">
+                <div class="zjList" id="list">
+                        <div class="listBox">
+                        </div>
+                </div>
+                <div class="zjList">
+                        <div class="listBox">
+                        </div>
+                </div>
+            </div>
+        </div>
+        <!--footer-->
+        @Html.Partial("../Shared/_footer")
+    </div>
+</body>
+</html>

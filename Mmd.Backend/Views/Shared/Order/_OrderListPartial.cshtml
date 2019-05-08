@@ -1,0 +1,276 @@
+﻿@using MD.Model.DB.Code
+@model Mmd.Backend.Controllers.OrderController.OrderPatialObject
+@{
+    string appid = Session[ESessionStateKeys.AppId.ToString()].ToString();
+    var pageIndex = Model.PageIndex;
+    var totalCount = Model.TotalCount;
+    var pageSize = Model.PageSize;
+
+    int status = Model.Status ?? -1;
+    int wtg = Model.Wtg ?? -1;
+
+    int row = (pageIndex - 1) * pageSize;//当前页的其实序号
+
+    int totalPages = 0;
+    if (totalCount % pageSize == 0)
+    {
+        totalPages = totalCount / pageSize;
+    }
+    else
+    {
+        totalPages = totalCount / pageSize + 1;
+    }
+}
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    @if (status == -1)//全部订单
+    {
+        <tr>
+            <td>序号</td>
+            <td>订单号</td>
+            <td>拼团活动标题</td>
+            <td>商品编号</td>
+            <td>取货方式</td>
+            <td>单购/团购</td>
+            <td>订单状态</td>
+            <td>订单金额</td>
+            <td>购买人</td>
+            <td>联系电话</td>
+            <td>下单时间</td>
+        </tr>
+        foreach (var v in Model.List)
+        {
+            row = row + 1;
+            <tr>
+                <td>@row</td>
+                <td>@v.o_no</td>
+                <td>@v.title</td>
+                <td>@v.p_no</td>
+                <td>@v.wtg</td>
+                <td>@v.gmfs</td>
+                <td>@v.status</td>
+                <td>@(v.price)元</td>
+                <td>@v.buyer</td>
+                <td>@v.cellphone</td>
+                <td>@v.paytime</td>
+            </tr>
+        }
+
+    }
+
+    @if (status == (int)EOrderStatus.已成团未提货)//待提货订单
+    {
+        <tr>
+            <td>序号</td>
+            <td>订单号</td>
+            <td>拼团活动标题</td>
+            <td>商品编号</td>
+            <td>订单金额</td>
+            <td>购买人</td>
+            <td>联系电话</td>
+            <td>下单时间</td>
+            <td>预约提货店</td>
+            <td>操作</td>
+            <td>退款</td>
+        </tr>
+        foreach (var v in Model.List)
+        {
+            row = row + 1;
+            <tr>
+                <td>@row</td>
+                <td>@v.o_no</td>
+                <td>@v.title</td>
+                <td>@v.p_no</td>
+                <td>@(v.price)元</td>
+                <td>@v.buyer</td>
+                <td>@v.cellphone</td>
+                <td>@v.paytime</td>
+                <td>@v.writeoffpoint</td>
+                <td><a href="javascript:void(0)" onclick="writeofforder('@appid','@v.oid')">核销</a></td>
+                <td><a href="javascript:void(0)" onclick="OrderRefund('@v.buyer','@appid','@v.o_no')">退款</a></td>
+            </tr>
+        }
+    }
+     @if (status == (int)EOrderStatus.拼团成功 && wtg == (int)EWayToGet.自提) //已提货
+     {
+         <tr>
+             <td>序号</td>
+             <td>订单号</td>
+             <td>拼团活动标题</td>
+             <td>商品编号</td>
+             <td>订单金额</td>
+             <td>购买人</td>
+             <td>联系电话</td>
+             <td>下单时间</td>
+             <td>提货门店</td>
+             <td>提货时间</td>
+             <td>核销人</td>
+             <td>昵称</td>
+         </tr>
+         foreach (var v in Model.List)
+         {
+             row = row + 1;
+            <tr>
+                <td>@row</td>
+                <td>@v.o_no</td>
+                <td>@v.title</td>
+                <td>@v.p_no</td>
+                <td>@(v.price)元</td>
+                <td>@v.buyer</td>
+                <td>@v.cellphone</td>
+                <td>@v.paytime</td>
+                <td>@v.writeoffpoint</td>
+                <td>@v.writeofftime</td>
+                <td>@v.writeofferName</td>
+                <td>@v.writeoffer</td>
+            </tr>
+         }
+     }
+     @if (status == (int)EOrderStatus.已成团未发货)
+     {
+        <tr>
+            <td>序号</td>
+            <td>订单号</td>
+            <td>拼团活动标题</td>
+            <td>商品编号</td>
+            <td>商品金额</td>
+            <td>邮费</td>
+            <td>购买人</td>
+            <td>联系电话</td>
+            <td>邮寄地址</td>
+            <td>下单时间</td>
+            <td>操作</td>
+        </tr>
+         foreach (var v in Model.List)
+         {
+             row = row + 1;
+            <tr>
+                <td>@row</td>
+                <td>@v.o_no</td>
+                <td>@v.title</td>
+                <td>@v.p_no</td>
+                <td>@(v.price)元</td>
+                <td>@(v.post_price)元</td>
+                <td>@v.buyer</td>
+                <td>@v.cellphone</td>
+                <td>@v.postaddress</td>
+                <td>@v.paytime</td>
+                <td><a href="javascript:;" data-oid="@v.oid" onclick="distribution(this)">配货</a>
+                <a href="javascript:;" onclick="OrderRefund('@v.buyer','@appid','@v.o_no')">退款</a></td>
+            </tr>
+         }
+     }
+      @if (status == (int)EOrderStatus.已成团配货中)
+      {
+        <tr>
+            <td>序号</td>
+            <td>订单号</td>
+            <td>拼团活动标题</td>
+            <td>商品编号</td>
+            <td>商品金额</td>
+            <td>邮费</td>
+            <td>购买人</td>
+            <td>联系电话</td>
+            <td>邮寄地址</td>
+            <td>下单时间</td>
+            <td>物流公司</td>
+            <td>快递单号</td>
+            <td>操作</td>
+        </tr>
+          foreach (var v in Model.List)
+          {
+              row = row + 1;
+            <tr>
+                <td>@row</td>
+                <td>@v.o_no</td>
+                <td>@v.title</td>
+                <td>@v.p_no</td>
+                <td>@(v.price)元</td>
+                <td>@(v.post_price)元</td>
+                <td>@v.buyer</td>
+                <td>@v.cellphone</td>
+                <td>@v.postaddress</td>
+                <td>@v.paytime</td>
+                <td><select class="postCompany"><option value="">选择快递公司</option></select></td>
+                <td><input class="postNumber" type="text" value="" placeholder="快递单号" /></td>
+                <td><a href="javascript:;" data-oid="@v.oid" onclick="shipment(this)">发货</a></td>
+            </tr>
+          }
+      }
+    @if (status == (int)EOrderStatus.已发货待收货 || (status == (int)EOrderStatus.拼团成功 && wtg == (int)EWayToGet.物流))
+    {
+        <tr>
+            <td>序号</td>
+            <td>订单号</td>
+            <td>拼团活动标题</td>
+            <td>商品编号</td>
+            <td>商品金额</td>
+            <td>邮费</td>
+            <td>购买人</td>
+            <td>联系电话</td>
+            <td>邮寄地址</td>
+            <td>下单时间</td>
+            <td>物流公司</td>
+            <td>快递单号</td>
+            <td>发货时间</td>
+            <td>操作</td>
+        </tr>
+        foreach (var v in Model.List)
+        {
+            row = row + 1;
+            <tr>
+                <td>@row</td>
+                <td>@v.o_no</td>
+                <td>@v.title</td>
+                <td>@v.p_no</td>
+                <td>@(v.price)元</td>
+                <td>@(v.post_price)元</td>
+                <td>@v.buyer</td>
+                <td>@v.cellphone</td>
+                <td>@v.postaddress</td>
+                <td>@v.paytime</td>
+                <td>@v.post_company</td>
+                <td>@v.post_number</td>
+                <td>@v.shipmenttime</td>
+                <td><a href="javascript:;" data-com="@v.post_company" data-num="@v.post_number" onclick="shipmentview(this)">查看物流</a></td>
+            </tr>
+        }
+    }
+</table>
+
+    <div class="Lorelei-commonTable-btnbox clearfix">
+        <div class="Lorelei-cT-btnbox-l">总计<span id="spantotal" class="wine">@totalCount</span></div>
+        <div class="Lorelei-cT-btnbox-r">
+            <a id="left" href="javascript:;" onclick="onLeftClick()">◀</a><span id="currentPage" class="wine mgl5">@pageIndex</span>/<span id="totalPages" class="mgr5">@totalPages</span><a id="right" href="javascript:;" onclick="onRightClick()">▶</a>
+            <input class="pd5 mg7" id="page_count" type="text" /><a id="jump" href="javascript:;" onclick="onJump()">跳转</a>
+        </div>
+    </div>
+ <!--弹出层，核销-->
+<div id="ADialog" class="AlertDialog" style="display:none; height:350px;">
+    <p class="rela">使用微信扫一扫核销<a href="javascript:;"><i onclick="oncloseADialog()" class="zonght i-close"></i></a></p>
+    <div style="text-align:center;padding-top:20px;" id="woer_qrcode">
+    </div>
+</div>
+<script>
+    (function getCompanys() {
+        var status = @status;
+        var distributSta = @((int)EOrderStatus.已成团配货中);
+        if (status == distributSta) {
+            $.ajax({
+                url: '/Logistics/GetMerCompany',
+                type: "post",
+                data: {},
+                success: function (res) {
+                    if (res && res.data.length > 0) {
+                        var h = '';
+                        var d = res.data;
+                        for (var i = 0; i < d.length; i++) {
+                            h += '<option value="'+d[i].companyCode+'">'+d[i].companyName+'</option>';
+                        }
+                        $(".postCompany").html(h);
+                    }
+                }
+            })
+        }
+    })();
+</script>

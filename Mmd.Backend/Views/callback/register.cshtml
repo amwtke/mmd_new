@@ -1,0 +1,67 @@
+﻿@model MD.Model.DB.Merchant
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" type="text/css" href="/Content/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/Content/main.css"/>
+    <link rel="stylesheet" type="text/css" href="/Content/ico.css"/>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="/Scripts/upload/upload-common.js"></script>
+    <script src="/Scripts/upload/uploadfile.js"></script>
+    <style type="text/css">.red { color: #F00}</style>
+
+</head>
+<body>
+@{
+    ViewData["nav"] = false;
+}
+
+@Html.Partial("Header/_Header", @Model.name, this.ViewData)
+
+
+    <!--mian-->
+    <div class="gongg-Box">
+        <div class="gongg-Box-c mgc">
+            <div class="zhuceTitle"><p>完善商家信息</p></div>
+            <form id="FormUpload" action="/callback/Upload" method="post" enctype="multipart/form-data">
+                <div class="name-Tap mgb20"><span class="w100">商家名称</span><span class="coInp">@Model.name</span></div>
+
+                <div class="xiala-Tap mgb20">
+                    <span class="w100">商家经营地区</span>@Html.TextBoxFor(model => model.service_region, new { @class = "coInp" })  @Html.ValidationMessageFor(model => model.service_region, "", new { @class = "red" })
+                </div>
+                <div class="inputText-Tap mgb20"><span class="w100">商家Appid</span>@Html.TextBoxFor(model=>model.wx_appid,new {@class= "coInp",@readonly="true" })</div>
+                
+                <div class="inputText-Tap mgb20"><span class="w100">联系人</span>@Html.TextBoxFor(model=>model.contact_person,new {@class= "coInp",placeholder= "请输入联系人姓名" })  @Html.ValidationMessageFor(model => model.contact_person, "", new { @class = "red" })</div>
+                <div class="inputText-Tap mgb20"><span class="w100">手机号</span>@Html.TextBoxFor(model => model.cell_phone, new { @class = "coInp", placeholder = "请输入联系人手机号码" })  @Html.ValidationMessageFor(model => model.cell_phone, "", new { @class = "red" })</div>
+                <div class="inputText-Tap mgb20"><span class="w100">联系地址</span>@Html.TextBoxFor(model => model.address, new { @class = "coInp", placeholder = "请输入联系人地址" })  @Html.ValidationMessageFor(model => model.address, "", new { @class = "red" })</div>
+
+                <div class="inputFile-Tap mgb20">
+                    <span class="w100">营业执照</span>@Html.TextBoxFor(model => model.biz_licence_url, new { @class = "coInp", @readonly = "true" })  @Html.ValidationMessageFor(model => model.biz_licence_url,"",new {@class="red"})
+                    <div class="Add-ImgCuber" style="position: relative;overflow: hidden;">
+                        <i id="cross" class="MMda i-add pdr5 green" style="margin-top: 72px;"></i>
+                        <input class="AddCub" type="file" name="UploadedFile">
+                    </div>
+                    <input class="MMxy" name="" type="checkbox" value="" checked="checked" readonly="readonly"/><a href="/f2e/xieyi.html" target="_blank">MM拼团使用协议</a>
+                </div>
+
+                <input class="inputBtn-Tap" type="submit" value="确认下一步" />
+
+            </form>
+        </div>
+    </div>
+
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+
+</body>
+</html>

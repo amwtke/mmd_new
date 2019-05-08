@@ -1,0 +1,85 @@
+﻿@using MD.Model.DB.Code;
+@using MD.Lib.DB.Repositorys
+@using System.Collections.Concurrent;
+@using System.Collections.Generic;
+@model Mmd.Backend.Controllers.Backyard.SupplyController.SupplyPartialObject
+@{
+    ConcurrentDictionary<int, string> categoryItems = new ConcurrentDictionary<int, string>();
+    ConcurrentDictionary<int, string> brandItems = new ConcurrentDictionary<int, string>();
+    using (CodeRepository repo = new CodeRepository())
+    {
+        categoryItems = repo.ProductCategoryDic;
+        brandItems = repo.ProductBrandDic;
+    }
+
+    var pageIndex = Model.PageIndex;
+    var totalCount = Model.TotalCount;
+    var pageSize = Model.PageSize;
+
+    int row = (pageIndex - 1) * pageSize;//当前页的其实序号
+
+    int totalPages = 0;
+    if (totalCount % pageSize == 0)
+    {
+        totalPages = totalCount / pageSize;
+    }
+    else
+    {
+        totalPages = totalCount / pageSize + 1;
+    }
+}
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td>商品编号</td>
+        <td>商品名称</td>
+        <td>品牌</td>
+        <td>商品分类</td>
+        <td>商品规格</td>
+        <td>市场价</td>
+        <td>供货价</td>
+        <td>拼团价</td>
+        <td>包装</td>
+        <td>限购数量</td>
+        <td>操作</td>
+    </tr>
+    @foreach (var item in Model.List)
+    {
+        <tr>
+            <td>@item.s_no</td>
+            <td>@item.name</td>
+            <td>@brandItems.Where(p=>p.Key==item.brand).FirstOrDefault().Value</td>
+            <td>@categoryItems.Where(p=>p.Key==item.category).FirstOrDefault().Value</td>
+            <td>@item.standard</td>
+            <td>@(item.market_price/100.00)</td>
+            <td>@(item.supply_price/100.00)</td>
+            <td>@(item.group_price/100.00)</td>
+            <td>@item.pack</td>
+            <td>@item.quota_min-@item.quota_max</td>
+            <td>
+                <a class="czAlert" href=@Url.Action("EditSupply","Supply",new {sid=item.sid })>编辑</a>
+                @if (item.status == (int)ESupplyStatus.已上线)
+                {
+                    <a class="logAlert mg7" href=@Url.Action("UpdateSupplystatus", "Supply", new { sid = item.sid, status=(int)ESupplyStatus.已下线 })>下线</a>
+                }
+                @if (item.status == (int)ESupplyStatus.已下线)
+                {
+                    <a class="logAlert mg7" href=@Url.Action("UpdateSupplystatus", "Supply", new { sid = item.sid, status=(int)ESupplyStatus.已上线 })>上线</a>
+                    <a class="logAlert mg7" onclick="DelConfirm('@item.sid','@((int)ESupplyStatus.已删除)')" style="cursor:pointer;">删除</a>
+                }
+                @*@if (item.status == (int)ESupplyStatus.已删除)
+                {
+                    <a class="logAlert mg7" href=@Url.Action("UpdateSupplystatus", "Supply", new { sid = item.sid, status=(int)ESupplyStatus.已下线 })>下线</a>
+                }*@
+            </td>
+        </tr>
+    }
+
+</table>
+
+<div class="Lorelei-commonTable-btnbox clearfix">
+    <div class="Lorelei-cT-btnbox-l">总计<span id="spantotal" class="wine">@totalCount</span></div>
+    <div class="Lorelei-cT-btnbox-r">
+        <a id="left" href="javascript:;" onclick="onLeftClick()">◀</a><span id="currentPage" class="wine mgl5">@pageIndex</span>/<span id="totalPages" class="mgr5">@totalPages</span><a id="right" href="javascript:;" onclick="onRightClick()">▶</a>
+        <input class="pd5 mg7" id="page_count" type="text" /><a id="jump" href="javascript:;" onclick="onJump()">跳转</a>
+    </div>
+</div>

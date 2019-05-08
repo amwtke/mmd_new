@@ -1,0 +1,186 @@
+﻿@using MD.Lib.Util;
+@using MD.Model.DB.Code;
+@using MD.Model.DB.Activity;
+@model MD.Model.DB.Activity.LadderGroup
+    @{ 
+        var list = Model.PriceList;
+        
+    }
+@functions{
+    private string GetStyle(int status)
+    {
+        return status == (int)ELadderGroupStatus.已发布 ? "readonly=readonly" : "";
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>工具箱-砍价团管理</title>
+    <link rel="stylesheet" type="text/css" href="~/Content/main.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/ico.css">
+</head>
+<body>
+    <!--header-->
+    @Html.Partial("Header/_headerActivity")
+    <!--mian-->
+    <div class="Lorelei-table-box">
+        <div class="">
+            <div class="main margin-top-40">
+                <div class="leftList">
+                    @Html.Partial("ActivityLeftMenuPartial")
+                </div>
+                <div class="rightMain">
+                    <form class="ft14">
+                        <div class="inputText-Tap mgb20 mgt19 clearfix">
+                            <span class="w100 fl">商品编号：</span>
+                            <input class="coInp fl" id="pno" type="text" placeholder="商品编号" value="@Model.pno" @GetStyle(Model.status)>
+                            <span class="ft12 mgl5 mgt5 fl">请在“商品管理”中复制商品编号</span>
+                        </div>
+                        <div class="inputText-Tap mgb20 clearfix">
+                            <span class="w100 fl">活动名称：</span>
+                            <input type="text" class="coInp fl" id="title" style="resize:none" cols="" rows="1" value="@Model.title" />
+                            <span class="ft12 mgl5 mgt5 fl">20字以内</span>
+                        </div>
+                        <div class="inputText-Tap mgb20 clearfix">
+                            <span class="w100 fl">活动描述：</span>
+                            <textarea id="description" class="coInp fl" style="resize:none" cols="" rows="3">@Model.description</textarea>
+                            <span class="ft12 mgl5 mgt5 fl">50字以内</span>
+                        </div>
+                        <div class="inputFile-Tap mgb20">
+                            <span class="w100">活动宣传图片：</span>
+                            <input class="coInp pic" type="file" onchange="uploadImg(this)">
+                            <span class="ft12 mgl5">建议尺寸320px*240px</span>
+                            <div class="Add-ImgCuber" style="position: relative;overflow: hidden;width: 352px;height:162px;">
+                                <img src="@(Model.pic??"/Content/images/pic.jpg")">
+                            </div>
+                        </div>
+                        <div class="inputText-Tap mgb20 clearfix">
+                            <span class="w100 fl">取货方式：</span>
+                            <p class="fl coInp">
+                                <label>
+                                    <input type="radio" value="单选" checked="checked">
+                                    来店自提
+                                </label>
+                                <br>
+                            </p>
+                        </div>
+                        <div class="inputText-Tap mgb20">
+                            <span class="w100">商品库存：</span>
+                            <input style="width:146px;" class="coInp" id="product_count" type="text" placeholder="商品库存" value="@Model.product_count" @GetStyle(Model.status)>
+                        </div>
+                        <div class="inputText-Tap mgb20 clearfix">
+                            <span class="w100 fl">提货截止日期：</span>
+                            <div class="fl clearfix">
+                                    @if (Model.status != (int)ELadderGroupStatus.已发布)
+                                    {
+                                        <input id="end_time" class="coInp fl" @GetStyle(Model.status) value="@(CommonHelper.FromUnixTime(Model.end_time).ToString("yyyy-MM-dd HH:mm:ss"))" onclick='laydate({ elem: " #end_time",format:"YYYY-MM-DD hh:mm:ss", istime: true });'>
+                                    }
+                                    else
+                                    {
+                                        <input id="end_time" class="coInp fl" @GetStyle(Model.status) value="@(CommonHelper.FromUnixTime(Model.end_time).ToString("yyyy-MM-dd HH:mm:ss"))">
+                                    }
+                            </div>
+                        </div>
+                        <div class="inputText-Tap mgb20 clearfix" id="addJttBox">
+                            @for (int i = 0; i < list.Count; i++)
+                            {
+                                var className = i>0 ? "mgt19" : "";
+                                <div class="@className clearfix">
+                                    <div class="fl">
+                                        <span class="w100">成团人数：</span>
+                                        <input style="width:146px;" class="coInp person_count" type="text" placeholder="成团人数" value="@list[i].person_count" @GetStyle(Model.status)>
+                                    </div>
+                                    <div class="fl">
+                                        <span class="w100">拼团价格：</span>
+                                        <input style="width:146px;" class="coInp group_price" type="text" placeholder="拼团价格" value="@(list[i].group_price/100.00)" @GetStyle(Model.status)>
+                                    </div>
+                                    @if (Model.status != (int)ELadderGroupStatus.已发布)
+                                    {
+                                        <a href='javascript:; ' class='jttEnd'>删除</a>
+                                    }
+                                </div>
+                            }
+                        </div>
+                        <input type="hidden" id="gid" value="@Model.gid" />
+                            @if (ViewBag.Type == "detail")
+                            {
+                                <div class="Lorelei-addBtn-l margin-top-40 addBb">
+                                    <a href="javascript:;" onclick="location = document.referrer;" style="width:100px;">
+                                        返回
+                                    </a>
+                                </div>
+                            }
+                            else
+                            {
+                                if (Model.status != (int)ELadderGroupStatus.已发布)
+                                {
+                                    <a id='addJtt' style='padding: 5px 0; width: 100px; display: block; background: #eb1962;' class='inputBtn-Tap mgb20 clearfix' >增加</a>
+                                }
+                                <input type="hidden" id="hid_type" value="@ViewBag.Type" />
+                                <div class="Lorelei-addBtn-l margin-top-40 addBb">
+                                    <a href="javascript:submitGroup();" style="width:100px;" id="iddBb">
+                                        确定
+                                    </a>
+                                </div>
+                            }
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/template" id="addTpl">
+        <div class="clearfix">
+            <div class="fl">
+                <span class="w100">成团人数：</span>
+                <input style="width:146px;" class="coInp person_count" type="text" placeholder="成团人数" value="">
+            </div>
+            <div class="fl">
+                <span class="w100">拼团价格：</span>
+                <input style="width:146px;" class="coInp group_price" type="text" placeholder="拼团价格" value="">
+            </div>
+        </div>
+    </script>
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+</body>
+<script src="~/Scripts/jquery-1.7.2.min.js"></script>
+<script src="~/Scripts/laydate.dev.js"></script>
+<script src="~/Scripts/activity/grouppage.js?v=20161017"></script>
+<script>
+    var tar = $(".g-listBox.a-ladder");
+    tar.find("p i").addClass('xz90');
+    tar.find("p").next().show();
+    tar.find(".y-box li").eq(0).children("a").addClass("y-acti");
+    $(".g-listBox p").click(function () {
+        if (!$(this).find('i').hasClass("xz90")) {
+            $(".y-box").hide();
+            $(".sjx").removeClass("xz90");
+        }
+        $(this).next().toggle();
+        $(this).find('i').toggleClass('xz90');
+    });
+    $("#addJtt").click(function () {
+        var html = '<div class="mgt19 clearfix">' +
+						'<div class="fl">' +
+							'<span class="w100">成团人数：</span>' +
+							'<input style="width:146px;" class="coInp person_count" type="text" placeholder="成团人数" value="">' +
+						'</div>' +
+						'<div class="fl">' +
+							'<span class="w100">拼团价格：</span>' +
+							'<input style="width:146px;" class="coInp group_price" type="text" placeholder="拼团价格" value="">' +
+						'</div>' +
+						'<a href="javascript:;" class="jttEnd">删除</a>' +
+					'</div>';
+        $("#addJttBox").append(html);
+    });
+    $(".jttEnd").die().live('click', function () {
+        $(this).parent().remove();
+    });
+    
+</script>
+</html>

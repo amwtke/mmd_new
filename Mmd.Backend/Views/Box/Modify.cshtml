@@ -1,0 +1,288 @@
+﻿@using MD.Lib.Util;
+@using MD.Model.DB;
+@using MD.Model.DB.Activity;
+@{
+    var timeStart = CommonHelper.FromUnixTime(Model.time_start).ToString("yyyy-MM-dd HH:mm:ss");
+    var timeEnd = CommonHelper.FromUnixTime(Model.time_end).ToString("yyyy-MM-dd HH:mm:ss");
+    var list = Model.BoxTreasureList;
+    int listIndex = 0;
+}
+@functions{
+    private string GetIndexString(int index)
+    {
+        string[] arr = { "一", "二", "三", "四", "五", "六", "七", "八", "九", "十" };
+        if (index < 10)
+        {
+            return arr[index];
+        }
+        else
+        {
+            double count = Math.Ceiling(index / 10.0);
+            int left = index % 10;
+            string first = count > 2 ? arr[(int)count - 2] + arr[9] : arr[9];
+            return first + arr[left - 1];
+        }
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>工具箱-寻宝-宝箱设置</title>
+    <link rel="stylesheet" type="text/css" href="~/Content/main.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/ico.css">
+</head>
+<body>
+    <!--header-->
+    @Html.Partial("Header/_headerActivity")
+    <!--mian-->
+    <div class="Lorelei-table-box">
+        <div class="">
+            <div class="main margin-top-40">
+                <div class="leftList">
+                    @Html.Partial("ActivityLeftMenuPartial")
+                </div>
+                <div class="rightMain">
+                    <form action="" method="get">
+                        <div class="inputText-Tap mgb20 mgt19 ">
+                            <span class="w100">开启和结束时间：</span>
+                            <input class="coInp" name="" id="ksTime" value="@timeStart" style="width:200px" readonly type="text" placeholder="请选择开始时间"><span style="margin-left: 15px;">至</span><input readonly id="endTime" class="coInp" style="width:200px" name="" type="text" placeholder="请选择结束时间" value="@timeEnd">
+                        </div>
+                        <div class="bbList" id="bbList">
+                            @{
+                                foreach (var item in list)
+                                {
+                                    <div class="baobeiBox border-bt mgb20">
+                                        <input type="hidden" class="treId" value="@item.btid"/>
+                                        <div class="inputText-Tap mgb20">
+                                            <span class="w100 treIndex">宝贝@(GetIndexString(listIndex++)):</span>
+                                            <input class="coInp treName" name="" type="text" style="width:80px;" placeholder="宝贝名称" value="@item.name">
+                                            <span class="w100">宝贝数量：</span>
+                                            <input class="coInp treCount" name="" type="number" style="width:80px;" placeholder="宝贝数量" value="@item.count">
+                                        @if (ViewBag.Type != "detail")
+                                        {
+                                            <a class="removeBb" href="javascript:;" onclick="del(this)">删除</a>
+                                        }
+                                        </div>
+                                        <div class="inputText-Tap mgb20 mgt19" style="overflow:hidden;">
+                                            <span class="w100" style="float:left;">宝贝说明：</span>
+                                            <textarea class="coInp treDes" name="" style="float:left; height:80px;width:500px;" type="text" placeholder="宝贝说明" >@item.description</textarea>
+                                        </div>
+                                        <div class="inputFile-Tap mgb20">
+                                            <span class="w100">宝贝图片</span><input class="coInp" type="file" name="img" onchange="uploadImg(this)"><span class="ft12 mgl5">建议尺寸100px*100px</span>
+                                            <div class="clearfix">
+                                                <div class="Add-ImgCuber fl rela" style="width: 100px;height: 100px;">
+                                                    <img src="@(string.IsNullOrEmpty(item.pic)?"/Content/images/pic.jpg":item.pic)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            
+                        </div>
+                        @if (ViewBag.Type == "detail")
+                        {
+                            <div class="Lorelei-addBtn-l margin-top-40 addBb">
+                                <a href="javascript:;" onclick="location = document.referrer;" style="margin-left: 80px;">
+                                    返回
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <input type="hidden" id="hid_type" value="@ViewBag.Type" />
+                            <div class="Lorelei-addBtn-l margin-top-40 addBb">
+                                <a href="javascript:;" id="iddBb">
+                                    <i class="MMda i-add pdr5"></i>添加宝贝
+                                </a>
+                                <a href="javascript:submit();" style="margin-left: 80px;" id="iddBb">
+                                    确定
+                                </a>
+                            </div>
+                        }
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+
+</body>
+<script src="~/Scripts/jquery-1.7.2.min.js"></script>
+<script src="~/Scripts//laydate.dev.js"></script>
+<script>
+	var arr = ["一","二","三","四","五","六","七","八","九","十"];
+	var index;
+	$("#iddBb").click(function () {
+	    index = $("#bbList .baobeiBox").length - 1;
+		index++;
+		if(index<10){
+			var num = arr[index];
+		}else if(index>=10){
+			var shi = "";
+			if(parseInt(index/10)>1){
+				shi = arr[parseInt(index/10)-1];
+			}
+			if(index-10*parseInt(index/10)==9){
+				var num = arr[parseInt((index+1)/10)-1]+"十";
+			}else{
+				var num = shi+"十"+arr[index-10*parseInt(index/10)];
+			}
+		}
+		var html = '<div class="baobeiBox border-bt mgb20">' +
+						'<div class="inputText-Tap mgb20">' +
+                        '<input type="hidden" class="treId" value=""/>' +
+							'<span class="w100 treIndex">宝贝' + num + '：</span>' +
+							'<input class="coInp treName" type="text" style="width:80px;" placeholder="宝贝名称" value="">' +
+							'<span class="w100">宝贝数量：</span>' +
+							'<input class="coInp treCount" type="number" style="width:80px;" placeholder="宝贝数量" value="">' +
+							'<a class="removeBb" href="javascript:;" onclick="del(this)">删除</a>' +
+						'</div>' +
+						'<div class="inputText-Tap mgb20 mgt19" style="overflow:hidden;">' +
+							'<span class="w100" style="float:left;">宝贝说明：</span>' +
+							'<textarea class="coInp treDes" name="" style="float:left; height:80px;width:500px;" type="text" placeholder="宝贝说明" value=""></textarea>' +
+						'</div>' +
+						'<div class="inputFile-Tap mgb20">' +
+							'<span class="w100">宝贝图片</span><input class="coInp" type="file" onchange="uploadImg(this)"><span class="ft12 mgl5">建议尺寸100px*100px</span>' +
+							'<div class="clearfix">' +
+								'<div class="Add-ImgCuber fl rela" style="width: 100px;height: 100px;">' +
+									'<img src="/Content/images/pic.jpg">' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+					'</div>'
+		$("#bbList").append(html);
+	});
+	var tar = $(".g-listBox.a-box");
+	tar.find("p i").addClass('xz90');
+	tar.find("p").next().show();
+	tar.find(".y-box li").eq(1).children("a").addClass("y-acti");
+	$(".g-listBox p").click(function(){
+		if(!$(this).find('i').hasClass("xz90")){
+			$(".y-box").hide();
+			$(".sjx").removeClass("xz90");
+		}
+		$(this).next().toggle();
+		$(this).find('i').toggleClass('xz90');
+	});
+    laydate({
+        elem: '#ksTime',
+		format:'YYYY-MM-DD hh:mm:ss',
+		istime : true
+    });
+    laydate({
+        elem: '#endTime',
+		format:'YYYY-MM-DD hh:mm:ss',
+		istime : true
+    });
+    function getIndexString(index) {
+        if (index < 10) {
+            var num = arr[index];
+        } else if (index >= 10) {
+            var shi = "";
+            if (parseInt(index / 10) > 1) {
+                shi = arr[parseInt(index / 10) - 1];
+            }
+            if (index - 10 * parseInt(index / 10) == 9) {
+                var num = arr[parseInt((index + 1) / 10) - 1] + "十";
+            } else {
+                var num = shi + "十" + arr[index - 10 * parseInt(index / 10)];
+            }
+        }
+        return num;
+    }
+    function del(obj) {
+        if(confirm("确定要删除该宝贝吗？")){
+            $(obj).parents(".baobeiBox").remove();
+            $("#bbList .baobeiBox").each(function (index,item) {
+                $(item).find(".treIndex").text("宝贝" + getIndexString(index));
+            })
+        }
+    }
+    function uploadImg(obj) {
+        var selectedFile = ($(obj))[0].files[0];
+        if (selectedFile) {
+            var imageType = /image.*/;
+            if (selectedFile.type.match(imageType) && selectedFile.size <= 2097152) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var dataURL = e.target.result;
+                    var img = new Image();
+                    img.src = dataURL;
+                    $(obj).siblings(".clearfix").children(".Add-ImgCuber").html(img);
+                };
+                reader.readAsDataURL(selectedFile);
+            }
+            else {
+                if (!selectedFile.type.match(imageType)) {
+                    alert("只能录入图片文件！");
+                } else if (selectedFile.size > 2097152) {
+                    alert("上传图片大小不能超过2Mb！");
+                }
+            }
+        }
+    }
+    function submit() {
+        var strStart = $("#ksTime").val();
+        if (!strStart) {
+            alert("请选择开启时间！");
+            return;
+        }
+        var strEnd = $("#endTime").val();
+        if (!strEnd) {
+            alert("请选择结束时间！");
+            return;
+        }
+        var json = {};
+        json.time_start = new Date(strStart).getTime() / 1000;
+        json.time_end = new Date(strEnd).getTime() / 1000;
+        json.bid='@Model.bid';
+        var list = [];
+        var tar = $("#bbList .baobeiBox");
+        var length = tar.length;
+        if (length <= 0) {
+            alert("请添加宝贝！");
+            return;
+        }
+        for (var i = 0; i < length; i++) {
+            var treasure = { btid: $(tar[i]).find(".treId").val(), name: $(tar[i]).find(".treName").val(), count: $(tar[i]).find(".treCount").val(), description: $(tar[i]).find(".treDes").val(), pic: $(tar[i]).find(".Add-ImgCuber img").attr("src") };
+            if (treasure.name == "" || treasure.count == "" || !treasure.pic || treasure.pic =='/Content/images/pic.jpg')
+            {
+                alert("请填写宝贝名称,数量和图片！");
+                return;
+            }
+            list.push(treasure);
+        }
+        json.BoxTreasureList = list;
+        $.ajax({
+            url: '/Box/ModifyBox',
+            type: "post",
+            data: { box: json, type: $("#hid_type").val() },
+            success: function (res) {
+                if (res.status && res.status == true) {
+                    alert("保存成功");
+                    location = "/Box";
+                } else if (res.status && res.status == "CanNotModified") {
+                    alert("活动已上线，不能编辑！");
+                } else if (res.status && res.status == "UploadImgFail") {
+                    alert(res.message);
+                } else if (res.status && res.status == "SessionTimeOut") {
+                    alert("登录超时，请重新登录！");
+                    location = "/";
+                } else {
+                    alert("保存失败");
+                    console.log(res);
+                }
+            }
+        })
+    }
+</script>
+</html>

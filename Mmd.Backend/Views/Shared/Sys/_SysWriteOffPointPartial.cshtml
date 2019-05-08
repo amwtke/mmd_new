@@ -1,0 +1,65 @@
+﻿@model Mmd.Backend.Controllers.SystemController.WOPsPartialObject
+@{
+    var pageIndex = Model.PageIndex;
+    var totalCount = Model.TotalCount;
+    var pageSize = Model.PageSize;
+
+
+    int row = (pageIndex - 1) * pageSize;//当前页的其实序号
+
+    int totalPages = 0;
+    if (totalCount % pageSize == 0)
+    {
+        totalPages = totalCount / pageSize;
+    }
+    else
+    {
+        totalPages = totalCount / pageSize + 1;
+    }
+}
+
+<!--mian-->
+<div class="Lorelei-table-box">
+    <div class="Lorelei-table-box-c mgc">
+
+        <div class="Lorelei-topSearch clearfix">
+            <div class="Lorelei-addBtn-l"><a href="javascript:;" onclick="onAddWOP()"><i class="MMda i-add pdr5"></i>添加提货点</a></div>
+            <div class="Lorelei-search-r"><input id="s_text" name="user_search" type="search" value="@Model.q" placeholder="店铺名称/地址/电话"  /><a class="wine" href="javascript:;" onclick="onSearch()"><i class="MMda i-search"></i></a></div>
+        </div>
+
+        <div class="Lorelei-commonTable">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td>店铺名称</td>
+                    <td>店铺地址</td>
+                    <td>核销员数量</td>
+                    <td>店铺电话</td>
+                    <td>操作</td>
+
+                </tr>
+                @foreach (var wo in Model.List)
+                {
+                    row = row + 1;
+                    <tr>
+                        <td id="woid_@row" style="display: none">@wo.woid</td>
+                        <td id="name_@row">@wo.name</td>
+                        <td>@wo.address</td>
+                        <td class="wopercount">@wo.count</td>
+                        <td>@wo.tel</td>
+                        <td><a id="@row" href="javascript:;" onclick="onEditWOP(this.id)">编辑</a><a id="@row"class="mg7" href="javascript:;" onclick="onDelWop(this.id,this)">删除</a><a id="@row" href="javascript:;" onclick="onAddWoer(this.id)">添加核销员</a></td>
+                    </tr>
+                }
+                
+            </table>
+
+            <div class="Lorelei-commonTable-btnbox clearfix">
+                <div class="Lorelei-cT-btnbox-l">总计<span id="spantotal" class="wine">@totalCount</span></div>
+                <div class="Lorelei-cT-btnbox-r">
+                    <a id="left" href="javascript:;" onclick="onLeftClick()">◀</a><span id="currentPage" class="wine mgl5">@pageIndex</span>/<span id="totalPages" class="mgr5">@totalPages</span><a id="right" href="javascript:;" onclick="onRightClick()">▶</a>
+                    <input class="pd5 mg7" id="page_count" type="text" /><a id="jump" href="javascript:;" onclick="onJump()">跳转</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

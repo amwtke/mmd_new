@@ -1,0 +1,124 @@
+﻿@model MD.Model.DB.WriteOffPoint
+@{
+
+}
+<form id="wop_form" class="mgt19" action="/System/SaveOrUpdateWop" method="post" enctype="application/x-www-form-urlencoded">
+
+    <div class="inputText-Tap mgb26 mgl120"><span class="w100">商铺名称</span>@Html.TextBoxFor(model => model.name, new { @class = "coInp", placeholder = "商铺名称" }) <span id="span_wopname" class="red" style="display: none">不能为空!</span> @Html.ValidationMessageFor(model => model.name, "", new { @class = "red" })</div>
+
+    @*<div class="xiala-Tap mgb26 mgl120">
+        <span class="w100">选择省</span>
+        <select class="coInp" style="width: 280px;">
+            <option value="选择省">选择省</option>
+            <option value="湖北省">湖北省</option>
+        </select>
+    </div>
+
+    <div class="xiala-Tap mgb26 mgl120">
+        <span class="w100">选择市</span>
+        <select class="coInp" style="width: 280px;">
+            <option value="选择市">选择市</option>
+            <option value="武汉市">武汉市</option>
+        </select>
+    </div>
+
+    <div class="xiala-Tap mgb26 mgl120">
+        <span class="w100">选择区</span>
+        <select class="coInp" style="width: 280px;">
+            <option value="选择区">选择区</option>
+            <option value="武昌区">武昌区</option>
+        </select>
+    </div>*@
+    <div class="inputText-Tap mgb26 mgl120"><span class="w100">详细地址</span>@Html.TextBoxFor(model => model.address, new { @class = "coInp", placeholder = "请输入详细地址" }) <span id="span_wopaddress" class="red" style="display: none">不能为空!</span> @Html.ValidationMessageFor(model => model.address, "", new { @class = "red" })@*<input class="coInp" name="" type="text" placeholder="请输入详细地址" />*@</div>
+    <div class="inputText-Tap mgb26 mgl120"><span class="w100">门店电话</span>@Html.TextBoxFor(model => model.tel, new { @class = "coInp", placeholder = "请输入门店电话号码" }) <span id="span_woptel" class="red" style="display: none">不能为空!</span> @Html.ValidationMessageFor(model => model.tel, "", new { @class = "red" })</div>
+
+    @Html.TextBoxFor(m=>m.woid,new {style="display: none"})
+    @Html.TextBoxFor(m => m.mid, new { style = "display: none" })
+    @Html.TextBoxFor(m => m.timestamp, new { style = "display: none" })
+    @Html.TextBoxFor(m => m.is_valid, new { style = "display: none" })
+    @Html.TextBoxFor(m => m.longitude,new { style = "display: none" })
+    @Html.TextBoxFor(m => m.latitude, new { style = "display: none" })
+    <div><div id="allmap" style="height: 400px;width: 600px;border: 1px #ababab solid;margin-left:180px;"></div></div>
+    <input style="margin-left: 266px;margin-top:20px;" class="inputBtn-Tap" onclick="submitWopAddForm()" readonly="readonly" value="提交" />
+
+</form>
+
+<script>
+    var map = new BMap.Map("allmap");
+    map.enableScrollWheelZoom();
+    map.enableContinuousZoom();
+    var marker;
+    var myGeo = new BMap.Geocoder();
+    // 将地址解析结果显示在地图上,并调整地图视野
+    var address = $("#address").val();
+    var lng = @Model.longitude;
+    var lat = @Model.latitude;
+    if (lng != 0 && lat != 0) {
+        var p = new BMap.Point(lng,lat);
+        map.centerAndZoom(p, 16);
+        marker = new BMap.Marker(p);
+        map.addOverlay(marker);
+        marker.setAnimation(BMAP_ANIMATION_BOUNCE);
+    }else 
+        if (address) {
+        myGeo.getPoint(address, function (point) {
+            console.log(point);
+            if (point) {
+                map.centerAndZoom(point, 16);
+                marker = new BMap.Marker(point);
+                map.addOverlay(marker);
+                marker.setAnimation(BMAP_ANIMATION_BOUNCE);
+            } else {
+                alert("地址没有解析到结果,请点击地图标注");
+                map.centerAndZoom("北京", 12);
+            }
+        }, "北京市");
+    } else {
+        map.centerAndZoom("北京", 12);
+    }
+    //单击获取点击的经纬度
+    map.addEventListener("click", function (e) {
+        var point = new BMap.Point(e.point.lng, e.point.lat);
+        //var point = new BMap.Point(116.404, 39.915);
+        var allOverlay = map.getOverlays();
+        for (var i = 0; i < allOverlay.length; i++) {
+            map.removeOverlay(allOverlay[i]);
+        }
+        marker = new BMap.Marker(point);  // 创建标注
+        map.addOverlay(marker);               // 将标注添加到地图中
+        marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+        //alert(e.point.lng + "," + e.point.lat);
+        var pt = e.point;
+        var geoc = new BMap.Geocoder();
+        geoc.getLocation(pt, function (rs) {
+            var addComp = rs.addressComponents;
+            console.log(addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber + e.point.lng + "," + e.point.lat);
+            $("#longitude").val(e.point.lng);
+            $("#latitude").val(e.point.lat);
+        });
+    });
+    $("#address").blur(function () {
+        var address = $("#address").val();
+        if (address) {
+            myGeo.getPoint(address, function (point) {
+                console.log(point);
+                if (point) {
+                    map.centerAndZoom(point, 16);
+                    var allOverlay = map.getOverlays();
+                    for (var i = 0; i < allOverlay.length; i++) {
+                        map.removeOverlay(allOverlay[i]);
+                    }
+                    marker = new BMap.Marker(point);
+                    map.addOverlay(marker);
+                    marker.setAnimation(BMAP_ANIMATION_BOUNCE);
+                    $("#longitude").val(point.lng);
+                    $("#latitude").val(point.lat);
+                } else {
+                    alert("地址没有解析到结果,请点击地图标注");
+                }
+            }, "北京市");
+        } else {
+
+        }
+    });
+</script>

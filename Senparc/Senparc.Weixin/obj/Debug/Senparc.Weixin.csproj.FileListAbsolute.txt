@@ -1,0 +1,8 @@
+/Users/jxiao/Workshop/mmd/MMD/Senparc/Senparc.Weixin/bin/Debug/Senparc.Weixin.dll
+/Users/jxiao/Workshop/mmd/MMD/Senparc/Senparc.Weixin/bin/Debug/Senparc.Weixin.pdb
+/Users/jxiao/Workshop/mmd/MMD/Senparc/Senparc.Weixin/bin/Debug/Newtonsoft.Json.dll
+/Users/jxiao/Workshop/mmd/MMD/Senparc/Senparc.Weixin/bin/Debug/Newtonsoft.Json.xml
+/Users/jxiao/Workshop/mmd/MMD/Senparc/Senparc.Weixin/obj/Debug/Senparc.Weixin.csprojResolveAssemblyReference.cache
+/Users/jxiao/Workshop/mmd/MMD/Senparc/Senparc.Weixin/obj/Debug/Senparc.Weixin.csproj.CoreCompileInputs.cache
+/Users/jxiao/Workshop/mmd/MMD/Senparc/Senparc.Weixin/obj/Debug/Senparc.Weixin.dll
+/Users/jxiao/Workshop/mmd/MMD/Senparc/Senparc.Weixin/obj/Debug/Senparc.Weixin.pdb

@@ -1,0 +1,55 @@
+﻿@using MD.Lib.ElasticSearch.MD
+@using MD.Lib.Util
+@using MD.Model.DB.Code
+@model Mmd.Backend.Controllers.GroupController.GroupDetailPartialObject
+@{
+    var pageIndex = Model.PageIndex;
+    var totalCount = Model.TotalCount;
+    var pageSize = Model.PageSize;
+
+    int row = (pageIndex - 1) * pageSize;//当前页的其实序号
+
+    int totalPages = 0;
+    if (totalCount % pageSize == 0)
+    {
+        totalPages = totalCount / pageSize;
+    }
+    else
+    {
+        totalPages = totalCount / pageSize + 1;
+    }
+}
+<div class="Lorelei-commonTable">
+    <p class="Lorelei-commonTable-tile">@Model.EsObject.title</p>
+    <p class="Lorelei-commonTable-tile">是个@(Model.EsObject.person_quota)人团</p>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td>序号</td>
+            <td>开始时间</td>
+            <td>团长</td>
+            <td>拼团状态</td>
+            <td>还差</td>
+        </tr>
+        @foreach (var go in Model.List)
+        {
+            var statusStr = ((EGroupOrderStatus) go.status).ToString();
+            var userName = EsUserManager.GetById(go.leader).name;
+            row = row + 1;
+            <tr>
+                <td>@row</td>
+                <td>@(CommonHelper.FromUnixTime(go.create_date.Value).ToString())</td>
+                <td>@userName</td>
+                <td>@statusStr</td>
+                <td>@(go.user_left)人</td>
+            </tr>
+        }
+    </table>
+
+    <div class="Lorelei-commonTable-btnbox clearfix">
+        <div class="Lorelei-cT-btnbox-l">总计<span id="spantotal" class="wine">@totalCount</span></div>
+        <div class="Lorelei-cT-btnbox-r">
+            <a id="left" href="javascript:;" onclick="onLeftClick()">◀</a><span id="currentPage" class="wine mgl5">@pageIndex</span>/<span id="totalPages" class="mgr5">@totalPages</span><a id="right" href="javascript:;" onclick="onRightClick()">▶</a>
+            <input class="pd5 mg7" id="page_count" type="text" /><a id="jump" href="javascript:;" onclick="onJump()">跳转</a>
+        </div>
+    </div>
+</div>

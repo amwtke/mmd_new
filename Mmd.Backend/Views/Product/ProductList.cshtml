@@ -1,0 +1,56 @@
+﻿@model MD.Model.DB.Merchant
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>商品列表</title>
+	<link rel="stylesheet" type="text/css" href="/Content/main.css">
+    <link rel="stylesheet" type="text/css" href="/Content/ico.css">
+    @Scripts.Render("~/bundles/jquery")
+    <script src="/Scripts/product/pcommon.js"></script>
+    <script src="/Scripts/product/paging.js"></script>
+</head>
+<body>
+	<!--header-->
+
+    @Html.Partial("Header/_headerProduct")
+	
+	<!--mian-->
+	<div class="Lorelei-table-box">
+		<div class="Lorelei-table-box-c mgc">
+
+			<div class="Lorelei-topSearch clearfix">
+				<div class="Lorelei-addBtn-l"><a href="/Product/Add_Product?pid=@Guid.Empty&appid=@Model.wx_appid"><i class="MMda i-add pdr5"></i>添加商品</a></div>
+				<div class="Lorelei-search-r"><input id="s_text" name="user_search" type="search" placeholder="商品名称/商品编号" /><a class="wine" href="javascript:;" onclick="onSearch()"><i class="MMda i-search"></i></a></div>
+			</div>
+
+		    <div id="list_table" class="Lorelei-commonTable">
+                    @Html.Action("ProductListPartial", new {pageNo = 1,q="" })
+            </div>
+		</div>
+	</div>
+    <!--弹出层-->
+    <div class="alertForm ft14" style="display:none">
+        <div class="inputText-Tap mgb20 mgt19" style="text-align: right;">
+            <a href="javascript:;"><i class="MMda i-close pdr5" style="font-size: 26px;padding-right: 19px;"></i></a>
+        </div>
+        <div class="inputText-Tap mgb20 mgt19"><span class="w100">商品名称</span><input id="tan_gname" class="coInp" name="" type="text" placeholder="商品名称" value="" /></div>
+        <div class="inputText-Tap mgb20 mgt19"><span class="w100 fl">商品链接</span><textarea id="tan_url" class="coInp" style="resize:none" name="" cols="" rows="9"></textarea></div>
+        <input style="margin-left:162px;" class="inputBtn-Tap mgb19 i-close" type="button" value="关闭"/>
+    </div>
+    <div class="maskLayer"></div>
+	<!--footer-->
+<div class="footer">
+    <div class="footer-c mgc">
+        <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+    </div>
+</div>
+
+<div style="display: none">
+    <label id="appid">@Model.wx_appid</label>@*<label id="pageSize">@ViewBag.pageSize</label>*@
+</div>
+</body>
+</html>

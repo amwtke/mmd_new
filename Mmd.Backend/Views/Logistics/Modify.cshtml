@@ -1,0 +1,347 @@
+﻿<!DOCTYPE html>
+<HTML>
+<HEAD>
+    <TITLE>运费模板设置</TITLE>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="~/Content/main.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/ico.css">
+    <link rel="stylesheet" href="~/Content/zTreeStyle/zTreeStyle.css" type="text/css">
+    <script type="text/javascript" src="~/Scripts/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/zTree/jquery.ztree.core.js"></script>
+    <script type="text/javascript" src="~/Scripts/zTree/jquery.ztree.excheck.js"></script>
+</HEAD>
+<BODY>
+    <!--header-->
+    @Html.Partial("Header/_headerSys")
+    <div class="SYS-set">
+        <div class="SYS-set-c mgc">
+            <div class="SYSs-Nav">
+                <ul class="clearfix">
+                    <li><a id="label_m" href="/System">基本设置</a></li>
+                    <li><a id="label_w" href="/System?tag=1">提货设置</a></li>
+                    <li><a id="label_mana" href="/System?tag=4">核销员管理</a></li>
+                    <li><a class="cur" href="/Logistics">运费设置</a></li>
+                    <li><a href="/Logistics/AddCompany">配送设置</a></li>
+                </ul>
+            </div>
+            <div class="Lorelei-topSearch clearfix">
+                <div class="Lorelei-addBtn-l">
+                    <div class="inputText-Tap mgb20 mgt19">
+                        <span class="w100">模板名称</span>
+                        <input class="coInp" id="tempName" type="text" placeholder="模板名称" value="">
+                    </div>
+                </div>
+            </div>
+            <div class="Lorelei-commonTable">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" id="LogisticsdItem">
+                    <tr id="trHead">
+                        <td style="width:75%">配送区域</td>
+                        <td style="width:10%">运费(元)</td>
+                        <td style="width:14%">操作</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"><div class="Lorelei-addBtn-l fl" style="margin-left: 16px;"><a class="AddKD" href="javascript:;"><i class="MMda i-add pdr5"></i>添加可配送区域</a></div></td>
+                    </tr>
+                </table>
+            </div>
+            <input style="margin-top: 40px;" class="inputBtn-Tap" type="button" onclick="saveTemplate();" value="保存">
+            <input style="margin-top: 40px;" id="goPage" class="inputBtn-Tap" type="button" onclick="javascript: location = document.referrer;" value="返回">
+        </div>
+    </div>
+    <div class="csSele">
+        <p>选择可配送区域</p>
+        <div class="zTreeDemoBackground left">
+        </div>
+        <div class="seleBtnBox" style="position:initial">
+            <div class=""><label style="margin-left:10px;"><input type="checkbox" id="selectAll" onclick="selectAll()" /><span style="padding-left:5px;font-size:12px;">全选/全不选</span></label></div>
+            <div class="clearfix" style="width:120px;margin:0 auto;">
+                <div class="seleOk fl" style="position:initial">确定</div>
+                <div class="seleNo fl mgl15" style="position:initial">取消</div>
+            </div>
+        </div>
+    </div>
+    <div class="maskLayer"></div>
+    <!--footer-->
+    <div class="footer" style="margin-top:22%;">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+    <script type="text/template" id="itemTpl">
+        <tr class="itemdata">
+            <td>{{RegionNames}}</td>
+            <td><input class="coInp logisfee" type="text" style="width:100px;" placeholder="运费" value="0.00"></td>
+            <td><input class="hidRegion" type="hidden" value="{{RegionCode}}" /><a class="changed" href="javascript:;" onclick="editItem(this);">编辑</a><a class="mg7" href="javascript:;" onclick="delItem(this);">删除</a></td>
+        </tr>
+    </script>
+    <script type="text/template" id="itemDataTpl">
+        <tr class="itemdata">
+            <td>{{RegionNames}}</td>
+            <td><input class="coInp logisfee" type="text" style="width:100px;" placeholder="运费" value="{{fee}}"></td>
+            <td><input class="hidRegion" type="hidden" value="{{RegionCode}}" /><a class="changed" href="javascript:;" onclick="editItem(this);">编辑</a><a class="mg7" href="javascript:;" onclick="delItem(this);">删除</a></td>
+        </tr>
+    </script>
+    <script type="text/javascript">
+        var setting = {
+            check: {
+                enable: true
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            }
+        };
+        var zNodes = [];
+        var zTree;
+        function setCheck() {
+            zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			type = { "Y": "ps", "N": "ps" };
+            zTree.setting.check.chkboxType = type;
+        }
+        function selectAll() {
+            if ($("#selectAll").attr("checked")) {
+                zTree.checkAllNodes(true);
+            } else {
+                zTree.checkAllNodes(false);
+            }
+        }
+        function renderData() {
+            $(".zTreeDemoBackground").append('<ul id="treeDemo" class="ztree"></ul>');
+            zNodes = [];
+            for (var s in RegionOption) {
+                var father = s.substr(0, s.length - 3);
+                var node = { id: s, pId: father, name: RegionOption[s] };
+                if (father.length == 6) {
+                    var topfather = father.substr(0, father.length - 3);
+                    if (RegionOption[father] !== undefined && RegionOption[topfather] !== undefined) {
+                        zNodes.push(node);
+                    }
+                } else if (father.length == 3 && RegionOption[father] !== undefined) {
+                    zNodes.push(node);
+                } else if (s.length == 3) {
+                    zNodes.push(node);
+                }
+            }
+            $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+            setCheck();
+        }
+        function editItem(obj) {
+            $(obj).parents("tr").addClass("modifing");
+            $(".csSele").show();
+            $(".maskLayer").show();
+            $(".csSele").css('top', ($(window).height() - $(".csSele").height()) / 2);
+            $(".csSele").css('left', ($(window).width() - $(".csSele").width()) / 2);
+            $(".zTreeDemoBackground").append('<ul id="treeDemo" class="ztree"></ul>');
+            zNodes = [];
+            var tempRegion = {};
+            var arrExist = [];
+            var idsExist = $(obj).parents("tr.itemdata").siblings("tr.itemdata");
+            idsExist.each(function () {
+                var ids = $(this).find(".hidRegion").val();
+                var arr = ids.split(",");
+                for (var i in arr) {
+                    arrExist.push(arr[i]);
+                }
+            });
+            for (var t in RegionAll) {
+                if (arrExist.indexOf(t) < 0) {
+                    tempRegion[t] = RegionAll[t];
+                }
+            }
+            for (var s in tempRegion) {
+                var father = s.substr(0, s.length - 3);
+                var node = { id: s, pId: father, name: tempRegion[s] };
+                if (father.length == 6) {
+                    var topfather = father.substr(0, father.length - 3);
+                    if (tempRegion[father] !== undefined && tempRegion[topfather] !== undefined) {
+                        zNodes.push(node);
+                    }
+                } else if (father.length == 3 && tempRegion[father] !== undefined) {
+                    zNodes.push(node);
+                } else if (s.length == 3) {
+                    zNodes.push(node);
+                }
+            }
+            $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+            setCheck();
+            //勾选当前区域
+            var ids = $(obj).prev("input").val();
+            var arr = ids.split(",");
+            var nodes = zTree.getNodesByFilter(function (n) {
+                return (arr.indexOf(n.id) > -1);
+            }, false);
+            for (var i in nodes) {
+                zTree.checkNode(nodes[i], true, true, false);
+            }
+        }
+        function delItem(obj) {
+            var code = $(obj).siblings(".hidRegion").val();
+            var arr = code.split(",");
+            for (var j in arr) {
+                RegionOption[arr[j]] = RegionAll[arr[j]];
+            }
+            $(obj).parents(".itemdata").remove();
+        }
+        function saveTemplate() {
+            var name = $("#tempName").val();
+            if (!name) {
+                alert("请填写模板名称");
+                return;
+            }
+            var items = $("#LogisticsdItem").find(".itemdata");
+            var templateItems = [];
+            if (items.length <= 0) {
+                alert("请设置配送区域和运费");
+                return;
+            }
+            for (var i = 0; i < items.length; i++) {
+                var fee = $(items[i]).find(".logisfee").val();
+                if (isNaN(fee)) {
+                    alert("运费请设置为数字");
+                    return;
+                } else if (fee < 0) {
+                    alert("运费不能小于0");
+                    return;
+                }
+                fee = fee * 100;
+                templateItems.push({ first_fee: fee, regions: $(items[i]).find(".hidRegion").val() });
+            }
+            var template = { name: name, items: templateItems ,ltid:'@ViewBag.ltid' };
+            $.ajax({
+                url: '/Logistics/DoModify',
+                type: "post",
+                data: { template: template },
+                success: function (res) {
+                    if (res && res.status == "Success") {
+                        alert("保存成功");
+                        location = "/Logistics";
+                    }
+                }
+            })
+        }
+        var checkNodes = [];
+        var checkRegionNodes = [];
+        var checkRegionNames = [];
+        var checkRegionCode = [];
+        var RegionAll = {};
+        var RegionOption = {};
+        function getNames() {
+            $.get('/Scripts/zTree/regions.json', function (res) {
+                for (var code in res) {
+                    RegionAll[code] = res[code];
+                    RegionOption[code] = res[code];
+                }
+                getData();
+            });
+        }
+        function getData() {
+            $.ajax({
+                url: '/Logistics/GetById',
+                type: 'post',
+                data: { id: '@ViewBag.ltid' },
+                success: function (res) {
+                    var d = res.Data;
+                    $("#tempName").val(d.name);
+                    var html = '';
+                    var tpl = $("#itemDataTpl").html();
+                    for (var i = 0; i < d.items.length; i++) {
+                        var item = d.items[i];
+                        var region = item.regions.split(",");
+                        var names = [];
+                        for (var j in region) {
+                            names.push(RegionAll[region[j]]);
+                            delete RegionOption[region[j]];
+                        }
+                        var s = tpl.replace("{{RegionNames}}", names)
+                    .replace("{{RegionCode}}", item.regions).replace("{{fee}}", item.first_fee/100);
+                        html += s;
+                    }
+                    $("#trHead").after(html);
+                }
+            });
+        }
+        $(function () {
+            getNames();
+            $(".AddKD").click(function () {
+                $(".csSele").show();
+                $(".maskLayer").show();
+                renderData();
+                $(".csSele").css('top', ($(window).height() - $(".csSele").height()) / 2);
+                $(".csSele").css('left', ($(window).width() - $(".csSele").width()) / 2);
+            });
+            $('.seleOk').click(function () {
+                checkRegionNames = [];
+                checkRegionCode = [];
+                checkNodes = zTree.getCheckedNodes();
+                $("#selectAll").removeAttr("checked");
+                $(".maskLayer").hide();
+                //未选中任何节点的时候不操作,去掉正在操作节点的class
+                if (checkNodes.length <= 0) {
+                    $("#LogisticsdItem").find(".itemdata.modifing").removeClass("modifing");
+                    $(".zTreeDemoBackground").html("");
+                    $(".csSele").hide();
+                    return;
+                }
+                for (var i = 0; i < checkNodes.length; i++) {
+                    var item = checkNodes[i];
+                    var node = { code: item.id };
+                    if (item.isParent) {
+                        if(item.check_Child_State == 2){
+                            checkRegionNodes.push(node);
+                        }
+                    }else {
+                        checkRegionNodes.push(node);
+                    }
+                }
+                var nodes1 = zTree.getNodesByFilter(function (n) {
+                    return (n.checked == true && n.level == 0 && n.check_Child_State == 2);
+                }, false); // 查找节点集合
+                var nodes2 = zTree.getNodesByFilter(function (n) {
+                    return (n.checked == true && n.level == 1 && n.check_Child_State == 2 && n.getParentNode().check_Child_State == 1);
+                }, false);
+                var nodes3 = zTree.getNodesByFilter(function (n) {
+                    return (n.checked == true && n.level == 2 && n.getParentNode().check_Child_State == 1);
+                }, false);
+                for (n in nodes1) {
+                    checkRegionNames.push(nodes1[n].name);
+                    checkRegionCode.push(nodes1[n].id);
+                    delete RegionOption[nodes1[n].id];
+                }
+                for (n in nodes2) {
+                    checkRegionNames.push(nodes2[n].name);
+                    checkRegionCode.push(nodes2[n].id);
+                    delete RegionOption[nodes2[n].id];
+                }
+                for (n in nodes3) {
+                    checkRegionNames.push(nodes3[n].name);
+                    checkRegionCode.push(nodes3[n].id);
+                    delete RegionOption[nodes3[n].id];
+                }
+                var html = $("#itemTpl").html();
+                var regionsHtml = checkRegionNames.join(",");
+                var code = checkRegionCode.join(",");
+                var modifyItem = $("#LogisticsdItem").find(".itemdata.modifing");
+                html = html.replace("{{RegionNames}}", regionsHtml).replace("{{RegionCode}}", code);
+                if (modifyItem.length <= 0) {
+                    $("#trHead").after(html);
+                } else {
+                    var tar = modifyItem.eq(0);
+                    tar.children("td").eq(0).html(regionsHtml);
+                    tar.find(".hidRegion").val(code);
+                    tar.removeClass("modifing");
+                }
+                $(".zTreeDemoBackground").html("");
+                console.log(checkNodes);
+                $(".csSele").hide();
+            });
+            $(".seleNo").click(function () {
+                $("#LogisticsdItem").find("tr.modifing").removeClass("modifing");
+                $(".csSele").hide();
+                $(".maskLayer").hide();
+                $("#selectAll").removeAttr("checked");
+            });
+        })
+    </script>
+</BODY>
+</HTML>

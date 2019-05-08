@@ -1,0 +1,32 @@
+﻿@model List<Mmd.Backend.Controllers.DistributionController.DistributeView>
+@{ 
+    int row = 0;
+}
+
+<div class="LoreleitopMenu" style="margin-top: -60px;margin-bottom: 20px;">
+    <a href="javascript:refresh(1);">返回</a>
+</div>
+<div class="Lorelei-commonTable">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td>序号</td>
+            <td>核销员</td>
+            <td>姓名</td>
+            <td>门店</td>
+            <td>一级转发</td>
+            <td>推广订单</td>
+        </tr>
+        @foreach (var v in Model)
+        {
+            row = row + 1;
+            <tr>
+                <td>@row</td>
+                <td>@v.nickName</td>
+                <td>@v.realname</td>
+                <td>@v.woname</td>
+                <td>@v.ShareCount</td>
+                <td>@v.DistributeCount</td>
+            </tr>
+        }
+    </table>
+</div>

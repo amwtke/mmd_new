@@ -1,0 +1,72 @@
+﻿@using MD.Lib.Util;
+@model List<Mmd.Backend.Controllers.ProductController.CommentView>
+@{
+    Layout = null;
+    int pageNo = (int)ViewBag.pageNo;//当前页数
+    int pageSize = (int)ViewBag.pageSize;//每页的大小
+    int row = (pageNo - 1) * pageSize;//当前页的其实序号
+    int totalCount = (int)ViewBag.totalCount;
+    int totalPages =(int) Math.Ceiling(totalCount / 1.0 / pageSize);
+}
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td>序号</td>
+        <td style="width:280px;">评价</td>
+        <td>打分</td>
+        <td style="width:175px;">昵称</td>
+        <td>姓名</td>
+        <td>电话</td>
+        <td>年龄</td>
+        <td>肤质</td>
+        <td>加精</td>
+        <td style="width:65px;">时间</td>
+        <td style="width:170px;">操作</td>
+    </tr>
+    @foreach (var p in Model)
+    {
+        row = row + 1;
+            <tr>
+                <td>@row</td>
+                <td class="comment" data-reply="@p.comment_reply">@p.comment</td>
+                <td>@p.score</td>
+                <td>@p.u_name</td>
+                <td>@p.realname</td>
+                <td>@p.cellphone</td>
+                <td>@p.u_age</td>
+                <td>@p.u_skinStr</td>
+                <td>@(p.isessence==1?"是":"否")</td>
+                <td>@(CommonHelper.FromUnixTime(p.timestamp).ToString("yyyy/MM/dd HH:mm"))</td>
+                <td>
+                    @if (p.timestamp_reply == null)
+                    {
+                        <a id="@row" class="mg7" style="text-decoration: underline; cursor: pointer" onclick="onReply(this,'@p.Id')">回复</a>
+                    }
+                    else
+                    {
+                        <a id="@row" class="mg7" style="text-decoration: underline; cursor: pointer" onclick="replyView(this)">查看回复</a>
+                    }
+                    @if (p.isessence != 1)
+                    {
+                        <a class="mg7" style="text-decoration: underline; cursor: pointer" onclick="setTop('@p.Id',1)">加精</a>
+                    }
+                    else
+                    {
+                        <a class="mg7" style="text-decoration: underline; cursor: pointer" onclick="setTop('@p.Id',0)">取消加精</a>
+                    }
+                    <a id="@row" class="mg7" style="text-decoration: underline; cursor: pointer" onclick="onDelClick('@p.Id')">删除</a>
+               </td>
+            </tr>
+    }
+</table>
+<div class="Lorelei-commonTable-btnbox clearfix">
+    <div class="Lorelei-cT-btnbox-l">总计<span id="spantotal" class="wine">@ViewBag.totalCount</span></div>
+    <div class="Lorelei-cT-btnbox-r">
+        <a id="left" href="javascript:;" onclick="onLeftClick()">◀</a><span id="currentPage" class="wine mgl5">@pageNo</span>/<span id="totalPages" class="mgr5">@totalPages</span><a id="right" href="javascript:;" onclick="onRightClick()">▶</a>
+        <input class="pd5 mg7" id="page_count" type="text" /><a id="jump" href="javascript:;" onclick="onJump()">跳转</a>
+    </div>
+</div>
+
+
+
+
+

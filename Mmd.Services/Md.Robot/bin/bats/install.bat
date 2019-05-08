@@ -1,0 +1,1 @@
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe C:\src\MMD\Mmd.Services\Md.Robot\bin\Debug\Md.Robot.exe

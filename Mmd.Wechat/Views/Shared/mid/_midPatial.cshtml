@@ -1,0 +1,33 @@
+﻿@model List<MD.Wechat.Controllers.WX.Controllers.MidController.PartialRowClass>
+@{
+    
+}
+<table id="gtable" border="1" cellspacing="0" cellpadding="0">
+    <tr>
+        <td>商家名称</td>
+        <td>价格</td>
+        <td>团长优惠</td>
+        <td>机器人</td>
+        <td>几人团</td>
+        <td>库存</td>
+        <td>开团数</td>
+        <td>成团数</td>
+        <td>访问量</td>
+        <td>链接</td>
+    </tr>
+    @foreach (var v in Model)
+    {
+        <tr>
+            <td>@v.GroupName</td>
+            <td>@v.Price</td>
+            <td>@v.TuanYou</td>
+            <td>@(v.Robot=="0"?"否":"是")</td>
+            <td>@v.GroupPersonQouta</td>
+            <td>@v.KuCun</td>
+            <td>@v.KTCount</td>
+            <td>@v.CTCount</td>
+            <td>@v.DianJiLiang</td>
+            <td><a href=@v.Url>链接</a></td>
+        </tr>
+    }
+</table>

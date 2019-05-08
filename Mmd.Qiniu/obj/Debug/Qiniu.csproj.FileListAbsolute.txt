@@ -1,0 +1,9 @@
+/Users/jxiao/Workshop/mmd/MMD/Mmd.Qiniu/bin/Debug/Qiniu.dll.config
+/Users/jxiao/Workshop/mmd/MMD/Mmd.Qiniu/bin/Debug/Qiniu.dll
+/Users/jxiao/Workshop/mmd/MMD/Mmd.Qiniu/bin/Debug/Qiniu.pdb
+/Users/jxiao/Workshop/mmd/MMD/Mmd.Qiniu/bin/Debug/Newtonsoft.Json.dll
+/Users/jxiao/Workshop/mmd/MMD/Mmd.Qiniu/bin/Debug/Newtonsoft.Json.xml
+/Users/jxiao/Workshop/mmd/MMD/Mmd.Qiniu/obj/Debug/Qiniu.csprojResolveAssemblyReference.cache
+/Users/jxiao/Workshop/mmd/MMD/Mmd.Qiniu/obj/Debug/Qiniu.csproj.CoreCompileInputs.cache
+/Users/jxiao/Workshop/mmd/MMD/Mmd.Qiniu/obj/Debug/Qiniu.dll
+/Users/jxiao/Workshop/mmd/MMD/Mmd.Qiniu/obj/Debug/Qiniu.pdb

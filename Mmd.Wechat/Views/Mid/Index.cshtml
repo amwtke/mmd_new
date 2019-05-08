@@ -1,0 +1,30 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商家</title>
+    @Scripts.Render("~/bundles/jquery")
+    <script src="/Scripts/mid/common.js"></script>
+</head>
+<body>
+<p>
+    <span><h1>商家:@ViewBag.mName</h1></span>
+    <br>
+    访问量：<input id="mid" type="text" value=@ViewBag.mid style="display: none"/><input id="fwDays" type="text"/> 天内。<button id="btfw" onclick="midFW()">查询</button>
+    <br>
+    <label id="fwLable">次</label>
+</p>
+<hr style="height: 2px; border: none; border-top: 2px dotted #185598;"/>
+<h1>活动列表</h1>
+<div id="list_table" name="活动列表">
+
+    @Html.Action("GroupGetPartial", new {mid=@ViewBag.mid});
+
+</div>
+</body>
+</html>

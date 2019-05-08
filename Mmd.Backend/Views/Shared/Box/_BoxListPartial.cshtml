@@ -1,0 +1,63 @@
+﻿@using MD.Lib.Util;
+@using MD.Model.DB.Code;
+@model Mmd.Backend.Controllers.BoxController.PartialParameter
+@{
+    var pageIndex = Model.PageIndex;
+    var totalCount = Model.TotalCount;
+    var pageSize = Model.PageSize;
+    int status = Model.Status;
+    int row = (pageIndex - 1) * pageSize;//当前页的其实序号
+    double totalPages = Math.Ceiling(totalCount /1.0 / pageSize);
+    int index = 1;
+}
+@functions{
+    private string GetStatusString(int status)
+    {
+        if (status == (int)EBoxStatus.待发布) return "上线";
+        else if (status == (int)EBoxStatus.已上线) return "下线";
+        else return "已下线";
+    }
+}
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tbody>
+        <tr>
+            <td style="width:10%;">序号</td>
+            <td style="width:20%;">活动开始时间</td>
+            <td style="width:20%;">活动结束时间</td>
+            <td style="width:15%;">宝贝总数</td>
+            <td style="width:10%;">寻宝数量</td>
+            <td style="width:10%;">领宝数量</td>
+            <td style="width:15%;">操作</td>
+        </tr>
+        @foreach (var item in Model.List)
+        {
+            <tr>
+                <td>@(index++)</td>
+                <td>@(CommonHelper.FromUnixTime(item.time_start).ToString("yyyy-MM-dd HH:mm:ss"))</td>
+                <td>@(CommonHelper.FromUnixTime(item.time_end).ToString("yyyy-MM-dd HH:mm:ss"))</td>
+                <td>@(item.TreasureTotalCount)份</td>
+                <td>@item.TreasureOpenCount</td>
+                <td>@item.TreasureCheckCount</td>
+                <td>
+                    @if (@item.status == 0)
+                    {
+                        <a href="javascript:goToModify('@item.bid', '@item.status');">编辑</a>
+                    }
+                    else
+                    {
+                        <a href="/Box/Detail/@item.bid">查看</a>
+                    }
+                    <a href="javascript:;" onclick="changeStatus(this)" data-bid="@item.bid">@GetStatusString(item.status)</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="Lorelei-commonTable-btnbox clearfix">
+    <div class="Lorelei-cT-btnbox-l">总计<span class="wine">@totalCount</span></div>
+    <div class="Lorelei-cT-btnbox-r">
+        <a href="javascript:;" onclick="onLeftClick()">◀</a><span class="wine mgl5" id="currentPage">@pageIndex</span>/<span class="mgr5" id="totalPages">@totalPages</span><a href="javascript:;" onclick="onRightClick()">▶</a>
+        <input class="pd5 mg7" id="page_count" type="text"><a id="jump" href="javascript:;" onclick="onJump()">跳转</a>
+    </div>
+</div>
+

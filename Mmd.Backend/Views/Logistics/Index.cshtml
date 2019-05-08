@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>系统设置 运费设置</title>
+    <link rel="stylesheet" type="text/css" href="~/Content/main.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/ico.css">
+    <style type="text/css">
+        .Lorelei-commonTable table tr:not(:nth-child(1)) td:last-child a.moren {
+            color: #e61c64;
+        }
+    </style>
+    <script type="text/javascript" src="~/Scripts/jquery-1.7.2.min.js"></script>
+</head>
+<body>
+    <!--header-->
+    @Html.Partial("Header/_headerSys")
+    <div class="SYS-set">
+        <div class="SYS-set-c mgc">
+            <div class="SYSs-Nav">
+                <ul class="clearfix">
+                    <li><a id="label_m" href="/System">基本设置</a></li>
+                    <li><a id="label_w" href="/System?tag=1">提货设置</a></li>
+                    <li><a id="label_mana" href="/System?tag=4">核销员管理</a></li>
+                    <li><a class="cur" href="/Logistics">运费设置</a></li>
+                    <li><a href="/Logistics/AddCompany">配送设置</a></li>
+                </ul>
+            </div>
+            <div class="Lorelei-topSearch clearfix">
+                <div class="Lorelei-addBtn-l"><a class="AddKD" href="/Logistics/Add"><i class="MMda i-add pdr5"></i>新建运费模板</a></div>
+            </div>
+            <div id="LogisticsdTemplate"></div>
+        </div>
+    </div>
+
+    <!--footer-->
+    <div class="footer" style="margin-top:22%;">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+    <script type="text/template" id="tpl">
+        <div class="Lorelei-commonTable">
+            <div class="clearfix">
+            <span class="fl" style="margin-top:20px;margin-bottom:10px; font-size:20px;">{{index}}、{{Name}}</span>
+            <span class="fr" data-ltid="{{ltid}}" style="margin-top:20px;margin-bottom:10px; "><a style="margin-right:8px;" href="/Logistics/Modify/{{ltid}}">修改</a><a href="#">删除</a></span>
+            </div>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td style="width:84%">配送区域</td>
+                    <td style="width:15%">运费(元)</td>
+                    {{items}}
+                </tr>
+            </table>
+        </div>
+    </script>
+    <script type="text/template" id="itemTpl">
+        <tr>
+            <td>{{regions}}</td>
+            <td>{{fee}}</td>
+        </tr>
+    </script>
+    <script>
+        $(function () {
+            getNames();
+        });
+        var RegionAll = {};
+        function getNames() {
+            $.get('/Scripts/zTree/regions.json', function (res) {
+                RegionAll = res;
+                getTemplates();
+            });
+        }
+        function getTemplates() {
+            var tpl = $("#tpl").html();
+            var itemTpl = $("#itemTpl").html();
+            $.ajax({
+                url: '/Logistics/GetAllTemplates',
+                type: "post",
+                data: {},
+                success: function (res) {
+                    if (res && res.Data.length > 0) {
+                        var d = res.Data;
+                        var html = '';
+                        for (var i in d) {
+                            var s = tpl;
+                            s = s.replace(/{{ltid}}/g, d[i].ltid)
+                                .replace("{{Name}}", d[i].name)
+                            .replace("{{index}}",i*1+1);
+                            var items = '';
+                            for (var n in d[i].items) {
+                                var item = d[i].items[n];
+                                var region = item.regions.split(",");
+                                var names = [];
+                                for (var j in region) {
+                                    names.push(RegionAll[region[j]]);
+                                }
+                                items += itemTpl.replace("{{regions}}", names.join("、")).
+                                    replace("{{fee}}", item.first_fee/100);
+                            }
+                            s = s.replace("{{items}}",items);
+                            html += s;
+                        }
+                        $("#LogisticsdTemplate").html(html);
+                    }
+                }
+            })
+        }
+    </script>
+</body>
+</html>

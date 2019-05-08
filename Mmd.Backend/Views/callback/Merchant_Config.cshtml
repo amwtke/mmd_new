@@ -1,0 +1,88 @@
+﻿@model MD.Model.DB.Merchant
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>17 系统设置 网站基本信息（文字有所改动）</title>
+	<link rel="stylesheet" type="text/css" href="style/main.css">
+	<link rel="stylesheet" type="text/css" href="style/ico.css">
+</head>
+<body>
+@{
+    ViewData["nav"] = true;
+}
+
+@Html.Partial("Header/_Header", @Model.name, this.ViewData)
+
+	<div class="SYS-set">
+		<div class="SYS-set-c mgc">
+			<div class="SYSs-Nav">
+				<ul class="clearfix">
+					<li><a class="cur" href="javascript:;">基本设置</a></li>
+					<li><a href="18 系统设置 支付配置(ok).html">支付配置</a></li>
+					<li><a href="19 系统设置 提货点设置（有所改变，增加分页和搜索）（ok）.html">提货设置</a></li>
+					<li><a href="22 系统设置 配送设置-对话框.html">配送设置</a></li>
+				</ul>
+			</div>
+
+			<form class="ft14" action="/callback/Upload_s3" method="post" enctype="multipart/form-data">
+				
+
+				<div class="inputText-Tap mgb20 mgt19"><span class="w100">网站名称</span>@Html.TextBoxFor(model=>model.name,new { @class="coInp",placeholder="网站名称"})<span class="ft12 mgl5">每个月只能修改一次</span></div>
+				<div class="inputText-Tap mgb20"><span class="w100">分享标题</span>@Html.TextBoxFor(model=>model.title,new { @class="coInp",placeholder="分享标题"})<span class="ft12 mgl5">分享到朋友圈显示的文字</span></div>
+				<div class="inputText-Tap mgb20"><span class="w100">网站公告</span>@Html.TextBoxFor(model => model.slogen, new { @class = "coInp", placeholder = "网站公告" })<span class="ft12 mgl5">30字以内</span></div>
+
+				<div class="inputFile-Tap mgb20">
+					<div class="w100">网站LOGO</div>
+					<div class="Add-ImgCuber" style="position: relative;overflow: hidden;height: 100px;width:100px;">
+						<i class="MMda i-add pdr5 green" style="margin-top: 29px;"></i>
+						<img class="AddCub" src=@Model.logo_url name="logo" id="logo"/>
+					</div>
+					
+				</div>
+
+				<div class="inputFile-Tap mgb20">
+					<div class="w100">公众号二维码</div>
+					<div class="Add-ImgCuber" style="position: relative;overflow: hidden;height: 119px;width:119px;">
+						<i class="MMda i-add pdr5 green" style="margin-top: 36px;"></i>
+						<img class="AddCub" src=@Model.qr_url name="qr" id="qr"/>
+					</div>
+					
+				</div>
+
+				<div class="inputFile-Tap mgb20">
+					<span class="w100">商家宣传图</span>@Html.TextBoxFor(model => model.advertise_pic_url, new { @class = "coInput", @readonly = "true" })<span class="ft12 mgl5">建议尺寸260px*140px</span>
+					<div class="Add-ImgCuber" style="position: relative;overflow: hidden;height: 117px;width:216px;">
+						<i class="MMda i-add pdr5 green" style="margin-top: 37px;"></i>
+						<input class="AddCub" type="file" name="ad">
+					</div>
+					
+				</div>
+				
+				<div class="English-brief-ofstore">
+					<div class="inputText-Tap mgb20 mgt19"><span class="w100">商家简介</span><span class="ft12 mgl19">400字以内</span></div>
+					<div class="brief-ofstore-word">
+						@Html.TextAreaFor(model=>model.brief_introduction, new { cols="8",rows="6"})@Html.ValidationMessageFor(model=>model.brief_introduction,"", new { @class="red"})
+					</div>
+
+					<div class="inputText-Tap mgb20 mgt19"><span class="w100">售后服务</span><span class="ft12 mgl19">600字以内</span></div>
+					<div class="brief-ofstore-word">
+						@Html.TextAreaFor(model => model.service_intro, new { cols = "8", rows = "6" }))@Html.ValidationMessageFor(model =>model.service_intro,"", new { @class="red"})
+					</div>
+				</div>
+				<input class="inputBtn-Tap" name="" type="button" value="保存修改" />
+			
+		   </form>
+
+		</div>
+	</div>
+
+		<!--footer-->
+	<div class="footer">
+		<div class="footer-c mgc">
+			<p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+		</div>
+	</div>
+
+</body>
+</html>

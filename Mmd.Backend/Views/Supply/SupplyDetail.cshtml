@@ -1,0 +1,158 @@
+﻿@model MD.Model.DB.Supply
+@using MD.Lib.DB.Repositorys
+@using System.Collections.Concurrent;
+@using System.Collections.Generic;
+@{
+    Layout = null;
+    ConcurrentDictionary<int, string> categoryItems = new ConcurrentDictionary<int, string>();
+    ConcurrentDictionary<int, string> brandItems = new ConcurrentDictionary<int, string>();
+    using (CodeRepository repo = new CodeRepository())
+    {
+        categoryItems = repo.ProductCategoryDic;
+        brandItems = repo.ProductBrandDic;
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>商品详情页</title>
+    @Scripts.Render("~/bundles/jquery")
+    <link href="/Content/main.css" rel="stylesheet" />
+    <link href="/Content/ico.css" rel="stylesheet" />
+    <script type="text/javascript">
+        $(function () {
+            var index = 0;
+            $(".ylBox li").click(function () {
+                $(".cgxqImgBox img").attr('src', $(this).find("img").attr("src"));
+                $(".ylBox li").removeClass("cgxqActi");
+                $(this).addClass("cgxqActi");
+                index = $(".cgxqActi").index();
+            });
+            $("#sye").click(function () {
+                index = $(".cgxqActi").index();
+                if (index == 0) {
+                    return false;
+                } else {
+                    $(".cgxqImgBox img").attr('src', $(".ylBox li").eq(index - 1).find("img").attr("src"));
+                    $(".ylBox li").removeClass("cgxqActi");
+                    $(".ylBox li").eq(index - 1).addClass("cgxqActi");
+                }
+            });
+            $("#next").click(function () {
+                index = $(".cgxqActi").index();
+                if (index >= $(".ylBox li").length - 1) {
+                    return false;
+                } else {
+                    $(".cgxqImgBox img").attr('src', $(".ylBox li").eq(index + 1).find("img").attr("src"));
+                    $(".ylBox li").removeClass("cgxqActi");
+                    $(".ylBox li").eq(index + 1).addClass("cgxqActi");
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <!--header-->
+    @Html.Partial("Header/_headerSupply")
+    <div class="Lorelei-table-box">
+        <div class="Lorelei-table-box-c mgc">
+            <div class="cgxq">
+                <div class="cgxqLfet">
+                    <div class="cgxqImgBox">
+                        <img src=@Model.advertise_pic_1 alt="">
+                    </div>
+                    <div class="cgxqfyBox">
+                        <a href="javascript:;" id="sye" style="margin-right: 10.5px;">
+                            <img src="/Content/images/zjt.png" alt="">
+                        </a>
+                        <ul class="ylBox">
+                            <li class="cgxqActi">
+                                <img src=@Model.advertise_pic_1 alt="">
+                            </li>
+                            <li>
+                                <img src=@Model.advertise_pic_2 alt="">
+                            </li>
+                            <li>
+                                <img src=@Model.advertise_pic_3 alt="">
+                            </li>
+                        </ul>
+                        <a href="javascript:;" id="next" style="margin-left: 10.5px;">
+                            <img src="/Content/images/yjt.png" alt="">
+                        </a>
+                    </div>
+                </div>
+                <div class="cgxqRight">
+                    <div class="cgxqTitle">@Model.name</div>
+                    <div class="cgxqbqBox">
+                        <div class="one">
+                            <span>品牌：</span><span>@brandItems.Where(p => p.Key == Model.brand).FirstOrDefault().Value</span>
+                        </div>
+                        <div class="one">
+                            <span>规格：</span><span>@Model.standard</span>
+                        </div>
+                        <div class="one">
+                            <span>市场价：</span><span class="color">@(Model.market_price / 100.00)</span>元
+                        </div>
+                        <div class="one">
+                            <span>采购价：</span><span class="color">@(Model.supply_price / 100.00)</span>元
+                        </div>
+                        <div class="one">
+                            <span>活动建议价：</span><span class="color">@(Model.group_price / 100.00)</span>元
+                        </div>
+                        <div class="one">
+                        </div>
+                        <div class="one">
+                            <span>包装：</span><span>@Model.pack</span>
+                        </div>
+                        <div class="one">
+                            <span>限购数量：</span><span>@Model.quota_min-@Model.quota_max</span>
+                        </div>
+                    </div>
+                    <div class="cgxqTle">
+                        <a href="javascript:;">联系电话</a>
+                        <span>郝治国：13995579682</span>
+                    </div>
+                    <ul class="cgnysm">
+                        <li>
+                            <div>
+                                <img src="/Content/images/myf.png">
+                            </div>
+                            <p>免运费</p>
+                        </li>
+                        <li>
+                            <div>
+                                <img src="/Content/images/zycg.png">
+                            </div>
+                            <p>自由采购</p>
+                        </li>
+                        <li>
+                            <div>
+                                <img src="/Content/images/ky.png">
+                            </div>
+                            <p>支持看样</p>
+                        </li>
+                        <li class="border-none">
+                            <div>
+                                <img src="/Content/images/bz.png">
+                            </div>
+                            <p>平台保障</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="cgxqs">
+               @Html.Raw(Model.description)</div>
+        </div>
+    </div>
+
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,123 @@
+﻿@{ 
+    string appid = Session[ESessionStateKeys.AppId.ToString()].ToString();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>拼团管理</title>
+    <link rel="stylesheet" type="text/css" href="/Content/main.css">
+    <link rel="stylesheet" type="text/css" href="/Content/style.css">
+    @Scripts.Render("~/bundles/jquery")
+    <script src="/Scripts/group/gpaging.js"></script>
+    <script src="/Scripts/group/gcommon.js"></script>
+    <script src="/Scripts/qrcode.min.js"></script>
+    <script src="/Scripts/jquery.qrcode.min.js"></script>
+    <style type="text/css">
+        .red {
+            color: #F00;
+        }
+    </style>
+</head>
+<body>
+    <!--header-->
+    @Html.Partial("Header/_headerGroup")
+
+    <!--mian-->
+    <div class="Lorelei-table-box">
+        <div class="Lorelei-table-box-c mgc">
+            
+            <div class="Lorelei-search-r" style="display: none"><input id="s_text" name="user_search" type="search" placeholder="团名称"/><a class="wine" href="javascript:;" onclick="onSearch()"><i class="MMda i-search"></i></a>
+            </div>
+            <div class="LoreleitopMenu">
+                
+                @if (ViewBag.status == 0)
+                {
+                    <a id="label_published" class="cur" href="javascript:;" onclick="onPublished()">进行中</a>
+                }
+                else
+                {
+                    <a id="label_published" href="javascript:;" onclick="onPublished()">进行中</a>
+                }
+                @if (ViewBag.status == 3)
+                {
+                    <a id="label_over" class="cur" href="javascript:;" onclick="onGroupOver()">已结束</a>
+                }
+                else
+                {
+                    <a id="label_over" href="javascript:;" onclick="onGroupOver()">已结束</a>
+                }
+                @if (ViewBag.status == 2)
+                {
+                    <a id="label_topublish" class="cur" href="javascript:;" onclick="onToPublish()">待发布</a>
+                }
+                else
+                {
+                    <a id="label_topublish" href="javascript:;" onclick="onToPublish()">待发布</a>
+                }
+
+                @if (ViewBag.status == 1)
+                {
+                    <a id="label_removed" class="cur" href="javascript:;" onclick="onRemoved()">回收站</a>
+                }
+                else
+                {
+                    <a id="label_removed" href="javascript:;" onclick="onRemoved()">回收站</a>
+                }
+
+
+                <span id="s_status" style="display: none">@ViewBag.status</span>
+            </div>
+            <div class="lineWidget"></div>
+            <div id="list_table" class="Lorelei-commonTable">
+                @Html.Action("GroupGetPartial", new { pageIndex = 1, q = "", status = @ViewBag.status })
+            </div>
+        </div>
+    </div>
+    <!--弹出层-->
+    <form class="alertForm" class="mgt19 ft14" action="" method="get" style="display:none">
+        <div class="inputText-Tap mgb20" style="text-align: right;">
+            <a href="javascript:;"><i class="MMda i-close pdr5" style="font-size: 26px;padding-right: 19px;"></i></a>
+        </div>
+        <div class="inputText-Tap mgb20 mgt19"><span class="w100">团购名称</span><input id="tan_gname" class="coInp" style="width:370px;" type="text" placeholder="团购名称" value="" /></div>
+        <div class="inputText-Tap mgb20 mgt19"><span class="w100 fl">团购链接</span><textarea id="tan_url" class="coInp" style="resize:none;width:370px;" rows="7"></textarea></div>
+        <div class="inputText-Tap mgb20 mgt19">@*<span class="w100 fl">宣传图</span>*@
+            @*<img id="tuiguangimage" src="" style="width:325px;height:500px;margin-left:16px;"/>*@
+        <p style="padding-left: 65px;padding-right: 40px;font-size: 14px;">如果该活动针对导购设置了推广佣金，导购可以在网站个人中心“我的”查看“推广任务”，获取专属链接和专属海报。注：导购必须先添加为“核销员”才能获得推广任务。</p>
+        </div>
+        <input type="hidden" id="hidgid" />
+        <input style="margin-left:230px;width:170px;" class="inputBtn-Tap mgb19 i-close" type="button" value="关闭" />
+        @*<input style="margin-left:20px;width:170px;" class="inputBtn-Tap mgb19" type="button" value="发送给核销员" onclick="sendImg();" />*@
+    </form>
+    <!--弹出层，预览-->
+    <div id="ADialog" class="AlertDialog" style="display:none; height:350px;">
+        <p class="rela">使用微信扫一扫预览<a href="javascript:;"><i onclick="oncloseADialog()" class="zonght i-close"></i></a></p>
+        <div style="text-align:center;padding-top:20px;" id="woer_qrcode">
+        </div>
+        <input id="hidden_appid" type="hidden" value="@appid" />
+    </div>
+    <!--弹出层，增加库存-->
+    <div id="BDialog" class="AlertDialog" style="width:430px; height:290px;">
+        <p class="rela">增加库存<a href="javascript:;"><i onclick="closeClick()" class="zonght i-close"></i></a></p>
+        <div class="storeName"><span>拼团标题：</span><span id="span_groupName"></span></div>
+        <div class="storeCZ"><span>增加数量：</span><input class="czinput" id="quotainput" name="quotainput" type="text" placeholder="增加库存数量" /><span id="txmessage" class="red" style="display:none;">格式错误</span></div>
+        <a class="sumbit" onclick="onAddProduct_quota()" href="javascript:;">提交</a>
+        <input type="hidden" id="hidden_gid" />
+        <input type="hidden" id="hidden_person_quota" />
+    </div>
+    <div class="maskLayer"></div>
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+    <script>
+        function gotoDis(gid) {
+            $.get("/Distribution/StatisticsPartial?gid="+gid, function (res) {
+                $("#list_table").html(res);
+            });
+        }
+    </script>
+</body>
+</html>

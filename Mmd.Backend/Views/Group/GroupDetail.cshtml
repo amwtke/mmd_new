@@ -1,0 +1,45 @@
+﻿@using MD.Model.DB.Code
+@model Guid
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>详情</title>
+    <link rel="stylesheet" type="text/css" href="/Content/main.css">
+    @Scripts.Render("~/bundles/jquery")
+    <script src="/Scripts/group/gdpaging.js"></script>
+</head>
+<body>
+    <!--header-->
+    @Html.Partial("Header/_headerGroup")
+
+    <!--mian-->
+    <div class="Lorelei-table-box">
+        <div class="Lorelei-table-box-c mgc">
+
+            <div class="LoreleitopMenu">
+                <a class="cur" href=@Url.Action("GroupManage", "Group", new {status = (int) EGroupStatus.已发布})>返回</a>
+            </div>
+            <div class="lineWidget"></div>
+            <div id="list_table">
+                @Html.Action("GroupGetDetailPartial", "Group", new { pageIndex = 1, gid= Model })
+            </div>
+        </div>
+        <div>
+            <input type="text" style="display: none" value="@Model" id="gid"/>
+        </div>
+    </div>
+
+
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,88 @@
+﻿@using MD.Lib.DB.Redis.MD
+@using MD.Model.DB.Code
+@{
+    var name = Session[ESessionStateKeys.MerName.ToString()];
+    var status = Session[ESessionStateKeys.MerStatus.ToString()];
+    bool logoVisibale = false;
+
+    if (status != null)
+    {
+        logoVisibale = false;
+    }
+
+    int mstatus = int.Parse(status.ToString());
+    if (mstatus == (int) ECodeMerchantStatus.已配置)
+    {
+        logoVisibale = true;
+    }
+
+    bool isSuper = RedisMerchantOp.IsSupperUser(Session[ESessionStateKeys.Mid.ToString()].ToString());
+
+}
+<!--header-->
+<div class="top-adminBox">
+    <div class="top-adminBox-c mgc">
+        <a href=@Url.Action("Index","Box")>工具箱</a>
+        <a href=@Url.Action("Index_mer", "Supply")>采购管理</a>
+        <a href=@Url.Action("Index", "Statistics") target="_blank">数据统计</a>
+        @if ((int)status == (int) ECodeMerchantStatus.已配置)
+        {
+            <span style="color: #979797;"><a href=@Url.Action("Register_ending", "callback")>@name</a></span>
+        }
+        
+        <a href=@Url.Action("Logout", "Session")>退出</a>
+        @if (isSuper)
+        {
+            <span style="color: #979797;"><a href=@Url.Action("Index", "MerchantCheck")>总后台</a></span>
+        }
+
+    </div>
+</div>
+
+<div class="mian-nav">
+    <div class="mian-nav-c mgc clearfix">
+        @if (logoVisibale)
+        {
+            <div class="MM-logo">
+                <a class="cur" href=@Url.Action("Merchant_Home", "Home")><img src="/Content/images/logo.jpg"></a>
+            </div>
+        }
+        else
+        {
+            <div class="MM-logo">
+                <a class="cur"><img src="/Content/images/logo.jpg"></a>
+            </div>
+        }
+
+        @if ((bool) ViewData["nav"] == false || logoVisibale==false)
+        {
+            <div class="mian-nav-menu" style="visibility: hidden">
+                <ul>
+                    <li><a class="cur" href="javascript:;">首页</a></li>
+                    <li><a href="javascript:;">商品管理</a></li>
+                    <li><a href="javascript:;">拼团管理</a></li>
+                    <li><a href="javascript:;">订单管理</a></li>
+                    <li><a href="javascript:;">采购管理</a></li>
+                    <li><a href="javascript:;">工具箱</a></li>
+                    <li><a href="javascript:;">系统设置</a></li>
+                </ul>
+            </div>
+        }
+        else
+        {
+            <div class="mian-nav-menu">
+                <ul>
+                    <li><a class="cur" href=@Url.Action("Merchant_Home", "Home")>首页</a></li>
+                    <li><a href=@Url.Action("ProductList", "Product")>商品管理</a></li>
+                    <li><a href=@Url.Action("GroupManage","Group",new {status=2})>拼团管理</a></li>
+                    <li><a href=@Url.Action("OrderManage","Order")>订单管理</a></li>
+                    <li><a href=@Url.Action("Index", "Community")>社区管理</a></li>
+                    <li><a href=@Url.Action("Index","NoticeBoardMana")>资讯管理</a></li>
+                    <li><a href=@Url.Action("Index","System")>系统设置</a></li>
+                    <li><a href=@Url.Action("Index", "Distribution")>推广大使</a></li>
+                </ul>
+            </div>
+        }
+
+    </div>
+</div>

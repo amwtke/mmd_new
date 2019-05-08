@@ -1,0 +1,51 @@
+﻿@using MD.Model.DB.Code
+@model MD.Model.DB.Merchant
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>14－1 商户中心 审核</title>
+	<link rel="stylesheet" type="text/css" href="/Content/main.css">
+	<link rel="stylesheet" type="text/css" href="/Content/ico.css">
+	<style type="text/css">
+	.top-adminBox-c span{color: #979797!important;}
+	</style>
+</head>
+<body>
+	<!--header-->
+	@{
+        ViewData["nav"] = true;
+    }
+
+    @Html.Partial("Header/_Header", @Model.name, this.ViewData)
+	
+	<!--mian-->
+	<div class="NextSHPage">
+		<div class="NextSHPage-c mgc">
+		    <p class="ftco">资料提交后工作人员会在3个工作日内完成审核，审核完成后将电话通知您，并帮您完成相关配置，请保持电话畅通。</p>
+            @{
+                if (Model.status == 5)
+                {
+                     <input class="inputBtn-Tap mgl300 mgb19" name="" type="button" value="审核中......" /><br />
+                }else if (Model.status == 2 || Model.status == 3)
+                {
+                    <input class="inputBtn-Tap grey mgl300 mgb19" name="" type="button" value="未通过" />@Html.ActionLink("重新提交资料", "register","callback",new {appid=Model.wx_appid},new {@class= "blue mgl5" })
+                }
+            }
+		</div>
+	</div>
+
+	<!--footer-->
+	<div class="footer" style="margin-top: 23%;">
+		<div class="footer-c mgc">
+			<p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+		</div>
+	</div>
+	
+
+
+</body>
+</html>

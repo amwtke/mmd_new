@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>系统设置</title>
+    <link rel="stylesheet" type="text/css" href="/Content/main.css">
+    <link rel="stylesheet" type="text/css" href="/Content/ico.css">
+    <script type="text/javascript" src="~/Scripts/jquery-1.7.2.min.js"></script>
+</head>
+<body>
+    <!--header-->
+    @Html.Partial("Header/_headerSys")
+
+    <!--main-->
+    <div class="SYS-set">
+        <div class="SYS-set-c mgc">
+            <div class="SYSs-Nav">
+                <ul class="clearfix">
+                    <li><a id="label_m" href="/System">基本设置</a></li>
+                    <li><a id="label_w" href="/System?tag=1">提货设置</a></li>
+                    <li><a id="label_mana" href="/System?tag=4">核销员管理</a></li>
+                    <li><a href="/Logistics">运费设置</a></li>
+                    <li><a class="cur" href="/Logistics/AddCompany">配送设置</a></li>
+                </ul>
+            </div>
+
+            <span id="s_tag" style="display: none"></span>
+            <div class="Lorelei-topSearch clearfix"></div>
+            <div id="tag_content">
+                    <!--mian-->
+                <div class="Lorelei-table-box">
+                    <div class="Lorelei-table-box-c mgc">
+                        <div class="Lorelei-commonTable">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0" id="company">
+                                <tr>
+                                    <td style="width:70%">快递公司</td>
+                                    <td style="width:29%">操作</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="clearfix" style="margin:5px 0;"><label class="fr" style="color:#aaa">如果在下方没有找到您需要的快递公司，请电话联系 邱成：18108622329</label></div>
+                        <div class="Lorelei-commonTable" style="margin-top:10px;">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0" id="companyAll">
+                                <tr>
+                                    <td style="width:70%">快递公司</tdstyle="width:70%">
+                                    <td style="width:29%">添加</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+    </div>
+
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+    <script type="text/template" id="companyTpl">
+        <tr>
+            <td>{{name}}</td>
+            <td><a data-isdefault="{{isDefault}}" data-code="{{code}}" href="javascript:;" onclick="setDefault(this)">{{operate}}</a>
+            <a id="row" class="mg7" data-code="{{code}}" href="javascript:;" onclick="delCom(this)">删除</a>
+            </td>
+        </tr>
+    </script>
+    <script type="text/template" id="companyAllTpl">
+        <tr><td>{{name}}</td>
+            <td><a href="javascript:;" data-code="{{code}}" onclick="addCom(this)">添加</a></td>
+        </tr>
+    </script>
+    <script>
+        var CompanyAll = {};
+        var CompanyOption = {};
+        $(function () {
+            getAll();
+        });
+        function setDefault(obj) {
+            var code = $(obj).data("code");
+            $.ajax({
+                url: '/Logistics/SetDefault',
+                type: "post",
+                data: { code: code },
+                success: function (res) {
+                    if (res && res.status == "Success") {
+                        $(obj).text("默认");
+                        $(obj).parents("tr").siblings().each(function () {
+                            $(this).find("a").eq(0).text("设为默认");
+                        })
+                    }
+                }
+            })
+        }
+        function delCom(obj) {
+            var code = $(obj).data("code");
+            $.ajax({
+                url: '/Logistics/DoDeleteCompany',
+                type: "post",
+                data: { code: code },
+                success: function (res) {
+                    if (res && res.status == "Success") {
+                        var tplAll = $("#companyAllTpl").html();
+                        var comAll = tplAll.replace("{{name}}", CompanyAll[code]).replace("{{code}}", code);
+                        $("#companyAll").append(comAll);
+                        CompanyOption[code] = CompanyAll[code];
+                    }
+                }
+            })
+            $(obj).parents("tr").remove();
+        }
+        function addCom(obj) {
+            var code = $(obj).data("code");
+            var tpl = $("#companyTpl").html();
+            $.ajax({
+                url: '/Logistics/DoAddCompany',
+                type: "post",
+                data: { code: code },
+                success: function (res) {
+                    if (res && res.status == "Success") {
+                        var html = tpl.replace("{{name}}", CompanyAll[code]).replace(/{{code}}/g, code)
+                                .replace("{{operate}}", "设为默认").replace("{{isDefault}}", 0);
+                        $("#company").append(html);
+                        delete CompanyOption[code];
+                    }
+                }
+            })
+            $(obj).parents("tr").remove();
+        }
+        function getCompany() {
+            $.ajax({
+                url: '/Logistics/GetMerCompany',
+                type: "post",
+                data: {},
+                success: function (res) {
+                    if (res && res.data.length > 0) {
+                        var tpl = $("#companyTpl").html();
+                        var d = res.data;
+                        var html = '';
+                        for (var i = 0; i < d.length; i++) {
+                            var oper = '设为默认';
+                            if (d[i].isDefault == 1) {
+                                oper = '默认';
+                            }
+                            html += tpl.replace("{{name}}", CompanyOption[d[i].companyCode]).replace(/{{code}}/g, d[i].companyCode)
+                                .replace("{{operate}}", oper).replace("{{isDefault}}", d[i].isDefault);
+                            delete CompanyOption[d[i].companyCode];
+                        }
+                        $("#company").append(html);
+                    }
+                    var comAll = '';
+                    var tplAll = $("#companyAllTpl").html();
+                    for (var com in CompanyOption) {
+                        comAll += tplAll.replace("{{name}}", CompanyOption[com]).replace("{{code}}", com);
+                    }
+                    $("#companyAll").append(comAll);
+                }
+            })
+        }
+        function getAll() {
+            $.get('/Scripts/company.json', function (res) {
+                for (var code in res) {
+                    CompanyAll[code] = res[code];
+                    CompanyOption[code] = res[code];
+                }
+                getCompany();
+            });
+        }
+    </script>
+</body>
+</html>
+
+
+

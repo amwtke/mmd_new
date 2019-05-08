@@ -1,0 +1,124 @@
+﻿@using MD.Model.DB.Code
+@using MD.Lib.DB.Repositorys
+@using System.Collections.Concurrent;
+@using System.Collections.Generic;
+@{
+    Layout = null;
+    ConcurrentDictionary<int, string> categoryItems = new ConcurrentDictionary<int, string>();
+    ConcurrentDictionary<int, string> brandItems = new ConcurrentDictionary<int, string>();
+    using (CodeRepository repo = new CodeRepository())
+    {
+        categoryItems = repo.ProductCategoryDic;
+        brandItems = repo.ProductBrandDic;
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>供货管理</title>
+    @Scripts.Render("~/bundles/jquery")
+    <link rel="stylesheet" type="text/css" href="/Content/style.css">
+    <script src="~/Scripts/backyard/supply/spaging.js"></script>
+    <style type="text/css">
+        .Lorelei-commonTable table tr:not(:nth-child(1)) td:last-child a:nth-child(1) {
+            padding: 3px 5px;
+            background: #e61c64;
+            color: #fff;
+            border-radius: 3px;
+        }
+
+        .Lorelei-commonTable table tr:not(:nth-child(1)) td:last-child a:nth-child(2) {
+            color: #91c36f;
+        }
+    </style>
+    <script type="text/javascript">
+        function xxk(id) {
+            var isClick = false;
+            $(id).find("li").click(function () {
+                $(id).find("li").removeClass("acti");
+                $(this).addClass("acti");
+                refreshSupple(1);
+            });
+            var width = 0;
+            for (var i = 0; i < $(id).find("li").length; i++) {
+                width = width + $(id).find("li").eq(i).width() + 30;
+            }
+            if (width <= 650) {
+                $(id).next().hide();
+            }
+            $(id).next().click(function () {
+                if (isClick == true) {
+                    $(id).parent().css("height", "30px");
+                    isClick = false;
+                } else {
+                    $(id).parent().css("height", "auto");
+                    isClick = true;
+                }
+            });
+        }
+        $(function () {
+            xxk("#xxkPP");
+            xxk("#xxkPL");
+        });
+
+    </script>
+</head>
+<body>
+    <!--header-->
+    @Html.Partial("Backyard/Header/_HeaderSupply")
+    <!--mian-->
+    <div class="Lorelei-table-box">
+        <div class="Lorelei-table-box-c mgc">
+
+            <div class="Lorelei-topSearch clearfix">
+                <div class="Lorelei-addBtn-l mgl30">
+                    <a href=@Url.Action("AddSupply","Supply")>
+                        <i class="MMda i-add pdr5"></i>添加商品
+                    </a>
+                </div>
+                <div class="Lorelei-search-r"><input name="s_text" id="s_text" type="search" placeholder="输入商品名称" /><a class="wine" href="javascript:;" onclick="refreshSupple(1);"><i class="zonght i-search"></i></a></div>
+            </div>
+            <div class="cgTjczBox mgb10">
+                <div class="cgTjczLaba">按品牌查找</div>
+                <ul class="cgTjczList" id="xxkPP">
+                    <li class="acti" code="-1">全部</li>
+                    @foreach (var b in brandItems)
+                    {
+                        <li code="@b.Key">@b.Value</li>
+                    }
+                </ul>
+                <div class="cgTjczBtn">
+                    展开
+                </div>
+            </div>
+            <div class="cgTjczBox">
+                <div class="cgTjczLaba">按品类查找</div>
+                <ul class="cgTjczList" id="xxkPL">
+                    <li class="acti" code="-1">全部</li>
+                    @foreach (var c in categoryItems)
+                    {
+                        <li code="@c.Key">@c.Value</li>
+                    }
+                </ul>
+                <div class="cgTjczBtn">
+                    展开
+                </div>
+            </div>
+            <div class="Lorelei-commonTable mgt19">
+                @Html.Action("SupplyListPartial_Backend", new { pageIndex = 1, q = "", category = -1, brand = -1 })
+            </div>
+
+        </div>
+    </div>
+
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+</body>
+</html>

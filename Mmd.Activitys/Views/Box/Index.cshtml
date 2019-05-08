@@ -1,0 +1,43 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+</head>
+<body>
+    <div> 
+        <a onclick="submit()">提交</a>
+    </div>
+    
+    <script>
+        function submit() {
+            var json = {};
+            var s = new Date("2016-10-10 23:23:34");
+            var e = new Date("2016-10-12 23:23:34");
+            json.time_start = s.getTime();
+            json.time_end = e.getTime();
+            var list = [];
+            for (var i = 0; i < 3; i++) {
+                var treasure = { name: "name" + i, count: i, description: "description" + i };
+                list.push(treasure);
+            }
+            json.BoxTreasureList = list;
+            $.ajax({
+                url: 'Box/ModifyBox',
+                type: "post",
+                data: { box: json, type: 'add' },
+                success: function (res) {
+                    console.log(res);
+                }
+            })
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+﻿@using Mmd.Backend.Controllers
+@model Mmd.Backend.Controllers.SystemController.WoerPartialObject
+@{
+    string url = MD.Lib.Weixin.MmdBiz.MdWxSettingUpHelper.GenWriteOfferUrl(Model.appid, Model.woid);
+    int row = 0;
+}
+<input id ="input_url" type="text" style="display: none" value="@url">
+<div class="Lorelei-commonTable mgt19">
+
+    <div class="LoreleitopMenu" style="margin-left: 69px;">
+        <a class="cur" href=@Url.Action("Index","System",new {tag=(int)EsysTagName.W})>返回</a>
+    </div>
+
+    <div class="erweimaBox">
+        <h3 style="margin-bottom:10px;">@Model.name</h3>
+        <div id="woer_qrcode">
+        </div>
+        <p>请使用自提点核销员手机微信扫描二维码绑定。[可绑定多个微信终端]</p>
+    </div>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+        <tr>
+            <td>序号</td>
+            <td>姓名</td>
+            <td>电话</td>
+            <td>微信昵称</td>
+            <td>操作</td>
+            <td id="woer_woid" style="display: none">@Model.woid</td>
+        </tr>
+
+        @foreach (var v in Model.List)
+        {
+            row = row + 1;
+            <tr>
+                <td id="woerid_@row" style="display: none">@v.id</td>
+                <td>@row</td>
+                <td>@v.realname</td>
+                <td>@v.phone</td>
+                <td id="woer_name_@row">@v.name</td>
+                <td><a id="@row" class="mg7" href="javascript:;" onclick="onDelWoer(this.id)">删除</a></td>
+            </tr>
+        }
+        
+       </table>
+</div>

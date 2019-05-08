@@ -1,0 +1,82 @@
+﻿@using MD.Model.DB.Code
+@using MD.Model.DB
+@using MD.Lib.Util
+@model Mmd.Backend.Controllers.Backyard.NoticeBoardManaController.NoticeManaPartialObject
+@{
+    var pageIndex = Model.PageIndex;
+    var totalCount = Model.TotalCount;
+    var pageSize = Model.PageSize;
+    List<CodeNoticeCategory> listCate = ViewBag.listCate;
+    List<Merchant> listMer = ViewBag.listMerchant;
+    int row = (pageIndex - 1) * pageSize;//当前页的其实序号
+    Guid DefaultId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+    int totalPages = 0;
+    if (totalCount % pageSize == 0)
+    {
+        totalPages = totalCount / pageSize;
+    }
+    else
+    {
+        totalPages = totalCount / pageSize + 1;
+    }
+}
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td style="width:14%">文章编号</td>
+        <td style="width:35%">标题</td>
+        <td style="width:6%">分类</td>
+        <td style="width:7%">来源</td>
+        <td style="width:6%">阅读量</td>
+        <td style="width:6%">转发量</td>
+        <td style="width:10%">发布时间</td>
+        <td style="width:6%">商家名称</td>
+        <td style="width:10%">操作</td>
+    </tr>
+    @foreach (var n in Model.List)
+    {
+        var cate = listCate.Where(c => c.code == n.notice_category).FirstOrDefault();
+        string categoryName = cate == null ? "" : cate.name;
+        var mer = listMer.Where(m => m.mid == n.mid).FirstOrDefault();
+        string merName = mer == null ? "MM社区" : mer.name;
+        <tr>
+            <td>@n.nid</td>
+            <td>@n.title</td>
+            <td>@categoryName</td>
+            <td>@n.source</td>
+            <td>@n.hits_count</td>
+            <td>@n.transmit_count</td>
+            <td>@(CommonHelper.FromUnixTime(n.timestamp))</td>
+            <td>@merName</td>
+            <td >
+                @if (n.status == (int)ENoticeBoardStatus.已发布 && n.mid == DefaultId)
+                {
+                    @*<a href=@Url.Action("UpdateNoticeBoard","NoticeBoardMana",new { nid=n.nid,status=0, nowStatus= ENoticeBoardStatus.已发布})>下线</a>*@
+                    <a href="javascript:;" onclick="DelNoticeBoard('@n.nid',0)">下线</a>
+                    <a href="javascript:;" onclick="SetTop('@n.nid')">置顶</a>
+                    @*<a href="javascript:sendMessage('@n.nid');">推送</a>*@
+                }
+                @if (n.status == (int)ENoticeBoardStatus.待发布 && n.mid == DefaultId)
+                {
+                    <a href=@Url.Action("EditNoticeBoard","NoticeBoardMana",new { nid=n.nid})>编辑</a>
+                    @*<a href=@Url.Action("UpdateNoticeBoard","NoticeBoardMana",new { nid=n.nid,status=2, nowStatus= ENoticeBoardStatus.待发布})>删除</a>*@
+                    <a href="javascript:;" onclick="DelNoticeBoard('@n.nid',2)">删除</a>
+                        @*<a href=@Url.Action("UpdateNoticeBoard", "NoticeBoardMana", new { nid = n.nid, status = 1, nowStatus= ENoticeBoardStatus.待发布 })>上线</a>*@
+                    <a href="javascript:;" onclick="DelNoticeBoard('@n.nid',1)">上线</a>
+                }
+                @if (n.status == (int)ENoticeBoardStatus.已删除 && n.mid == DefaultId)
+                {
+                    @*<a href=@Url.Action("UpdateNoticeBoard","NoticeBoardMana",new { nid=n.nid,status=1, nowStatus= ENoticeBoardStatus.已删除})>上线</a>*@
+                    <a href="javascript:;" onclick="DelNoticeBoard('@n.nid',1)">上线</a>
+                }
+            </td>
+        </tr>
+    }
+</table>
+
+<div class="Lorelei-commonTable-btnbox clearfix">
+    <div class="Lorelei-cT-btnbox-l">总计<span id="spantotal" class="wine">@totalCount</span></div>
+    <div class="Lorelei-cT-btnbox-r">
+        <a id="left" href="javascript:;" onclick="onLeftClick()">◀</a><span id="currentPage" class="wine mgl5">@pageIndex</span>/<span id="totalPages" class="mgr5">@totalPages</span><a id="right" href="javascript:;" onclick="onRightClick()">▶</a>
+        <input class="pd5 mg7" id="page_count" type="text" /><a id="jump" href="javascript:;" onclick="onJump()">跳转</a>
+    </div>
+</div>

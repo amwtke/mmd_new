@@ -1,0 +1,120 @@
+﻿@using MD.Model.DB.Code
+@using MD.Lib.DB.Repositorys
+@using System.Collections.Concurrent;
+@using System.Collections.Generic;
+@{
+    Layout = null;
+    ConcurrentDictionary<int, string> categoryItems = new ConcurrentDictionary<int, string>();
+    ConcurrentDictionary<int, string> brandItems = new ConcurrentDictionary<int, string>();
+    using (CodeRepository repo = new CodeRepository())
+    {
+        categoryItems = repo.ProductCategoryDic;
+        brandItems = repo.ProductBrandDic;
+    }
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>商家后台供货管理</title>
+    <link rel="stylesheet" type="text/css" href="/Content/main.css">
+    <link rel="stylesheet" type="text/css" href="/Content/ico.css">
+    @Scripts.Render("~/bundles/jquery")
+    <script src="/Scripts/supply/spaging.js"></script>
+    <script type="text/javascript">
+        function xxk(id) {
+            var isClick = false;
+            $(id).find("li").click(function () {
+                $(id).find("li").removeClass("acti");
+                $(this).addClass("acti");
+                refreshSupple(1);
+            });
+            var width = 0;
+            for (var i = 0; i < $(id).find("li").length; i++) {
+                width = width + $(id).find("li").eq(i).width() + 30;
+            }
+            if (width <= 650) {
+                $(id).next().hide();
+            }
+            $(id).next().click(function () {
+                if (isClick == true) {
+                    $(id).parent().css("height", "30px");
+                    isClick = false;
+                } else {
+                    $(id).parent().css("height", "auto");
+                    isClick = true;
+                }
+            });
+        }
+        $(function () {
+            xxk("#xxkPP");
+            xxk("#xxkPL");
+        });
+
+    </script>
+</head>
+<body>
+    <!--header-->
+    @Html.Partial("Header/_headerSupply")
+    <div class="Lorelei-table-box">
+        <div class="Lorelei-table-box-c mgc">
+            <div class="Lorelei-commonTable margin-top-40 cgBox">
+                <p class="mgb5 font-blod">采购说明：</p>
+                <p class="ft13">
+                    由于各门店反馈吸客引流商品比较稀缺，美美哒科技现整合工厂、品牌及代理商资源，帮助门店开展拼团活动吸引年轻客流到店。所有产品按照特供价格供货，如该品牌在门店区域有代理商的，门店提出采购申请，我们协调品牌和代理商按照特供价供货。如该品牌在门店区域无代理商，门店提出采购申请，我们协调品牌按照特供价供货。所有商品均由品牌或代理商承担物流费，打款后商品将在3-15个工作日内送达门店。
+                </p>
+                <p class="mgt19 mgb5 font-blod">采购流程：</p>
+                <p class="ft13">1、化妆品专营店自主选择引流商品，确定采购商品和数量后，联系美美哒科技-MM社区 郝治国，电话：13995579682。</p>
+                <p class="ft13">2、门店将采购商品货款一次性付给美美哒科技，货款到账后品牌或代理商安排发货。</p>
+                <p class="ft13">3、门店收到货物并确认无误后，美美哒科技将货款支付给品牌或代理商。</p>
+            </div>
+            <div class="Lorelei-search-r mgt30 mgb19" style="clear:left;">
+                <input name="s_text" id="s_text" type="search" placeholder="商品名称/商品描述">
+                <a class="wine" href="javascript:;" onclick="refreshSupple(1);">
+                    <i class="MMda i-search"></i>
+                </a>
+            </div>
+            <div class="cgTjczBox mgb10">
+                <div class="cgTjczLaba">按品牌查找</div>
+                <ul class="cgTjczList" id="xxkPP">
+                    <li class="acti" code="-1">全部</li>
+                    @foreach (var b in brandItems)
+                    {
+                        <li code="@b.Key">@b.Value</li>
+                    }
+                </ul>
+                <div class="cgTjczBtn">
+                    展开
+                </div>
+            </div>
+            <div class="cgTjczBox">
+                <div class="cgTjczLaba">按品类查找</div>
+                <ul class="cgTjczList" id="xxkPL">
+                    <li class="acti" code="-1">全部</li>
+                    @foreach (var c in categoryItems)
+                    {
+                        <li code="@c.Key">@c.Value</li>
+                    }
+                </ul>
+                <div class="cgTjczBtn">
+                    展开
+                </div>
+            </div>
+            <!--mian-->
+            <ul class="cgList mgt19">
+                @Html.Action("SupplyListPartial_Merchant", new { pageIndex = 1, q = "", category = -1, brand = -1 })
+            </ul>
+        </div>
+    </div>
+
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+</body>
+</html>

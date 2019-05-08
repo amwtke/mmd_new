@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/Content/css/xuanc.css">
+    <title>关于我们</title>
+    @Scripts.Render("~/bundles/jquery")
+</head>
+<body>
+	<!--header-->
+	<div class="xcheader">
+		<div class="xcheader-c mgc clearfix">
+			<div class="xcheader-logo fl ft12"><img src="/Content/images/logo.jpg"></div>
+			<ul class="xcheaderMainnav fl clearfix">
+				<li>@Html.ActionLink("首页", "Index")</li>
+				<li>@Html.ActionLink("拼团玩法", "intro")</li>
+				@*<li>@Html.ActionLink("行业案例", "examples")</li>*@
+				<li>@Html.ActionLink("关于我们", "about", null, new { @class = "cur" })</li>
+			</ul>
+			<div class="xcheader-login fr ft12">
+				<a class="kait" href=@ViewBag.url>申请开通</a>
+				<a class="denl mgl5" href=@ViewBag.url>登陆</a>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div class="xcAboutwe">
+		<div class="xcAboutwe-c mgc clearfix">
+			<div class="xcAboutwe-cL fl">
+				<div class="xcAboutweTitle">
+					<p class="xcawt-name">美美哒科技</p>
+					<p>Meimeida</p>
+				</div>
+				<div class="xcAboutweTitle">
+					<p class="xcawt-name">公司背景</p>
+					<p>Background</p>
+				</div>
+				<div class="xcAboutweTitle">
+					<p class="xcawt-name">核心价值观</p>
+					<p>Values</p>
+				</div>
+				<div class="xcAboutweTitle">
+					<p class="xcawt-name">产品开发标准</p>
+					<p>Product</p>
+				</div>
+				<div class="xcAboutweTitle" style="margin-top: 146px;">
+					<p class="xcawt-name">美美哒团队</p>
+					<p>Team</p>
+				</div>
+				<div class="xcAboutweTitle" style="margin-top: 290px;">
+					<p class="xcawt-name">联系我们</p>
+					<p>Contact</p>
+				</div>
+			</div>
+			<div class="xcAboutwe-cR fr">
+				<div class="xcawe-box xcawe1">
+					<p><span class="poiy">定位</span>美业O2O工具开发平台</p>
+					<p><span class="poiy">使命</span>以产品技术为核心，帮助美妆门店进行互联网化升级</p>
+					<p><span class="poiy">目标</span>成为全国16万家美妆门店的互联网技术中心</p>
+				</div>
+
+				<div class="xcawe-box xcawe6">
+					<p>湖北武昌区科技和产业发展局重点扶持项目</p>
+					<p>武汉品观传媒有限公司投资孵化项目</p>
+					<p>微信开放平台官方认证开发商</p>
+				</div>
+
+				<div class="xcawe-box xcawe2">
+					<p>解决用户的核心需求是企业发展的根本动力。</p>
+				</div>
+
+				<div class="xcawe-box xcawe3" style="margin-top: 123px;">
+					<p><span class="poiy2">有用</span>  （同时满足美妆门店和消费者的核心需求）</p>
+					<p><span class="poiy2">通用</span> （无论大小门店都能用，具有行业普适性）</p>
+					<p>只要满足以上条件，就可以把需求提交给我们，评审通过后就可安排开发。<br>
+					产品开发上线后，最先提出此需求的门店将获得该产品<span class="red">永久免费使用权</span>。</p>
+				</div>
+
+				<div class="xcawe-box xcawe4">
+					<p><span class="poiy2">邱成</span>   <span class="mglr12">创始人</span>  原品观网总监<br>
+					曾任职于北京搜狐畅游、搜房网、39健康网等多家知名互联网企业，具有丰<br>
+					富的产品策划和产品运营经验。<p><br><br><br>
+
+					<p><span class="poiy2">肖劲</span>   <span class="mglr12">联合创始人</span>  北京大学软件工程硕士<br>
+					曾担任中核集团核动力研究所和飞信研发事业群高级研发工程师、亿房网<br>
+					和大学问网技术总监，具有深厚的技术背景。</p>
+				</div>
+
+				<div class="xcawe-box xcawe5">
+					<p>邱成<span class="mglr12">18108622329</span>(欢迎洽谈各种形式的合作)<br>
+					湖北省武汉市武昌区静安路6号5.5创意产业园4楼众创空间</p>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+
+
+<!--footer-->
+<div class="xcFooter" style="padding: 109px 0 19px 0;"><p>美美哒科技 版权所有/鄂ICP备16005905号-1</p></div>
+
+    <script>
+        $(document).ready(function () {
+            var url = window.location.href;
+            if (url.indexOf('www.') > 0) {
+                window.location.href = url.replace('www.','');
+            }
+    });
+    </script>
+</body>
+</html>
+

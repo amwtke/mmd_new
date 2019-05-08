@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商家管理</title>
+    <link rel="stylesheet" type="text/css" href="/Content/style.css">
+    <link rel="stylesheet" type="text/css" href="/Content/main.css">
+    <link rel="stylesheet" type="text/css" href="/Content/ico.css">
+    @Scripts.Render("~/bundles/jquery")
+    <script src="/Scripts/backyard/mercheck/comment.js"></script>
+</head>
+<body>
+    @Html.Partial("Backyard/Header/_HeaderComment");
+    <!--mian-->
+    <div class="Lorelei-table-box">
+        <div class="Lorelei-table-box-c mgc">
+            <div class="Lorelei-search-r mgb19" style="padding-left:0px;padding-right:6px;">
+                <div style="float:right;">
+                    <input id="s_proname" type="search" placeholder="商品名称" />
+                    <a class="wine" href="javascript:;" onclick="onSearch()"><i class="MMda i-search"></i></a>
+                </div>
+            </div>
+            @*<div class="Lorelei-search-r mgb19" style="padding-left:0px;padding-right:6px;margin-right: 5px;">
+                <div style="float:right;">
+                    <input id="s_mername" type="search" placeholder="商家名称" />
+                </div>
+            </div>*@
+            <div id="list_table" class="Lorelei-commonTable">
+                @Html.Action("GetList", new { pageIndex = 1, mer = "",pro="" })
+            </div>
+        </div>
+    </div>
+    <!--弹出层-->
+    <div class="alertForm ft14" style="display:none">
+        <div class="inputText-Tap mgb20 mgt19" style="text-align: right;">
+            <a href="javascript:;"><i class="MMda i-close pdr5" style="font-size: 26px;padding-right: 19px;"></i></a>
+        </div>
+        <div class="inputText-Tap mgb20 mgt19"><span class="w100">商品名称</span><input id="tan_gname" class="coInp" type="text" value="" readonly /></div>
+        <div class="inputText-Tap mgb20 mgt19"><span class="w100 fl">评价</span><textarea id="tan_url" class="coInp" style="resize:none" name="" cols="" rows="9"></textarea></div>
+        <input type="hidden" id="commentid" value="" />
+        <input type="hidden" id="mid" value="" />
+        <input style="margin-left:162px;" class="inputBtn-Tap mgb19 i-close" type="button" value="确定" onclick="postComment()" />
+    </div>
+    <div class="maskLayer"></div>
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+
+</body>
+</html>

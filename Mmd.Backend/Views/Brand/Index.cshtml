@@ -1,0 +1,203 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>品牌管理</title>
+    <link rel="stylesheet" type="text/css" href="~/Content/style.css">
+    <style type="text/css">
+    </style>
+</head>
+<body>
+    <!--header-->
+    @Html.Partial("Backyard/Header/_HeaderBrand")
+    <!--mian-->
+    <div class="Lorelei-table-box">
+        <div class="Lorelei-table-box-c mgc">
+
+            <div class="Lorelei-topSearch clearfix">
+                <div class="Lorelei-addBtn-l margin-top-30">
+                    <a href="javascript:;" id="addPinp">
+                        <i class="MMda i-add pdr5"></i>添加品牌
+                    </a>
+                </div>
+                <div class="Lorelei-search-r"><input name="user_search" id="s_text" type="search" placeholder="输入品牌名" /><a class="wine" href="javascript:search();"><i class="zonght i-search"></i></a></div>
+            </div>
+
+            <div class="Lorelei-commonTable" id="list_table">
+                @Html.Action("BrandListPartial", new { pageIndex = 1, q=""  })
+            </div>
+
+        </div>
+    </div>
+
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+
+    <!--layer-->
+    <div id="ADialog" class="AlertDialog">
+        <p class="rela">品牌管理<a href="javascript:;"><i class="zonght i-close"></i></a></p>
+        <div class="storeName"><span>品牌名称</span><input class="czinput2" name="" type="text" value="" /></div>
+        <a class="sumbit" href="javascript:;" onclick="doModify()">提交</a>
+    </div>
+</body>
+</html>
+<script type="text/javascript" src="~/Scripts/jquery-1.7.2.min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		$(".i-close").on("click",function(){
+			$("#ADialog").css("display","none");
+		})
+		$("#addPinp").click(function () {
+		    isAdd = true;
+			$(".czinput2").val("");
+			$("#ADialog").css("display","block");
+		});
+	})
+	//////翻页按钮
+	function onLeftClick() {
+	    var currentPageNumber = parseInt($('#currentPage').text());
+	    if (currentPageNumber === 1)
+	        alert("已经是第1页了！");
+	    else {
+	        refresh(--currentPageNumber);
+	        $('#currentPage').text(currentPageNumber);
+	    }
+	}
+
+	function onRightClick() {
+	    var currentPageNumber = parseInt($('#currentPage').text());
+	    var totalPages = parseInt($("#totalPages").text());
+	    if (currentPageNumber === totalPages || totalPages === 0)
+	        alert("已经没有下一页了！");
+	    else {
+	        refresh(++currentPageNumber);
+	        $('#currentPage').text(currentPageNumber);
+	    }
+	}
+
+	function onJump() {
+	    try {
+	        //判断是否为数字
+	        if (!$('#page_count').val() || isNaN($('#page_count').val())) {
+	            alert("请输入数字！");
+	        }
+	        else {
+	            var jumpToNumber = parseInt($('#page_count').val());
+	            var totalPages = parseInt($("#totalPages").text());
+	            if (jumpToNumber > totalPages)
+	                alert("超过最大页数！");
+	            else {
+	                refresh(jumpToNumber);
+	                $('#currentPage').text(jumpToNumber);
+	            }
+	        }
+	    } catch (e) {
+	        alert(e);
+	    }
+	}
+
+	function search() {
+	    refresh(1);
+	}
+	var modifingId = '';
+	var modifingTd;
+	var isAdd = false;
+	function modify(obj) {
+	    if ($("#ADialog").css("display") == "block") {
+	        return;
+	    }
+	    isAdd = false;
+	    $("#ADialog").css("display", "block");
+	    modifingId = $(obj).parent().data("code");
+	    var name = $(obj).parent().prev("td").text();
+	    $(".czinput2").val(name);
+	    $("#ADialog").css("display", "block");
+	    modifingTd = obj;
+	}
+	function doModify() {
+	    var name = $(".czinput2").val();
+	    if (isAdd) {
+	        add(name);
+	    } else {
+	        $.ajax({
+	            type: "post",
+	            url: "/Brand/Modify",
+	            data: { code: modifingId, value: name },
+	            success: function (res) {
+	                if (res.result && res.result == true) {
+	                    $("#ADialog").css("display", "none");
+	                    $(modifingTd).parent().prev("td").text(name);
+	                    alert("保存成功");
+	                } else {
+	                    alert("保存失败");
+	                    console.log(res.message);
+	                }
+	            }
+	        })
+	    }
+	}
+	function del(obj) {
+	    if ($("#ADialog").css("display") == "block") {
+	        return;
+	    }
+	    var id = $(obj).parent().data("code");
+	    if (confirm("确定要删除当前品牌吗？")) {
+	        $.ajax({
+	            type: "post",
+	            url: "/Brand/Del",
+	            data: { code: id },
+	            success: function (res) {
+	                if (res.result && res.result == true) {
+	                    //$(obj).parents("tr").remove();
+	                    var currentPageNumber = parseInt($('#currentPage').text());
+	                    refresh(currentPageNumber);
+	                } else if (res.message && res.message == "当前品牌下有商品，不能删除！") {
+	                    alert(res.message);
+	                } else {
+	                    alert("保存失败！");
+	                    console.log(res.message);
+	                }
+	            }
+	        })
+	    } 
+	}
+	function add(name) {
+	    $.ajax({
+	        type: "post",
+	        url: "/Brand/Add",
+	        data: {value: name },
+	        success: function (res) {
+	            if (res.result && res.result == true) {
+	                $("#ADialog").css("display", "none");
+	                alert("保存成功");
+	                refresh(1);
+	            } else {
+	                $("#ADialog").css("display", "none");
+	                alert("保存失败");
+	                console.log(res.message);
+	            }
+	        }
+	    })
+	}
+
+	function refresh(pageIndex) {
+	    var q = $('#s_text').val();
+	    $.ajax({
+	        type: "GET",
+	        url: "/Brand/BrandListPartial?pageIndex=" + parseInt(pageIndex) + "&q=" + q ,
+	        data: {},
+	        datatype: "json",
+	        success: function (data) {
+	            $("#list_table").html(data);
+	        },
+	        error: function (XMLHttpRequest, textStatus, errorThrown) {
+	            alert(errorThrown);
+	        }
+	    });
+	}
+</script>

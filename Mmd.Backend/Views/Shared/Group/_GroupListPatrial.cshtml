@@ -1,0 +1,240 @@
+﻿@using MD.Lib.DB.Repositorys
+@using MD.Lib.ElasticSearch
+@using MD.Lib.ElasticSearch.MD
+@using MD.Lib.Util
+@using MD.Lib.Weixin.MmdBiz
+@using MD.Model.Configuration.ElasticSearch.MD
+@using MD.Model.DB.Code
+@using MD.Model.Index
+@model Mmd.Backend.Controllers.GroupController.PartialParameter
+@{
+    var pageIndex = Model.PageIndex;
+    var totalCount = Model.TotalCount;
+    var pageSize = Model.PageSize;
+    int status = Model.Status;
+    int row = (pageIndex - 1) * pageSize;//当前页的其实序号
+
+    int totalPages = 0;
+    if (totalCount % pageSize == 0)
+    {
+        totalPages = totalCount / pageSize;
+    }
+    else
+    {
+        totalPages = totalCount / pageSize + 1;
+    }
+
+    int openingCount = 0;
+    int sucessCount = 0;
+
+    string p_no = "";
+
+    string appid = Session[ESessionStateKeys.AppId.ToString()].ToString();
+    string url = "";
+    Guid mid = ViewBag.mid;
+    Tuple<int, List<BizIndex>> tuple = Tuple.Create(0,new List<BizIndex>());
+    if (status == 0)
+    {
+        DateTime today = Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd 00:00:00"));
+        double timeStart = CommonHelper.ToUnixTime(today);
+        double timeEnd = CommonHelper.ToUnixTime(today.AddDays(1));
+        tuple = EsBizLogStatistics.SearchBizView(ELogBizModuleType.MerSendMsg, Guid.Empty, mid, timeStart,timeEnd);
+    }
+
+    Tuple<int, decimal> OrderCJ;
+    Tuple<int, decimal> OrderHX;
+    Tuple<int, decimal> OrderFH;
+    int zhl = 0;
+    Tuple<int, List<BizIndex>> LLL;
+}
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td>序号</td>
+        <td>商品编号</td>
+        <td>拼团活动标题</td>
+        <td>团类型</td>
+        @if (status == 0)
+        {
+            <td>上线时间</td>
+        }
+        @if (status == 3 || status == 1)
+        {
+            <td>上线时间</td>
+            <td>下线时间</td>
+        }
+        <td>取货方式</td>
+        <td>单购价格</td>
+        <td>团购价格</td>
+        @*<td>团长优惠</td>*@
+        <td>成团人数</td>
+        <td style="display: none">开始时间</td>
+        <td style="display: none">结束时间</td>
+        <td>商品库存</td>
+        <td>开团数量</td>
+        <td>成团数量</td>
+        <td>自动成团</td>
+        @*<td>限制购买次数</td>*@
+        <td>成交订单</td>
+        <td>成交金额</td>
+        <td>已核销</td>
+        <td>浏览量</td>
+        <td>一级转发</td>
+        <td>二级转发</td>
+        <td>转化率</td>
+        <td>操作</td>
+    </tr>
+    
+    @using (var repo = new BizRepository())
+    {
+        foreach (var g in Model.List)
+        {
+            string waytoget = g.waytoget == 0 ? "自提" : g.waytoget==1? "快递到家":"自提或快递到家";
+            string group_type = g.group_type == 1 ? "抽奖团" : "普通团";
+            row = row + 1;
+
+            var p = repo.GetProductByPid(g.pid);
+            if (p != null)
+            {
+                p_no = p.p_no.ToString();
+            }
+            else
+            {
+                p_no = "";
+            }
+
+            //成功与总数赋值
+            openingCount = (EsGroupOrderManager.GetByGid2(g.gid, new List<int>() { (int)EGroupOrderStatus.拼团成功, (int)EGroupOrderStatus.拼团失败, (int)EGroupOrderStatus.拼团进行中 }, 1, 1)).Item1;
+            sucessCount = (EsGroupOrderManager.GetByGid2(g.gid, EGroupOrderStatus.拼团成功, 1, 1)).Item1;
+
+            //var timeStart = CommonHelper.GetUnixTimeNow() - 100*24*60*60;//100天前
+            var timeStart = CommonHelper.ToUnixTime(DateTime.Now.AddMonths(-3));
+            var timeEnd = CommonHelper.GetUnixTimeNow();
+
+            OrderCJ = EsOrderManager.GetOrderCountAndAmountByGid(g.gid, new List<int>() { (int)EOrderStatus.已成团未提货, (int)EOrderStatus.拼团成功,(int)EOrderStatus.已成团未发货,(int)EOrderStatus.已成团配货中,(int)EOrderStatus.已发货待收货 }, timeStart, timeEnd);
+
+            OrderHX = EsOrderManager.GetOrderCountAndAmountByGid(g.gid, new List<int>() { (int)EOrderStatus.拼团成功}, timeStart, timeEnd);
+            //OrderFH = EsOrderManager.GetOrderCountAndAmountByGid(g.gid,new List<int>() { (int)EOrderStatus.已发货待收货 },timeStart,timeEnd);
+            LLL = EsBizLogStatistics.SearchBizView(ELogBizModuleType.GidView, g.gid, Guid.Empty, null, null, 1, 1);
+            var tupleGroupShare = EsBizLogStatistics.GetGroupShareCount(g.gid);
+            if (LLL.Item1 == 0)
+            {
+                zhl = 100;
+            }
+            else
+            {
+                zhl = OrderCJ.Item1 * 100 / LLL.Item1;
+            }
+
+            url = MdWxSettingUpHelper.GenGroupDetailUrl(appid, g.gid);
+
+            <tr>
+                <td id="gid_@row" style="display: none">@g.gid</td>
+                <td id="url_@row" style="display: none">@url</td>
+                <td>@row</td>
+                <td id="pno_@row">@p_no</td>
+                <td id="title_@row">@g.title</td>
+                <td>@group_type</td>
+                @if (status == 0)
+                {
+                    <td>@CommonHelper.FromUnixTime(g.group_start_time??0).ToString("yyyy-MM-dd HH:mm")</td>
+                }
+                @if (status == 3 || status == 1)
+                {
+                    <td>@CommonHelper.FromUnixTime(g.group_start_time ?? 0).ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@CommonHelper.FromUnixTime(g.group_end_time ?? 0).ToString("yyyy-MM-dd HH:mm")</td>
+                }
+                <td>@waytoget</td>
+                <td>@((Convert.ToDecimal(g.origin_price) / 100).ToString())</td>
+                <td>@((Convert.ToDecimal(g.group_price) / 100).ToString())</td>
+                @*<td>@((Convert.ToDecimal(g.leader_price) / 100).ToString())</td>*@
+                <td id="person_quota_@row">@g.person_quota</td>
+                <td style="display: none">2016/4/12</td>
+                <td style="display: none">2016/4/18</td>
+                <td>@g.product_quota</td>
+                <td>@openingCount</td>
+                <td>@sucessCount</td>
+                <td>
+                    @if (g.userobot == 1)
+                    {
+                        <span>是</span>
+                    }
+                    else
+                    {
+                        <span>否</span>
+                    }
+                </td>
+
+                @*<td>@g.order_limit</td>*@
+                <td>@OrderCJ.Item1</td>
+                <td>@OrderCJ.Item2</td>
+                <td>@OrderHX.Item1</td>
+                <td>@LLL.Item1</td>
+                <td>@tupleGroupShare.Item1</td>
+                <td>@tupleGroupShare.Item2</td>
+                @if (zhl > 100)
+                {
+                    <td>老数据不准确!</td>
+                }
+                else
+                {
+                    <td>@zhl%</td>
+                }
+            
+                @if (status == 0) //已发布
+                    {
+                    <td>
+                        @if (g.status == 0)
+                        {
+                            <a id="@row" style="text-decoration: underline; cursor: pointer;" href=@Url.Action("EditGroup","Group",new {gid=g.gid})>编辑</a>
+                            <a id="@row" style="text-decoration: underline; cursor: pointer;" onclick="onInventoryClear(this.id)">下线</a><br />
+                            <a id="@row" style="text-decoration: underline; cursor: pointer;" onclick="onTuiguang(this.id)">推广链接</a>
+                            <a id="@row" style="text-decoration: underline; cursor: pointer;" onclick="onAddKuCunAlert(this.id)">增加库存</a>
+                            if (tuple.Item1 <= 0)
+                            {
+                                <a class="sendmsgclass" style="text-decoration: underline; cursor: pointer;" onclick="onSendMsg(this,'@g.gid')">推送活动</a>
+                            }
+                        }
+                        @*<a id="@row" style="text-decoration: underline; cursor: pointer;" href=@Url.Action("GroupDetail", "Group", new {gid = g.gid})>查看详情</a>*@
+                        <a id="@row" style="text-decoration: underline; cursor: pointer;" href="javascript:gotoDis('@g.gid')">推广统计</a>
+                        @if (g.status == 4)
+                        {
+                            <a id="@row" style="text-decoration: underline; cursor: pointer;" onclick="onTuiguang(this.id)">推广链接</a>
+                        }
+                    </td>
+                }
+                @if (status == 2) //待发布
+                    {
+                    <td>
+                        <a id="@row" style="text-decoration: underline; cursor: pointer" href=@Url.Action("EditGroup","Group",new {gid=g.gid})>编辑</a>
+                        <a id="@row" style="text-decoration: underline; cursor: pointer" onclick="onPreview(this.id)">预览</a>
+                        <a id="@row" style="text-decoration: underline; cursor: pointer" onclick="onGDelClick(this.id)">删除</a>
+                        <a id="@row" style="text-decoration: underline; cursor: pointer" onclick="onGOnline(this.id)">上线</a>
+                    </td>
+                }
+                @if (status == 3)//已结束
+                {
+                    <td>
+                        <a id="@row" style="text-decoration: underline; cursor: pointer;" onclick="onTuiguang(this.id)">推广链接</a>
+                        <a id="@row" style="text-decoration: underline; cursor: pointer;" href="javascript:gotoDis('@g.gid')">推广统计</a>
+                        <a id="@row" style="text-decoration: underline; cursor: pointer;" onclick="onGDelClick(this.id)">下架</a>
+                    </td>
+                }
+                @if (status == 1) //已删除
+                    {
+                    <td>@*<a id="@row" class="mgr5" style="text-decoration: underline; cursor: pointer" onclick="onGResumeClick(this.id)">还原</a>*@
+                        <a id="@row" style="text-decoration: underline; cursor: pointer;" href="javascript:gotoDis('@g.gid')">推广统计</a>
+                </td>
+                }
+            </tr>
+        }
+    }
+</table>
+<div class="Lorelei-commonTable-btnbox clearfix">
+    <div class="Lorelei-cT-btnbox-l">总计<span id="spantotal" class="wine">@totalCount</span></div>
+    <div class="Lorelei-cT-btnbox-r">
+        <a id="left" href="javascript:;" onclick="onLeftClick()">◀</a><span id="currentPage" class="wine mgl5">@pageIndex</span>/<span id="totalPages" class="mgr5">@totalPages</span><a id="right" href="javascript:;" onclick="onRightClick()">▶</a>
+        <input class="pd5 mg7" id="page_count" type="text" /><a id="jump" href="javascript:;" onclick="onJump()">跳转</a>
+    </div>
+</div>
+ 

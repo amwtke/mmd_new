@@ -1,0 +1,59 @@
+﻿@using MD.Model.DB.Code;
+@{
+    var pageIndex = Model.PageIndex;
+    var totalCount = Model.TotalCount;
+    var pageSize = Model.PageSize;
+    int status = Model.Status;
+    int row = (pageIndex - 1) * pageSize;//当前页的其实序号
+    double totalPages = Math.Ceiling(totalCount / 1.0 / pageSize);
+    var list = Model.List;
+}
+@functions{
+    private string GetStatusString(int status)
+    {
+        if (status == (int)ESignStatus.待发布) return "上线";
+        else if (status == (int)ESignStatus.已上线) return "下线";
+        else return "已下线";
+    }
+}
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tbody>
+        <tr>
+            <td style="width:20%;">签到时间</td>
+            <td style="width:20%;">签到福利</td>
+            <td style="width:15%;">福利数量</td>
+            <td style="width:10%;">签到数量</td>
+            <td style="width:10%;">领取数量</td>
+            <td style="width:15%;">操作</td>
+        </tr>
+        @foreach (var item in list)
+        {
+            <tr>
+                <td>@(item.timeStartStr) - @(item.timeEndStr)</td>
+                <td>@item.awardName</td>
+                <td>@(item.awardCount)份</td>
+                <td>@item.UserSignCount</td>
+                <td>@item.UserCheckCount</td>
+                <td>
+                    @if (item.status == 0)
+                    {
+                        <a href="/Sign/Modify/@item.sid">编辑</a>
+                    }
+                    else
+                    {
+                        <a href="/Sign/Detail/@item.sid">查看</a>
+                    }
+                    <a href="javascript:;" onclick="changeStatus(this)" data-sid="@item.sid">@GetStatusString(item.status)</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="Lorelei-commonTable-btnbox clearfix">
+    <div class="Lorelei-cT-btnbox-l">总计<span class="wine">@totalCount</span></div>
+    <div class="Lorelei-cT-btnbox-r">
+        <a href="javascript:onLeftClick()">◀</a><span class="wine mgl5" id="currentPage">@pageIndex</span>/<span class="mgr5" id="totalPages">@totalPages</span><a href="javascript:onRightClick();">▶</a>
+        <input class="pd5 mg7" type="text"><a href="javascript:onJump();" id="jump">跳转</a>
+    </div>
+</div>

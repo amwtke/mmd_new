@@ -1,0 +1,134 @@
+﻿@model MD.Model.DB.NoticeBoard
+@{
+    Layout = null;
+    var list = new List<SelectListItem>();
+    list = @ViewBag.Categroy;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>26 总后台 资讯管理</title>
+    <link rel="stylesheet" type="text/css" href="/Content/main.css">
+    <link rel="stylesheet" type="text/css" href="/Content/style.css">
+    <link rel="stylesheet" type="text/css" href="/Content/ico.css">
+    <style type="text/css">
+        .Lorelei-commonTable table tr:not(:nth-child(1)) td:nth-child(7) a {
+            color: #68aef6;
+        }
+
+        .Lorelei-commonTable table tr:not(:nth-child(1)) td:nth-child(8) {
+            color: #e61c64;
+        }
+
+            .Lorelei-commonTable table tr:not(:nth-child(1)) td:nth-child(8).noPass {
+                color: #666;
+            }
+
+            .Lorelei-commonTable table tr:not(:nth-child(1)) td:nth-child(8).Passed {
+                color: #90c16d;
+            }
+
+        .red {
+            color: #F00;
+        }
+    </style>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="/Scripts/backyard/noticeoardMana/n_paging.js"></script>
+    <script type="text/javascript">
+        //初始化控件
+        $(function () {
+            $("#picg").change(function (evt) {
+                fileSelectedChange(evt, "dpic1", "ipic1", "picg", "thumb_pic", "thumb1");
+            });
+            //编辑时给图片加载图片
+            onLoadPic("dpic1", "ipic1", "thumb_pic", "thumb1");
+            initKindEditor();
+        });
+    </script>
+</head>
+<body>
+    <!--header-->
+    @Html.Partial("Header/_headerNoticeMana")
+    <!--mian-->
+    <div class="Lorelei-table-box">
+        <div class="Lorelei-table-box-c mgc">
+            <form id="noticeboard_from" action="/NoticeBoardMana/NoticeBoardSave" method="post" enctype="multipart/form-data">
+                <div class="listBox margin-top-50">
+                    <span class="listBox-title">标题</span>
+                    @Html.TextBoxFor(model => model.title, new { @class = "coInp", placeholder = "标题" })
+                    @Html.ValidationMessageFor(model => model.title, "", new { @class = "red" })
+                    <span class="sm">最多20字</span>
+                </div>
+                <div class="listBox margin-top-20">
+                    <span class="listBox-title">来源</span>
+                    @Html.TextBoxFor(model => model.source, new { @class = "coInp", placeholder = "来源" })
+                    @Html.ValidationMessageFor(model => model.source, "", new { @class = "red" })
+                </div>
+                <div class="listBox margin-top-20">
+                    <span class="listBox-title">分类</span>
+                    <label>
+                        @Html.DropDownList("notice_category", list, new { @class = "coInp", style = "width: 281px;" })
+                    </label>
+                </div>
+                <div class="listBox margin-top-20 lable">
+                    <span class="listBox-title">标签</span>
+                    @Html.TextBoxFor(model => model.tag_1, new { @class = "coInp", placeholder = "标签1" })
+                    @Html.TextBoxFor(model => model.tag_2, new { @class = "coInp", placeholder = "标签2" })
+                    @Html.TextBoxFor(model => model.tag_3, new { @class = "coInp", placeholder = "标签3" })
+                    <span class="sm">最多3个标签，每个标签最多四个字</span>
+                </div>
+                <div class="listBox margin-top-20" style="height: 217px;overflow: hidden;">
+                    <span class="listBox-title">配图</span>
+                    <span>建议尺寸 350*210像素</span><span id="spanpics" class="w100 red" style="display:none;">  请传输图片!</span>
+                    <div id="dpic1" class="Add-ImgCuber margin-top-20" style="width:246px; height:164px;">
+                        <i id="ipic1" class="MMda i-add pdr5 green" style="margin-top: 60px;"></i>
+                        @Html.TextBoxFor(model => model.thumb_pic, new { style = "display: none" })
+                        <input id="picg" name="picg" class="AddCub" type="file">
+                    </div>
+                </div>
+                <div class="listBox margin-top-20" style="height: auto;">
+                    <span class="listBox-title">正文</span>
+                    <div class="htmlEdit">
+                        <textarea id="description2" disabled="disabled"></textarea>
+                        @Html.ValidationMessageFor(model => model.description, "", new { @class = "red" })
+                    </div>
+                    <div hidden="hidden">
+                        @Html.TextAreaFor(model => model.description, new { style = "display: none" })
+                    </div>
+                </div>
+                <input id="nid" name="nid" value="@Model.nid" type="hidden" />
+                <input id="transmit_count" name="transmit_count" value="@Model.transmit_count" type="hidden" />
+                <input id="hits_count" name="hits_count" value="@Model.hits_count" type="hidden" />
+                <div class="listBox-btn">
+                    <button type="button"  onclick="submitFormNoticeBoard()">提交</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+</body>
+</html>
+<script charset="utf-8" src="/Scripts/editor/kindeditor-all-min.js"></script>
+<script charset="utf-8" src="/Scripts/editor/lang/zh-CN.js"></script>
+<script>
+    KindEditor.ready(function(K) {
+        window.editor = K.create('#description2', {
+            allowImageUpload: true,
+            //kindeditor上传图片到阿里云的程序，需要传递一个pid
+            uploadJson: '@Url.Action("UploadNoticeBoardImg", "KindEditor",new { nid = Model.nid})',
+            items: ['source', '|', 'undo', 'redo', 'preview', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                    'justifyfull','|', 'bold', 'italic', 'underline', 'strikethrough', 'removeformat', '|', 'insertorderedlist', 'insertunorderedlist',
+                     'forecolor', 'hilitecolor', 'fontname', 'fontsize','formatblock', '|', 'link', 'unlink', 'emoticons',
+                     'image','multiimage', 'baidumap', 'quote','|','fullscreen']
+    });
+    });
+</script>

@@ -1,0 +1,179 @@
+﻿@{ 
+    string dateTime = DateTime.Now.AddDays(-5).ToString("yyyy-MM-dd");
+    dateTime += " - " + DateTime.Now.ToString("yyyy-MM-dd");
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>推广统计</title>
+    <link rel="stylesheet" type="text/css" href="/Content/main.css?v=20161212">
+    <link rel="stylesheet" type="text/css" href="/Content/style.css?v=20161212">
+    <link href="/Content/bootstrap.min.css" rel="stylesheet">
+    <link href="/Content/daterangepicker-bs3.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
+    <script src="~/Scripts/jquery-1.7.2.min.js"></script>
+    <script src="/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/bootstrap-multiselect.js"></script>
+    <script src="/Scripts/moment.js"></script>
+    <script src="/Scripts/daterangepicker.js"></script>
+    <script src="~/Scripts/distribute/distributepaging.js"></script>
+    <script src="~/Scripts/mustache.js"></script>
+    <style type="text/css">
+        .red { color: #F00; }
+    </style>
+</head>
+<body>
+    @Html.Partial("Header/_headerDistribute")
+    <div class="Lorelei-table-box">
+        <div class="Lorelei-table-box-c mgc">
+            <div class="tool" style="margin-top:20px;overflow:inherit;">
+                <div class="input-prepend input-group" style="float:none;">
+                    <span style="margin-right:0;">时间段 :</span>
+                    <span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+                    <input type="text" readonly style="width: 240px" name="reservation" id="reservation" class="form-control" value="@dateTime" />
+                    <span>活动 :</span>
+                    <span style="display:inline-block;width:40%;">
+                    <select class="selectpicker show-tick form-control" id="select_group" multiple="multiple" style="height:34px;width: 240px;margin-right:30px;">
+                        </select></span>
+                    <input type="button" name="" class="query" value="查询" onclick="search()">
+                </div>
+            </div>
+            <div style="margin-top:20px;margin-bottom:20px;"><a href="javascript:;" onclick="exportData();">导出数据</a></div>
+            <div class="Lorelei-commonTable" id="list_table">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" id="datatable">
+                       
+                </table>
+            </div>
+            <form action="/Distribution/StatisticsExport" method="post">
+                <input type="hidden" value="" name="dataString" id="hid_data" />
+            </form>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+    <script type="text/template" id="thTpl">
+        {{#Data}}
+        <tr>
+            <td rowspan="2">序号</td>
+            <td rowspan="2">核销员</td>
+            <td rowspan="2">姓名</td>
+            <td rowspan="2">门店</td>
+            {{#group}}
+            <td colspan="2" style="width:200px;">{{name}}</td>
+            {{/group}}
+            <td colspan="2">总计</td>
+        </tr>
+        {{/Data}}
+        {{#Data}}
+        <tr>
+            {{#group}}
+            <td>一级转发</td>
+            <td>推广订单</td>
+            {{/group}} 
+            <td>一级转发</td>
+            <td>推广订单</td>
+        </tr>
+        {{/Data}}
+    </script>
+    <script type="text/template" id="tdTpl">
+        <tr>
+            {{#Data}}
+            <td>{{index}}</td>
+            <td>{{nickName}}</td>
+            <td>{{realname}}</td>
+            <td>{{woname}}</td>
+            {{#group}}
+            <td>{{shareCount}}</td>
+            <td>{{orderCount}}</td>
+            {{/group}}
+            {{/Data}}
+        </tr>
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#reservation').daterangepicker(null, function (start, end, label) {
+                var s = start.toISOString();
+                var e = end.toISOString();
+                getGroup(s.substr(0, s.indexOf('T')), e.substr(0, s.indexOf('T')));  
+            });
+            $('#select_group').multiselect({
+                buttonWidth: '340px',
+                buttonText: function (options, select) {
+                    if (options.length === 0) {
+                        return '请选择活动';
+                    } else {
+                        return "选择了" + options.length + "个活动";
+                    }
+                }
+            });
+            var s = $("#reservation").val();
+            var arr = s.split(' - ');
+            getGroup(arr[0], arr[1]);
+            //getData();
+        });
+        function getData(gids) {
+            data = { gids: gids };
+            $.post("/Distribution/StatisticsJson",data,function (res) {
+                if (res.data) {
+                    var html = '';
+                    var t = $("#tdTpl").html();
+                    var th = $("#thTpl").html();
+                    var headHtml = Mustache.render(th, { Data: { group: res.data.listGroup } });
+                    for (var i in res.data.listWoer) {
+                        var d = res.data.listWoer[i];
+                        d.index = i * 1 + 1;
+                        var g = [];
+                        var totalShareCount = 0;
+                        var totalOrderCount = 0;
+                        for (var m = 0; m < res.data.listGroup.length; m++) {
+                            var group = res.data.listGroup[m];
+                            var shareCount = group.dicShare[d.uid] || 0;
+                            var orderCount = group.dicOrder[d.uid] || 0;
+                            g.push({ shareCount: shareCount, orderCount: orderCount });
+                            totalShareCount += shareCount;
+                            totalOrderCount += orderCount;
+                        }
+                        g.push({ shareCount: totalShareCount, orderCount: totalOrderCount });
+                        d.group = g;
+                        html += Mustache.render(t, { Data: d });
+                    }
+                    $("#datatable").html(headHtml + html);
+                }
+            });
+        }
+        function exportData() {
+            var str = $("#datatable").html();
+            str = encodeURI(str);
+            $("#hid_data").val(str);
+            $("form").submit();
+        }
+        function getGroup(timeStart, timeEnd) {
+            $.post('/Statistics/GetGroupByTime', { mid: "@ViewBag.mid", timeStart: timeStart, timeEnd: timeEnd }, function (res) {
+                if (res.status == "Success") {
+                    var op = '';
+                    var d = res.data;
+                    for (var i = 0; i < d.length; i++) {
+                        op += '<option value="' + d[i].id + '">' + d[i].name + '</option>';
+                    }
+                    $("#select_group").html(op);
+                    $("#select_group").multiselect('rebuild');
+                } else {
+                    $("#select_group").html('<option>全部</option>');
+                }
+            });
+        }
+        function search() {
+            var value = $("#select_group").val();
+            if (value) {
+                getData(value);
+            } else {
+                alert("请选择活动");
+            }
+        }
+    </script>
+</body>
+</html>

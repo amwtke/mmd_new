@@ -1,0 +1,164 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/Content/css/xuanc.css">
+    <title>拼团玩法</title>
+    @Scripts.Render("~/bundles/jquery")
+</head>
+<body>
+	<!--header-->
+	<div class="xcheader">
+		<div class="xcheader-c mgc clearfix">
+			<div class="xcheader-logo fl ft12"><img src="/Content/images/logo.jpg"></div>
+			<ul class="xcheaderMainnav fl clearfix">
+				<li>@Html.ActionLink("首页","Index")</li>
+				<li>@Html.ActionLink("拼团玩法", "intro", null, new { @class = "cur" })</li>
+				@*<li>@Html.ActionLink("行业案例", "examples")</li>*@
+				<li>@Html.ActionLink("关于我们", "about")</li>
+			</ul>
+			<div class="xcheader-login fr ft12">
+				<a class="kait" href=@ViewBag.url>申请开通</a>
+				<a class="denl mgl5" href=@ViewBag.url>登陆</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="xcstepsImg">
+		<div class="xcstepsImg-c mgc">
+			<img src="/Content/images/steps.jpg">
+		</div>
+	</div>
+	
+	<!--1-->
+	<div class="xcsceneBox">
+		<div class="xcsceneBox-c mgc">
+			<div class="xcsceneBox-main clearfix">
+				<div class="xcsceneBox-mainL fl" style="background: #f5f5f5;height: 826px;">
+					<div class="xcIfword">
+						<p style="padding-left: 6px;">假设某商品进货价50元/瓶，
+						门店售价100元/瓶，目前门
+						店活动为第一件100元，第
+						二件5折，A用户在导购劝说
+						下花150元买了2瓶。</p>
+					</div>
+					<div class="xcifImg haha1">
+						<p>2-5人拼团适合日常活动，周一至周五可以“包邮到家”为主，周末以“来店自提”为主。</p>
+					</div>
+				</div>
+				<div class="xcsceneBox-mainR fr">
+					<div class="xcsbm-yuan fl">场景1</div>
+					<div class="xcsbm-line fl"></div>
+					<div class="xcsbm-word fl">
+						<p>
+							门店针对此商品创建<span class="red">2人拼团</span>活动，拼团价为75元/瓶，取货方式为<span class="red">来店自提</span>。<br>
+							A用户通过门店公众号看到活动，微信在线支付了75元开团，并发链接邀请B用户参团，B用户微信支付75元参团，则组团成功。A、B用户周末凭借各自订单二维码到店取货，门店核销员使用手机扫描二维码完成核销并交货。
+						</p>
+					</div>
+
+				</div>
+				<div class="xcsceneBox-mainR fr">
+					<div class="xcsbm-yuan fl">场景2</div>
+					<div class="xcsbm-line fl"></div>
+					<div class="xcsbm-word fl">
+						<p>
+							门店针对此商品创建<span class="red">3人拼团</span>活动，拼团价为70元/瓶，取货方式为<span class="red">来店自提</span>。<br>
+							A用户到门店看到拼团活动，微信在线支付70元开团，并发链接邀请B、C用户参团，B、C用户微信支付70元参团，则组团成功。B、C用户把各自订单二维码发给A用户，A用户将3个订单二维码提供给门店核销员，门店核销员使用手机扫描全部二维码完成核销并交货，A用户把商品分别带给B、C用户。
+						</p>
+					</div>
+
+				</div>
+				<div class="xcsceneBox-mainR fr">
+					<div class="xcsbm-yuan fl">场景3</div>
+					<div class="xcsbm-line fl"></div>
+					<div class="xcsbm-word fl">
+						<p>
+							门店针对此商品创建<span class="red">2人拼团</span>活动，拼团价为80元/瓶，取货方式为<span class="red">包邮到家</span>。<br>
+							A用户通过朋友分享到朋友圈的链接看到活动但那个团人数已满，于是她微信支付了80元另外开了个新团，并发链接邀请B用户参团，B用户微信支付80元参团，则组团成功。门店将商品打包并加入门店活动宣传页分别邮寄给A用户和B用户。
+						</p>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--2-->
+	<div class="xcsceneBox">
+		<div class="xcsceneBox-c mgc">
+			<div class="xcsceneBox-main clearfix">
+				<div class="xcsceneBox-mainL fl" style="background:#cedfda;height: 669px;">
+					<div class="xcIfword">
+						<p style="padding-left: 6px;">假设某产品进货价10元/片，
+						门店售价30元/片。</p>
+					</div>
+					<div class="xcifImg haha2" style="margin-top: 36px;">
+						<p style="background:#fafaf9;">人数较多的大团适合节假日大型促销，可用于活动前期预热宣传,吸引大量用户在活动期间到访门店，提升活动人气。<br>
+						亦可在活动期间同时开启“来店自提”和“包邮到家”两种类型的拼团活动，同时引爆线上线下销售，增加活动影响力的同时最大化降低活动成本。</p>
+					</div>
+				</div>
+				<div class="xcsceneBox-mainR fr">
+					<div class="xcsbm-yuan fl">场景4</div>
+					<div class="xcsbm-line fl"></div>
+					<div class="xcsbm-word fl">
+						<p>
+							门店针对此商品创建<span class="red">10人拼团</span>活动，拼团价为15元/片，取货方式为<span class="red">包邮到家</span>。A用户支付开团后，将链接发给亲朋好友们邀请大家共同支付参团。组团成功后，商家将商品打包并将活动宣传页一并邮寄。
+						</p>
+					</div>
+
+				</div>
+				<div class="xcsceneBox-mainR fr">
+					<div class="xcsbm-yuan fl">场景5</div>
+					<div class="xcsbm-line fl"></div>
+					<div class="xcsbm-word fl">
+						<p>
+							门店针对此商品创建<span class="red">50人拼团</span>活动，拼团价为1元/片，取货方式为<span class="red">来店自提</span>。A用户支付开团后，将链接分享朋友圈、同学微信群、同事微信群邀请大家一起来参团。B用户、C用户、D用户…………也在到处转发拉人中。经过大家的共同努力，终于凑齐了50人，组团成功，大家分别到店凭二维码取货。
+						</p>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<!--3-->
+	<div class="xcsceneBox">
+		<div class="xcsceneBox-c mgc" style="border-bottom:none;">
+			<div class="xcsceneBox-main clearfix">
+				<div class="xcsceneBox-mainL fl" style="height: 568px;background: #f5f5f5;">
+					<div class="xcIfword">
+						<p style="padding-left: 6px;">假设某产品进货价25元/支，
+						门店售价50元/支。</p>
+					</div>
+					<div class="xcifImg haha3" style="margin-top: 66px;">
+						<p style="margin-top: 126px;">拼团活动除了可设置取货方式、成团人数外，商家还可自由设置活动时间和商品数量，将以前的限时抢购、闪购、秒杀与拼团结合起来，帮助商家快速吸引大量用户访问网站和门店。</p>
+					</div>
+				</div>
+				<div class="xcsceneBox-mainR fr">
+					<div class="xcsbm-yuan fl">场景6</div>
+					<div class="xcsbm-line fl"></div>
+					<div class="xcsbm-word fl">
+						<p>
+							门店针对此商品创建<span class="red">2人拼团</span>活动，活动时间为周一早上10:00—12:00，商品数量为100支，拼团价为30元/支，取货方式为<span class="red">包邮到家</span>。A用户提前通过门店公众号知晓活动，并告知B用户，两人于周一上午10:00准时组团，抢购成功。
+						</p>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+<!--footer-->
+<div class="xcFooter" style="padding: 99px 0 19px 0;"><p>美美哒科技 版权所有/鄂ICP备16005905号-1</p></div>
+    <script>
+        $(document).ready(function () {
+            var url = window.location.href;
+            if (url.indexOf('www.') > 0) {
+                window.location.href = url.replace('www.','');
+            }
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+﻿@using MD.Model.DB.Code
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>资讯管理</title>
+    <link rel="stylesheet" type="text/css" href="/Content/style.css">
+    <style type="text/css">
+        .Lorelei-commonTable table tr:not(:nth-child(1)) td:nth-child(7) a {
+            color: #68aef6;
+        }
+
+        .Lorelei-commonTable table tr:not(:nth-child(1)) td:nth-child(9) {
+            color: #e61c64;
+        }
+
+            .Lorelei-commonTable table tr:not(:nth-child(1)) td:nth-child(8).noPass {
+                color: #666;
+            }
+
+            .Lorelei-commonTable table tr:not(:nth-child(1)) td:nth-child(8).Passed {
+                color: #90c16d;
+            }
+    </style>
+    @Scripts.Render("~/bundles/jquery")
+    <script src="/Scripts/backyard/noticeoardMana/n_paging.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            //已发布、待发布、回收站选项卡切换事件
+            $(".LoreleitopMenu a").click(function () {
+                $("#hidden_status").val($(this).attr("attstatus"));
+                $(this).addClass('cur').siblings().removeClass("cur");
+                refresh(1);
+            });
+            //搜索按钮事件
+            $(".wine").click(function () {
+                refresh(1);
+            });
+        })
+    </script>
+</head>
+<body>
+    <!--header-->
+    @Html.Partial("Backyard/Header/_HeaderNoticeMana")
+    <!--mian-->
+    <div class="Lorelei-table-box">
+        <div class="Lorelei-table-box-c mgc">
+            <div class="LoreleitopMenuBox">
+                <div class="LoreleitopMenu float-left">
+                    @if (ViewBag.status == (int)ENoticeBoardStatus.已发布)
+                    {
+                        <a class="cur" attstatus="1">已发布</a>
+                        <a attstatus="0">待发布</a>
+                        <a attstatus="2">回收站</a>
+                    }
+                    @if (ViewBag.status == (int)ENoticeBoardStatus.待发布)
+                    {
+                        <a attstatus="1">已发布</a>
+                        <a class="cur" attstatus="0">待发布</a>
+                        <a attstatus="2">回收站</a>
+                    }
+                    @if (ViewBag.status == (int)ENoticeBoardStatus.已删除)
+                    {
+                        <a attstatus="1">已发布</a>
+                        <a attstatus="0">待发布</a>
+                        <a class="cur" attstatus="2">回收站</a>
+                    }
+                </div>
+                <div class="Lorelei-addBtn-l float-right margin-top-30">
+                    <a href=@Url.Action("AddNoticeBoard","NoticeBoardMana")>
+                        <i class="MMda i-add pdr5"></i>添加资讯
+                    </a>
+                </div>
+            </div>
+            <input type="hidden" id="hidden_status" value="@ViewBag.status" />
+            <div class="clearfix">
+                <div class="Lorelei-search-r margin-10"><input id="s_searchText" name="user_search" type="search" placeholder="请输入关键词" /><a class="wine" href="javascript:;"><i class="MMda i-search"></i></a></div>
+            </div>
+            <div class="Lorelei-commonTable">
+                @Html.Action("GetList", new { pageIndex = 1, q = "", status = ViewBag.status })
+            </div>
+
+        </div>
+    </div>
+
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,1 @@
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe C:\Users\Administrator\Source\Repos\dxw_wechat\BK.NoticeService\bin\Release\BK.NoticeService.exe

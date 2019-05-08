@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5F2379BF-C239-43A5-B947-AF9E70891141}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MD.Model</RootNamespace>
+    <AssemblyName>mmd.model</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Elasticsearch.Net, Version=1.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
+      <HintPath>..\packages\Elasticsearch.Net.1.5.1\lib\net45\Elasticsearch.Net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Nest, Version=1.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
+      <HintPath>..\packages\NEST.1.5.1\lib\net45\Nest.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="StackExchange.Redis, Version=1.0.316.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\StackExchange.Redis.1.0.488\lib\net45\StackExchange.Redis.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Configuration\Aliyun\OssClientConfig.cs" />
+    <Compile Include="Configuration\Aliyun\OssPicBucketConfig.cs" />
+    <Compile Include="Configuration\Att\MDConfigAttAttribute.cs" />
+    <Compile Include="Configuration\ElasticSearch\ComplexLocationConfig.cs" />
+    <Compile Include="Configuration\ElasticSearch\EKESConfig.cs" />
+    <Compile Include="Configuration\ElasticSearch\IESIndexInterface.cs" />
+    <Compile Include="Configuration\ElasticSearch\LocationConfig.cs" />
+    <Compile Include="Configuration\ElasticSearch\LogConfig.cs" />
+    <Compile Include="Configuration\ElasticSearch\MD\EsAct_boxConfig.cs" />
+    <Compile Include="Configuration\ElasticSearch\MD\EsBlacklistConfig.cs" />
+    <Compile Include="Configuration\ElasticSearch\MD\EsCommentConfig.cs" />
+    <Compile Include="Configuration\ElasticSearch\MD\EsGroupConfig.cs" />
+    <Compile Include="Configuration\ElasticSearch\MD\EsNoticeBoardConfig.cs" />
+    <Compile Include="Configuration\ElasticSearch\MD\EsProductConfig.cs" />
+    <Compile Include="Configuration\ElasticSearch\MD\EsSupplyConfig.cs" />
+    <Compile Include="Configuration\ElasticSearch\MD\EsUserConfig.cs" />
+    <Compile Include="Configuration\ElasticSearch\MD\EsWayToGetConfig.cs" />
+    <Compile Include="Configuration\ElasticSearch\ProfessorESConfig.cs" />
+    <Compile Include="Configuration\IConfigModel.cs" />
+    <Compile Include="Configuration\JuHe\JuHeConfig.cs" />
+    <Compile Include="Configuration\MQ\EmailMQConfig.cs" />
+    <Compile Include="Configuration\MQ\Interface\IMQConfig.cs" />
+    <Compile Include="Configuration\MQ\LogMQConfig.cs" />
+    <Compile Include="Configuration\MQ\MMD\MqGroupRemindConfig.cs" />
+    <Compile Include="Configuration\MQ\MMD\MqLotteryConfig.cs" />
+    <Compile Include="Configuration\MQ\MMD\MqVectorConfig.cs" />
+    <Compile Include="Configuration\MQ\MMD\MqWxPayCallbackConfig.cs" />
+    <Compile Include="Configuration\MQ\MMD\MqWxRefund.cs" />
+    <Compile Include="Configuration\MQ\MMD\MqWxTempMsgConfig.cs" />
+    <Compile Include="Configuration\MQ\RPC\RpcClinetConfig.cs" />
+    <Compile Include="Configuration\MQ\RPC\RpcConfigBase.cs" />
+    <Compile Include="Configuration\MQ\RPC\RpcGetAuthrizerAtConfig.cs" />
+    <Compile Include="Configuration\MQ\RPC\RpcGetComponentAtConfig.cs" />
+    <Compile Include="Configuration\MQ\SMMQConfig.cs" />
+    <Compile Include="Configuration\MQ\WeChatMessageMQ.cs" />
+    <Compile Include="Configuration\PaaS\QiniuConfig.cs" />
+    <Compile Include="Configuration\PaaS\SendCloudConfig.cs" />
+    <Compile Include="Configuration\Redis\RedisConfigBase.cs" />
+    <Compile Include="Configuration\Redis\WeChatRedisConfig.cs" />
+    <Compile Include="Configuration\UI\UiBackEndConfig.cs" />
+    <Compile Include="Configuration\User\UserBehaviorConfig.cs" />
+    <Compile Include="Configuration\WeChat\OpenConfig.cs" />
+    <Compile Include="Configuration\WeChat\PayConfig.cs" />
+    <Compile Include="Configuration\WeChat\WeixinConfig.cs" />
+    <Compile Include="DB\Activity\Box.cs" />
+    <Compile Include="DB\Activity\BoxTreasure.cs" />
+    <Compile Include="DB\Activity\LadderGroup.cs" />
+    <Compile Include="DB\Activity\LadderGroupOrder.cs" />
+    <Compile Include="DB\Activity\LadderPrice.cs" />
+    <Compile Include="DB\Activity\LadderOrder.cs" />
+    <Compile Include="DB\Activity\Sign.cs" />
+    <Compile Include="DB\Activity\UserSign.cs" />
+    <Compile Include="DB\Activity\UserTreasure.cs" />
+    <Compile Include="DB\Code\ActBoxStatus.cs" />
+    <Compile Include="DB\Code\Address.cs" />
+    <Compile Include="DB\Code\AttName.cs" />
+    <Compile Include="DB\Code\AttValue.cs" />
+    <Compile Include="DB\Code\AuditPeriod.cs" />
+    <Compile Include="DB\Code\BizCombo.cs" />
+    <Compile Include="DB\Code\BizComboItem.cs" />
+    <Compile Include="DB\Code\BizType.cs" />
+    <Compile Include="DB\Code\Codebrand.cs" />
+    <Compile Include="DB\Code\CodeMerchantStatus.cs" />
+    <Compile Include="DB\Code\CodeMorderStatus.cs" />
+    <Compile Include="DB\Code\CodeNoticeBoardStatus.cs" />
+    <Compile Include="DB\Code\CodeNoticeCategory.cs" />
+    <Compile Include="DB\Code\CodeProductStatus.cs" />
+    <Compile Include="DB\Code\CodeSkin.cs" />
+    <Compile Include="DB\Code\CodeSupplyStatus.cs" />
+    <Compile Include="DB\Code\Express.cs" />
+    <Compile Include="DB\Code\GroupOrderStatus.cs" />
+    <Compile Include="DB\Code\GroupStatus.cs" />
+    <Compile Include="DB\Code\GroupType.cs" />
+    <Compile Include="DB\Code\LadderStatus.cs" />
+    <Compile Include="DB\Code\Logistics_Company.cs" />
+    <Compile Include="DB\Code\Logistics_MerCompany.cs" />
+    <Compile Include="DB\Code\Logistics_Region.cs" />
+    <Compile Include="DB\Code\Logistics_Template.cs" />
+    <Compile Include="DB\Code\Logistics_TemplateItem.cs" />
+    <Compile Include="DB\Code\MerPayType.cs" />
+    <Compile Include="DB\Code\OrderStatus.cs" />
+    <Compile Include="DB\Code\PrePayError.cs" />
+    <Compile Include="DB\Code\ProductCategory.cs" />
+    <Compile Include="DB\Code\RefundStatus.cs" />
+    <Compile Include="DB\Code\Supplystatus.cs" />
+    <Compile Include="DB\Code\WayToGet.cs" />
+    <Compile Include="DB\Code\WXComAuthInfo.cs" />
+    <Compile Include="DB\Code\WXRefundError.cs" />
+    <Compile Include="DB\Configuration\MDConfig.cs" />
+    <Compile Include="DB\Professional\Community.cs" />
+    <Compile Include="DB\Professional\Distribution.cs" />
+    <Compile Include="DB\Professional\Group.cs" />
+    <Compile Include="DB\Professional\GroupOrder.cs" />
+    <Compile Include="DB\Professional\GroupOrderMember.cs" />
+    <Compile Include="DB\Professional\Group_Media.cs" />
+    <Compile Include="DB\Professional\MBizConsumeLog.cs" />
+    <Compile Include="DB\Professional\MerBiz.cs" />
+    <Compile Include="DB\Professional\Merchant.cs" />
+    <Compile Include="DB\Professional\MerChargeOrder.cs" />
+    <Compile Include="DB\Professional\MerPhotos.cs" />
+    <Compile Include="DB\Professional\MerWXAuth.cs" />
+    <Compile Include="DB\Professional\NoticeBoard.cs" />
+    <Compile Include="DB\Professional\NoticeReader.cs" />
+    <Compile Include="DB\Professional\Order.cs" />
+    <Compile Include="DB\Professional\PriceMatrix.cs" />
+    <Compile Include="DB\Professional\Product.cs" />
+    <Compile Include="DB\Professional\ProductComment.cs" />
+    <Compile Include="DB\Professional\PublicAdvertise.cs" />
+    <Compile Include="DB\Professional\SponsoredContent.cs" />
+    <Compile Include="DB\Professional\sta_user.cs" />
+    <Compile Include="DB\Professional\Subscribe_User.cs" />
+    <Compile Include="DB\Professional\Supply.cs" />
+    <Compile Include="DB\Professional\User.cs" />
+    <Compile Include="DB\Professional\UserPost.cs" />
+    <Compile Include="DB\Professional\User_WriteOff.cs" />
+    <Compile Include="DB\Professional\Vector.cs" />
+    <Compile Include="DB\Professional\Verifier.cs" />
+    <Compile Include="DB\Professional\VerifyPoint.cs" />
+    <Compile Include="DB\Professional\WXPayResult.cs" />
+    <Compile Include="DB\Professional\WXPrePay.cs" />
+    <Compile Include="DB\Professional\WXRefund.cs" />
+    <Compile Include="DB\View\v_merorder.cs" />
+    <Compile Include="Index\BizIndex.cs" />
+    <Compile Include="Index\BK\ComplexLocation.cs" />
+    <Compile Include="Index\BK\EKArticle.cs" />
+    <Compile Include="Index\BK\Location.cs" />
+    <Compile Include="Index\LogEvent.cs" />
+    <Compile Include="Index\BK\Papers.cs" />
+    <Compile Include="Index\BK\Professor.cs" />
+    <Compile Include="Index\MD\IndexAct_box.cs" />
+    <Compile Include="Index\MD\IndexAct_boxtreasure.cs" />
+    <Compile Include="Index\MD\IndexAct_sign.cs" />
+    <Compile Include="Index\MD\IndexAct_usersign.cs" />
+    <Compile Include="Index\MD\IndexAct_usertreasure.cs" />
+    <Compile Include="Index\MD\IndexBlacklist.cs" />
+    <Compile Include="Index\MD\IndexComment.cs" />
+    <Compile Include="Index\MD\IndexCommunity.cs" />
+    <Compile Include="Index\MD\IndexCommunityBiz.cs" />
+    <Compile Include="Index\MD\IndexCom_Reply.cs" />
+    <Compile Include="Index\MD\IndexGroup.cs" />
+    <Compile Include="Index\MD\IndexGroupOrder.cs" />
+    <Compile Include="Index\MD\IndexLadderGroup.cs" />
+    <Compile Include="Index\MD\IndexLadderGroupOrder.cs" />
+    <Compile Include="Index\MD\IndexLadderOrder.cs" />
+    <Compile Include="Index\MD\Indexlogisticsregion.cs" />
+    <Compile Include="Index\MD\IndexLogisticsTemplate.cs" />
+    <Compile Include="Index\MD\IndexNoticeBoard.cs" />
+    <Compile Include="Index\MD\IndexOrder.cs" />
+    <Compile Include="Index\MD\IndexProduct.cs" />
+    <Compile Include="Index\MD\IndexProductComment.cs" />
+    <Compile Include="Index\MD\IndexProductCommentPraise.cs" />
+    <Compile Include="Index\MD\IndexProductGrass.cs" />
+    <Compile Include="Index\MD\IndexSupply.cs" />
+    <Compile Include="Index\MD\IndexUser.cs" />
+    <Compile Include="Index\MD\IndexWriteoffer.cs" />
+    <Compile Include="Index\MD\IndexWriteOffPoint.cs" />
+    <Compile Include="Json\AddressFromJuHe.cs" />
+    <Compile Include="MQ\BK\ChatMessageMQ.cs" />
+    <Compile Include="MQ\BK\EKCommentMQObject.cs" />
+    <Compile Include="MQ\LogMQObject.cs" />
+    <Compile Include="MQ\MD\MqEmailObject.cs" />
+    <Compile Include="MQ\MD\MqWxRefundObject.cs" />
+    <Compile Include="MQ\MD\MqWxTempMsgObject.cs" />
+    <Compile Include="MQ\MessageBase.cs" />
+    <Compile Include="MQ\MsgType.cs" />
+    <Compile Include="MQ\BK\NoticeMQ.cs" />
+    <Compile Include="MQ\RPC\RpcObjects.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Redis\att\CustomAtts\lists\TestObject.cs" />
+    <Compile Include="Redis\att\CustomAtts\sets\TesterOpenIdSetAttribute.cs" />
+    <Compile Include="Redis\att\CustomAtts\sets\TestObjectSets.cs" />
+    <Compile Include="Redis\att\CustomAtts\sets\UserInfoSet.cs" />
+    <Compile Include="Redis\att\CustomAtts\zsets\TestObjectZset.cs" />
+    <Compile Include="Redis\att\RedisAtt.cs" />
+    <Compile Include="Redis\Objects\EK\EKTodayRedis.cs" />
+    <Compile Include="Redis\Objects\Helper\ObjectHelper.cs" />
+    <Compile Include="Redis\Objects\Ids\OpenIdToUuidRedis.cs" />
+    <Compile Include="Redis\Objects\Messaging\EKCommentRedis.cs" />
+    <Compile Include="Redis\Objects\Messaging\PaperCommentRedis.cs" />
+    <Compile Include="Redis\Objects\Messaging\WeChatMessageRedis.cs" />
+    <Compile Include="Redis\Objects\Messaging\WeChatSessionHash.cs" />
+    <Compile Include="Redis\Objects\Notice\WeChatNoticeRedis.cs" />
+    <Compile Include="Redis\Objects\paper\PaperRedis.cs" />
+    <Compile Include="Redis\RedisObjects\ForTest\ForTestRedis.cs" />
+    <Compile Include="Redis\RedisObjects\RedisTest.cs" />
+    <Compile Include="Redis\Objects\Tester\TesterRedis.cs" />
+    <Compile Include="Redis\Objects\TestObject.cs" />
+    <Compile Include="Redis\Objects\UserBehavior\NameCardRedis.cs" />
+    <Compile Include="Redis\Objects\UserBehavior\Userinfo.cs" />
+    <Compile Include="Redis\Objects\UserBehavior\UserLoginRedis.cs" />
+    <Compile Include="Redis\RedisObjects\Statistics\StaLoginCheckRedis.cs" />
+    <Compile Include="Redis\RedisObjects\Vector\VectorRedis.cs" />
+    <Compile Include="Redis\RedisObjects\WeChat\Biz\AttTable\AttTableRedis.cs" />
+    <Compile Include="Redis\RedisObjects\WeChat\Biz\Merchant\MerchantRedis.cs" />
+    <Compile Include="Redis\RedisObjects\WeChat\Biz\Merchant\MerchantStatisticsRedis.cs" />
+    <Compile Include="Redis\RedisObjects\WeChat\Biz\UserBehavior\WxLoginStatisticsRedis.cs" />
+    <Compile Include="Redis\RedisObjects\WeChat\Component\AuthorizerInfoRedis.cs" />
+    <Compile Include="Redis\RedisObjects\WeChat\Component\UserInfoRedis.cs" />
+    <Compile Include="Redis\RedisObjects\WeChat\Component\WXComponent.cs" />
+    <Compile Include="Redis\RedisObjects\WeChat\Component\WxJsSdkTiketRedis.cs" />
+    <Compile Include="Redis\RedisObjects\WeChat\WeChat\WxTemplateMsgRedis.cs" />
+    <Compile Include="Redis\RedisObjects\WeChat\WeChat\WXTokenRedis.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Redis\ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Redis\RedisObjects\OSS\" />
+    <Folder Include="Redis\RedisObjects\WeChat\Biz\Product\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

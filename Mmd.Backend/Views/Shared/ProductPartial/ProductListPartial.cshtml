@@ -1,0 +1,78 @@
+﻿@using MD.Lib.DB.Repositorys;
+@using MD.Lib.Weixin.MmdBiz;
+@model IEnumerable<MD.Model.DB.Product>
+@{
+    Layout = null;
+    int pageNo = (int)ViewBag.pageNo;//当前页数
+    int pageSize = (int) ViewBag.pageSize;//每页的大小
+    int row = (pageNo - 1)* pageSize;//当前页的其实序号
+    int totalCount = (int)ViewBag.totalCount;
+    string appid = ViewBag.appid;
+    int totalPages = 0;
+    if (totalCount%pageSize == 0)
+    {
+        totalPages = totalCount/pageSize;
+    }
+    else
+    {
+        totalPages = totalCount / pageSize + 1;
+    }
+}
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td>序号</td>
+        <td>商品编号</td>
+        <td style="width: 335px;">商品名称</td>
+        <td>商品分类</td>
+        <td>商品规格</td>
+        <td>商品价格(元)</td>
+        <td>平均打分</td>
+        <td>打分人数</td>
+        <td>操作</td>
+    </tr>
+    @foreach (var p in Model)
+    {
+        //价格转元
+        string price = (Convert.ToDecimal(p.price.Value)/100).ToString();
+
+        row = row + 1;
+        var str = "";
+        using (CodeRepository repo = new CodeRepository())
+        {
+            str = repo.ProductCategoryDic[p.category.Value];
+            //using (BizRepository repo = new BizRepository())
+            //{
+            //    RepositoryHelper.UpdateContextItem(repo.Context, p);
+            <tr>
+                <td>@row</td>
+                <td id="pid_@row" style="display: none">@p.pid</td>
+                <td id="appid_@row" style="display: none">@ViewBag.appid</td>
+                <td id="size_@row" style="display: none">@ViewBag.pageSize</td>
+                <td id="pno_@row">@p.p_no</td>
+                <td id="name_@row">@p.name</td>
+                @*<td>@p.categoryid.value</td>*@
+                <td>@str</td>
+                <td>@p.standard</td>
+                <td>@price</td>
+                <td>@(p.avgScore ?? 0)</td>
+                <td>@(p.scorePeopleCount ?? 0)</td>
+                <td><a href=@Url.Action("Add_Product", "Product", new {pid = p.pid})>编辑</a><a id="@row" class="mg7" style="text-decoration: underline; cursor: pointer" onclick="onDelClick(this.id)">删除</a><a id="@row" class="mg7" style="text-decoration: underline; cursor: pointer" onclick="onCreateGroup(this.id)">创建拼团</a>
+                <a href="javascript:;" onclick="onTuiguang(this, '@p.name');" data-prourl="@(MdWxSettingUpHelper.GenProductDetailUrl(appid, p.pid));">推广链接</a>
+                <a href="/Product/CommentList/@p.pid">查看评论</a>
+                </td>
+            </tr>
+        }
+    }
+</table>
+<div class="Lorelei-commonTable-btnbox clearfix">
+    <div class="Lorelei-cT-btnbox-l">总计<span id="spantotal" class="wine">@ViewBag.totalCount</span></div>
+    <div class="Lorelei-cT-btnbox-r">
+        <a id="left" href="javascript:;" onclick="onLeftClick()">◀</a><span id="currentPage" class="wine mgl5">@pageNo</span>/<span id="totalPages" class="mgr5">@totalPages</span><a id="right" href="javascript:;" onclick="onRightClick()">▶</a>
+        <input class="pd5 mg7" id="page_count" type="text" /><a id="jump" href="javascript:;" onclick="onJump()">跳转</a>
+    </div>
+</div>
+
+
+
+
+

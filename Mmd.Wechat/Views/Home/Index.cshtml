@@ -1,0 +1,166 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>美美（MM）拼团-化妆品店引流神器</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="美美（MM）拼团，美美哒科技专为化妆品店开发的社交购物系统，帮助门店吸引新一代消费者，实现推广引流、在线支付、微信加粉、用户活跃完整的O2O闭环。" />
+    <meta name="keywords" content="MM拼团,化妆品店O2O,拼团系统,社交电商" />
+    <link rel="stylesheet" type="text/css" href="/Content/css/xuanc.css">
+    <title>index</title>
+    @Scripts.Render("~/bundles/jquery")
+</head>
+<body>
+    <!--header-->
+    <div class="xcheader">
+        <div class="xcheader-c mgc clearfix">
+            <div class="xcheader-logo fl ft12"><img src="/Content/images/logo.jpg"></div>
+            <ul class="xcheaderMainnav fl clearfix">
+                <li><a class="cur" href="javascript:;">首页</a></li>
+                <li>@Html.ActionLink("拼团玩法", "intro")</li>
+                @*<li>@Html.ActionLink("行业案例", "examples")</li>*@
+                <li>@Html.ActionLink("关于我们", "about")</li>
+            </ul>
+            <div class="xcheader-login fr ft12">
+                <a class="kait" href=@ViewBag.url>申请开通</a>
+                <a class="denl mgl5" href=@ViewBag.url>登陆</a>
+            </div>
+        </div>
+    </div>
+
+    <!--mian-->
+    <div class="xctips">
+        <h3>MM拼团 —— 美美哒科技专为美妆门店开发的社交购物系统</h3>
+        <p>
+            它利用当下最火爆的社交电商玩法“拼团”帮助门店吸引新一代的年轻消费者，实现传播引流、<br>
+            交易支付、微信加粉、留存活跃完整的O2O闭环。
+        </p>
+    </div>
+    <div class="girdiMG">
+        <div class="girdiMG-c mgc">
+            <img src="/Content/images/a.jpg" border="0" usemap="#Map">
+            <map name="Map"><area shape="rect" coords="431,371,583,411" href=@ViewBag.url></map>
+        </div>
+    </div>
+
+    <div class="xctezheng">
+        <div class="xctezheng-c mgc">
+            <ul class="clearfix">
+                <li class="xctezheng-a">
+                    <h3>引流神器</h3>
+                    <p>
+                        天生自带传播属性，
+                        用户自愿变导购员和宣传员
+                    </p>
+                </li>
+                <li class="xctezheng-b">
+                    <h3>加粉神器</h3>
+                    <p>
+                        无论组团成功与否，
+                        参团用户全部自动关注门店公众号
+                    </p>
+                </li>
+                <li class="xctezheng-c">
+                    <h3>在线支付</h3>
+                    <p>
+                        微信在线支付参团，
+                        组团失败原路自动退款
+                    </p>
+                </li>
+                <li class="xctezheng-d">
+                    <h3>O2O闭环</h3>
+                    <p>
+                        线上线下流量互导，
+                        包邮到家、来店自提
+                        商家自由创建
+                    </p>
+                </li>
+                <li class="xctezheng-e">
+                    <h3>无需开发</h3>
+                    <p>
+                        零开发成本，服务号
+                        授权开通，微信官方
+                        认证开发者
+                    </p>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="xcAdsImg">
+        <div class="xcAdsImg-c mgc">
+            <img src="/Content/images/ad1.jpg">
+        </div>
+    </div>
+
+    <div class="leaderWord">
+        <div class="leaderWord-c mgc">
+            <div class="leaderWord-tips clearfix">
+                <div class="leaderWord-tipsl fl">
+                    <h3>怎么开通MM拼团</h3>
+                    <p>
+                        在MM拼团官网申请开通MM拼团，工作人员审核通过后将电话通知您，并在线指
+                        导门店完成技术配置和网站基本设置。
+                        注：门店必须拥有微信服务号，并开通微信支付。
+                    </p>
+                </div>
+                <div class="leaderWord-tipsr fr">
+                    <h3>MM拼团怎么玩？</h3>
+                    <p>
+                        当门店开通了MM拼团后，就可以登录MM拼团的后台上传商品设置规则发布拼
+                        团活动。 用户进入拼团活动页面选择商品支付开团，并邀请朋友来参团，24小时
+                        内参团人数达到成团人数时，组团成功；若未达到成团人数，组团失败，参团人
+                        员全部由系统自动退款。
+                    </p>
+                </div>
+            </div>
+            <div class="leaderWord-tips clearfix">
+                <div class="leaderWord-tipsl fl">
+                    <h3>如何向线下门店引流？</h3>
+                    <p>
+                        在MM拼团后台创建”来店自提“类型的拼团活动，用户在线支付并邀请朋友参团，
+                        组团成功后到门店提货。门店核销员只要用自己的手机扫描用户的订单二维码就
+                        可以快速完成核销，无论是一家单店还是几百家连锁店，都可以轻松搞定！
+                    </p>
+                </div>
+                <div class="leaderWord-tipsr fr">
+                    <h3>资金怎么结算？</h3>
+                    <p>
+                        所有资金都是直接从消费者的微信钱包打到门店服务号的微信支付里，退款也
+                        是原路自动退款到消费者的微信钱包。
+                    </p>
+                </div>
+            </div>
+            <div class="leaderWord-tips clearfix starBg">
+                <div class="leaderWord-tipsl fl">
+                    <h3>MM拼团如何收费？</h3>
+                    <p>
+                        内测期间完全免费，以后我们将主要按照使用效果进行收费。即能给门店带来多
+                        少成交订单，我们就收多少钱。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--footer-->
+    <div class="xcFooter"><p>美美哒科技 版权所有/鄂ICP备16005905号-1</p></div>
+
+    <!--floatcode-->
+<div class="floatCode">
+    <img src="/Content/images/code.jpg">
+    <p>关注MM拼团<br>了解最新动态
+    </p>
+</div>
+    <script>
+        $(document).ready(function () {
+            var url = window.location.href;
+            if (url.indexOf('www.') > 0) {
+                window.location.href = url.replace('www.','');
+            }
+    });
+    </script>
+</body>
+</html>

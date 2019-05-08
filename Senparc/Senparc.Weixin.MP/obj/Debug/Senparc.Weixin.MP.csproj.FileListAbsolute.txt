@@ -1,0 +1,6 @@
+/Users/jxiao/Workshop/mmd/MMD/Senparc.Weixin.MP.BuildOutPut/Senparc.Weixin.MP.dll
+/Users/jxiao/Workshop/mmd/MMD/Senparc.Weixin.MP.BuildOutPut/Senparc.Weixin.MP.pdb
+/Users/jxiao/Workshop/mmd/MMD/Senparc/Senparc.Weixin.MP/obj/Debug/Senparc.Weixin.MP.csprojResolveAssemblyReference.cache
+/Users/jxiao/Workshop/mmd/MMD/Senparc/Senparc.Weixin.MP/obj/Debug/Senparc.Weixin.MP.csproj.CoreCompileInputs.cache
+/Users/jxiao/Workshop/mmd/MMD/Senparc/Senparc.Weixin.MP/obj/Debug/Senparc.Weixin.MP.dll
+/Users/jxiao/Workshop/mmd/MMD/Senparc/Senparc.Weixin.MP/obj/Debug/Senparc.Weixin.MP.pdb

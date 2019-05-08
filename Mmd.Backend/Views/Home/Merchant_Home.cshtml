@@ -1,0 +1,235 @@
+﻿@using MD.Lib.DB.Redis
+@using MD.Model.Configuration.Redis
+@using MD.Model.DB.Code
+@using MD.Model.Redis.RedisObjects.WeChat.Biz
+@using Mmd.Backend.Controllers
+@model MD.Model.DB.Merchant
+@{
+    var mid = Session[ESessionStateKeys.Mid.ToString()];
+
+    //var redisobject = new RedisManager2<WeChatRedisConfig>().GetObjectFromRedisHash_TongBu<MerchantStatisticsRedis>(mid.ToString());
+    //var kaituanTotal = 0;
+    //var chengtuanTotal = 0;
+    //var orderTotal = 0;
+    //var orderOkTotal = 0;
+    //var chegnjiaoTotal = 0;
+    //var daodiantotal = 0;
+    //var wuliutotal = 0;
+    //if (redisobject != null)
+    //{
+    //    kaituanTotal = string.IsNullOrEmpty(redisobject.GroupOrderTotal) ? 0 : int.Parse(redisobject.GroupOrderTotal);
+    //    chengtuanTotal = string.IsNullOrEmpty(redisobject.GroupOrderOkTotal) ? 0 : int.Parse(redisobject.GroupOrderOkTotal);
+    //    orderTotal = string.IsNullOrEmpty(redisobject.OrderTotal) ? 0 : int.Parse(redisobject.OrderTotal);
+    //    orderOkTotal = string.IsNullOrEmpty(redisobject.OrderOkTotal) ? 0 : int.Parse(redisobject.OrderOkTotal);
+    //    chegnjiaoTotal = string.IsNullOrEmpty(redisobject.InComeTotal) ? 0 : int.Parse(redisobject.InComeTotal);
+    //    daodiantotal = string.IsNullOrEmpty(redisobject.DaoDianInComeTotal) ? 0 : int.Parse(redisobject.DaoDianInComeTotal);
+    //    wuliutotal = string.IsNullOrEmpty(redisobject.WuLiuInComeTotal) ? 0 : int.Parse(redisobject.WuLiuInComeTotal);
+    //}
+
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MM拼团</title>
+    <link rel="stylesheet" type="text/css" href="/Content/main.css" />
+    <link rel="stylesheet" type="text/css" href="/Content/ico.css" />
+    @Scripts.Render("~/bundles/jquery")
+    <link href="/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="/Content/daterangepicker-bs3.css" rel="stylesheet" />
+    <script src="/Scripts/bootstrap.min.js"></script>
+    <script src="/Scripts/moment.js"></script>
+    <script src="/Scripts/daterangepicker.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#reservation').daterangepicker(null, function (start, end, label) {
+                console.log(start.toISOString(), end.toISOString(), label);
+            });
+        });
+        function search() {
+            var time = $("#reservation").val();
+            window.location.href = "/Home/Merchant_Home?strtime=" + time;
+        }
+    </script>
+</head>
+<body>
+    @{
+        ViewData["nav"] = true;
+        string qdate = "" + DateTime.Now.ToString("yyyy-MM-dd") + " - " + DateTime.Now.ToString("yyyy-MM-dd") + "";
+        string yesterday = "" + DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd") + " - " + DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd") + "";
+    }
+
+    @Html.Partial("Header/_Header", @Model.name, this.ViewData)
+    <!--main-->
+    <div class="myachievements-box">
+        <div class="myachievements-box-c mgc">
+            <div class="tool">
+                <div>
+                        <a href=@Url.Action("Merchant_Home", "Home",new { strtime = qdate })><input type="button" id="today" value="今天" class="actiov" /> </a>
+                        <a href=@Url.Action("Merchant_Home", "Home", new { strtime = yesterday })><input type="button" id="yesterday" value="昨天"></a>
+                    </div>
+                    <div>
+                        <span>时间段 :</span>
+                    </div>
+                    <div class="input-prepend input-group" style="width:500px;">
+                        <span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+                        <input type="text" readonly style="width: 240px" name="reservation" id="reservation" class="form-control" value="@ViewBag.seachDate" />
+                        <input type="button" name="" class="query" value="查询" onclick="search()">
+                    </div>
+            </div>
+            <table width="100%" border="0">
+                <tr>
+                    <td><h3>@ViewBag.kaituanTotal</h3><span>开团总数</span></td>
+                    <td><h3>@ViewBag.chengtuanTotal</h3><span>成团总数</span></td>
+                    <td><h3>@ViewBag.orderOkTotal</h3><span>成交订单总数</span></td>
+                    <td><h3>@ViewBag.chegnjiaoTotal</h3><span>成交总金额</span></td>
+                    <td><h3>@ViewBag.hexiaoTotal</h3><span>核销总数</span></td>
+                    <td><h3>@ViewBag.lll</h3><span>浏览量</span></td>
+                    <td><h3>@(ViewBag.orderOkTotal == 0 ? 0 : ((float)ViewBag.orderOkTotal / ViewBag.lll * 100).ToString("F2"))%</h3><span>转化率</span></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="lineTitles">
+        <div class="lineTitles-c mgc">
+            <h3><span>商 品 管 理</span></h3>
+        </div>
+    </div>
+
+    <div class="eachTab-menu-box">
+        <div class="eachTab-menu-box-c mgc">
+            <table width="100%" border="0">
+                <tr>
+                    <td><a href="/Product/Add_Product?pid=@Guid.Empty"><p><img src="/Content/images/eachTab-menu_01.png"></p><span>添加商品</span></a></td>
+                    <td><a href="/Product/ProductList/"><p><img src="/Content/images/eachTab-menu_02.png"></p><span>商品列表</span></a></td>
+                    <td><a href=@Url.Action("GroupManage","Group",new {status=2})><p><img src="/Content/images/eachTab-menu_03.png"></p><span>拼团管理</span></a></td>
+                    <td><a class="nosee" href="javascript:;"><p></p><span>添加商品</span></a></td>
+                    <td><a class="nosee" href="javascript:;"><p></p><span>添加商品</span></a></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="lineTitles">
+        <div class="lineTitles-c mgc">
+            <h3><span>拼 团 管 理</span></h3>
+        </div>
+    </div>
+
+    <div class="eachTab-menu-box">
+        <div class="eachTab-menu-box-c mgc">
+            <table width="100%" border="0">
+                <tr>
+                    <td><a href=@Url.Action("GroupManage","Group",new {status=0})><p><img src="/Content/images/eachTab-menu_04.png"></p><span>已发布</span></a></td>
+                    <td><a href=@Url.Action("GroupManage","Group",new {status=2})><p><img src="/Content/images/eachTab-menu_05.png"></p><span>待发布</span></a></td>
+                    <td><a href=@Url.Action("GroupManage","Group",new {status=1})><p><img src="/Content/images/eachTab-menu_06.png"></p><span>回收站</span></a></td>
+                    <td><a class="nosee" href="javascript:;"><p></p><span>添加商品</span></a></td>
+                    <td><a class="nosee" href="javascript:;"><p></p><span>添加商品</span></a></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="lineTitles">
+        <div class="lineTitles-c mgc">
+            <h3><span>订 单 管 理</span></h3>
+        </div>
+    </div>
+
+    <div class="eachTab-menu-box">
+        <div class="eachTab-menu-box-c mgc">
+            <table width="100%" border="0">
+                <tr>
+                    <td>
+                        <a href=@Url.Action("OrderManage", "Order")>
+                            <p>
+                                <img src="/Content/images/eachTab-menu_07.png">
+                            </p><span>订单列表</span>
+                        </a>
+                    </td>
+                    <td>
+                        <a href=@Url.Action("OrderManage", "Order", new {status = (int) EOrderStatus.已成团未提货})>
+                            <p>
+                                <img src="/Content/images/eachTab-menu_08.png">
+                            </p><span>待提货</span>
+                        </a>
+                    </td>
+                    <td>
+                        <a href=@Url.Action("OrderManage", "Order", new {status = (int) EOrderStatus.拼团成功, wtg = (int) EWayToGet.自提})>
+                            <p>
+                                <img src="/Content/images/eachTab-menu_09.png">
+                            </p><span>已提货</span>
+                        </a>
+                    </td>
+                    <td class="nosee">
+                        <a href="javascript:;">
+                            <p>
+                                <img src="/Content/images/eachTab-menu_10.png">
+                            </p><span>待发货</span>
+                        </a>
+                    </td>
+                    <td class="nosee">
+                        <a href="javascript:;">
+                            <p>
+                                <img src="/Content/images/eachTab-menu_11.png">
+                            </p><span>已发货</span>
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="lineTitles">
+        <div class="lineTitles-c mgc">
+            <h3><span>系 统 管 理</span></h3>
+        </div>
+    </div>
+
+    <div class="eachTab-menu-box">
+        <div class="eachTab-menu-box-c mgc">
+            <table width="100%" border="0">
+                <tr>
+                    <td>
+                        <a href=@Url.Action("Index", "System")>
+                            <p>
+                                <img src="/Content/images/eachTab-menu_12.png">
+                            </p><span>基本设置</span>
+                        </a>
+                    </td>
+                    <td>
+                        <a href=@Url.Action("Index", "System", new {tag = (int) EsysTagName.W})>
+                            <p>
+                                <img src="/Content/images/eachTab-menu_14.png">
+                            </p><span>提货设置</span>
+                        </a>
+                    </td>
+                    <td class="nosee">
+                        <a href="javascript:;">
+                            <p>
+                                <img src="/Content/images/eachTab-menu_13.png">
+                            </p><span>支付配置</span>
+                        </a>
+                    </td>
+                    <td class="nosee">
+                        <a href="javascript:;">
+                            <p>
+                                <img src="/Content/images/eachTab-menu_15.png">
+                            </p><span>快递设置</span>
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+</body>
+</html>

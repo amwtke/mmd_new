@@ -1,0 +1,71 @@
+﻿@model MD.Model.DB.Merchant
+@{
+    if (string.IsNullOrEmpty(Model.service_intro))
+    {
+        Model.service_intro = "商家服务介绍";
+    }
+
+    if (string.IsNullOrEmpty(Model.brief_introduction))
+    {
+        Model.brief_introduction = "商家简介";
+    }
+
+}
+<form id="m_form" class="ft14" action="/System/UpdateMerchant" method="post" enctype="multipart/form-data">
+
+
+    <div class="inputText-Tap mgb20 mgt19"><span class="w100">网站名称</span>@Html.TextBoxFor(model => model.name, new {@class = "coInp", @readonly = "true"}) @*<input class="coInp" name="" type="text" placeholder="网站名称" value="我的时尚女友" />*@<span class="ft12 mgl5">微信公众号的名称</span></div>
+
+    <div class="inputText-Tap mgb20"><span class="w100">分享标题</span>@Html.TextBoxFor(model => model.title, new {@class = "coInp", value = "欢迎光临" + @Model.name})  @Html.ValidationMessageFor(model => model.title, "", new { @class = "red" })@*<input class="coInp" name="" type="tel" placeholder="分享标题" value="我的时尚女友官方网站" />*@<span id="span_title" class="red" style="display: none">不能为空!</span> <span class="ft12 mgl5">分享到朋友圈显示的文字</span></div> 
+
+    <div class="inputText-Tap mgb20"><span class="w100">网站公告</span>@Html.TextBoxFor(model => model.slogen, new { @class = "coInp", value = "欢迎光临" + @Model.name })  @Html.ValidationMessageFor(model => model.slogen, "", new { @class = "red" })@*<input class="coInp" name="" type="text" placeholder="网站公告" value="时尚时尚最时尚" />*@<span id="span_slogen" class="red" style="display: none">不能为空!</span> <span class="ft12 mgl5">64字以内</span></div>
+
+    @*<div class="inputFile-Tap mgb20" style="display: none">
+        <span class="w100">网站LOGO</span><input class="coInp" type="file" name="img" /><span class="ft12 mgl5">建议尺寸66px*66px</span>
+        <div class="Add-ImgCuber" style="position: relative;overflow: hidden;height: 100px;width:100px;">
+            <i class="MMda i-add pdr5 green" style="margin-top: 29px;"></i>
+            <input class="AddCub" type="file" disabled="disabled">
+        </div>
+
+    </div>
+
+    <div class="inputFile-Tap mgb20" style="display: none">
+        <span class="w100">公众号二维码</span><input class="coInp" type="file" name="img" /><span class="ft12 mgl5">建议尺寸80px*80px</span>
+        <div class="Add-ImgCuber" style="position: relative;overflow: hidden;height: 119px;width:119px;">
+            <i class="MMda i-add pdr5 green" style="margin-top: 36px;"></i>
+            <input class="AddCub" type="file" disabled="disabled">
+        </div>
+
+    </div>*@
+
+    <div class="inputFile-Tap mgb20">
+        <span class="w100">商家宣传图</span><span class="ft12 mgl5">建议尺寸750px*190px</span><span id="spanpics" class="w100 red" style="display: none">请传输图片!</span>
+        <div id="dpic1" class="Add-ImgCuber" style="position: relative;overflow: hidden;height: 117px;width:216px;">
+            <i id="ipic1" class="MMda i-add pdr5 green" style="margin-top: 37px;"></i>
+            @Html.TextBoxFor(model => model.advertise_pic_url, new { style = "display: none" })
+            <input id="picg" name ="pic" class="AddCub" type="file">
+        </div>
+
+    </div>
+
+    <div class="English-brief-ofstore">
+        <div class="inputText-Tap mgb20 mgt19"><span class="w100">商家简介</span><span class="ft12 mgl19">建议400字以内</span>@Html.ValidationMessageFor(model => model.brief_introduction, "", new {@class = "red"}) <span id="span_brief_introduction" class="red" style="display: none">不能为空！</span></div>
+        <div class="brief-ofstore-word">
+            @*<textarea name="" cols="8" rows="6">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget odio.
+            </textarea>*@
+            @Html.TextAreaFor(model => model.brief_introduction, new {cols = "8", rows = "6"})
+        </div>
+
+        <div class="inputText-Tap mgb20 mgt19"><span class="w100">售后服务</span><span class="ft12 mgl19">建议600字以内</span>@Html.ValidationMessageFor(model => model.service_intro, "", new {@class = "red"}) <span id="span_service_intro" class="red" style="display: none">不能为空！</span></div>
+        <div class="brief-ofstore-word">
+            @*<textarea name="" cols="8" rows="8">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget odio.
+            </textarea>*@
+            @Html.TextAreaFor(model => model.service_intro, new {cols = "8", rows = "8"})
+        </div>
+    </div>
+    @Html.TextBoxFor(m=>m.wx_appid,new {style="display: none"})
+    <input class="inputBtn-Tap" onclick="submitSystemForm()"value="保存修改" readonly="readonly"/>
+
+</form>

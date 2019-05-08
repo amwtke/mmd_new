@@ -1,0 +1,298 @@
+﻿@using MD.Model.DB.Code;
+@model MD.Model.DB.Group
+@{
+    Layout = null;
+    var list = new List<SelectListItem>();
+    list = @ViewBag.listTemplate;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>04 商品管理 创建拼团</title>
+    <link rel="stylesheet" type="text/css" href="/Content/main.css">
+    <link rel="stylesheet" type="text/css" href="/Content/ico.css">
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="/Scripts/group/gcommon.js"></script>
+    <style type="text/css">
+        .red {
+            color: #F00;
+        }
+    </style>
+</head>
+<body>
+    <!--header-->
+
+    @Html.Partial("Header/_headerGroup")
+
+    <div class="SYS-set">
+        <div class="SYS-set-c mgc">
+
+            <form id="group_from" class="ft14" action="/Group/GroupSave" method="post" enctype="multipart/form-data">
+
+                <div class="inputText-Tap mgb20 mgt19">
+                    <span class="w100">商品编号</span><input class="coInp" type="text" readonly="readonly" disabled="disabled" value="@ViewBag.p_no" />
+                </div>
+                <div class="inputText-Tap mgb20 clearfix">
+                    <span class="w100 fl">团类型</span>
+                    <p class="fl coInp">
+                        <label class="mgl19">
+                            @if (Model.status == (int)EGroupStatus.已发布)
+                            {
+                                <label>
+                                    @Html.RadioButtonFor(model => model.group_type, 0, new { @checked = "checked" , @disabled = "disabled"})
+                                    普通团
+                                </label>
+                                <label class="mgl19">
+                                    @Html.RadioButtonFor(model => model.group_type, 1, new { @disabled = "disabled" })
+                                    抽奖团
+                                </label>
+                                <br />
+                            }
+                            else
+                            {
+                                <label>
+                                    @Html.RadioButtonFor(model => model.group_type, 0, new { @checked = "checked", @onclick = "group_typeOnClick()" })
+                                    普通团
+                                </label>
+                                <label class="mgl19">
+                                    @Html.RadioButtonFor(model => model.group_type, 1, new { @onclick = "group_typeOnClick()" })
+                                    抽奖团
+                                </label>
+                                <br />
+                            }
+                        </label>
+                    </p>
+                    <span style="color:red; font-size:12px;"> </span>
+                    <br />
+                </div>
+
+                <div class="inputText-Tap mgb20 clearfix"><span class="w100 fl">拼团活动标题</span>@Html.TextBoxFor(model => model.title, new { @class = "coInp fl", style = "width:500px;", cols = "", rows = "3" }) @Html.ValidationMessageFor(model => model.title, "", new { @class = "red" })<span class="ft12 mgl5 fl">40字以内</span></div>
+
+                <div class="inputFile-Tap mgb20">
+                    <span class="w100">活动宣传图片</span><span class="ft12 mgl5">建议尺寸750px*420px</span><span id="spanpics" class="w100 red" style="display: none">请传输图片!</span>
+                    <div id="dpic1" class="Add-ImgCuber" style="position: relative;overflow: hidden;width: 352px;height:162px;">
+                        <i id="ipic1" class="MMda i-add pdr5 green" style="margin-top: 60px;"></i>
+                        @Html.TextBoxFor(model => model.advertise_pic_url, new { style = "display: none" })
+                        <input id="picg" name="picg" class="AddCub" type="file">
+                    </div>
+                </div>
+
+                <div class="inputText-Tap mgb20 clearfix"><span class="w100 fl">拼团活动描述</span>@Html.TextAreaFor(model => model.description, new { @class = "coInp fl", style = "-moz-resize:none;-ms-resize:none;-o-resize:none;resize:none", cols = "", rows = "7" }) @Html.ValidationMessageFor(model => model.description, "", new { @class = "red" })<span class="ft12 mgl5 fl">80字以内</span></div>
+
+                <div class="inputText-Tap mgb20 clearfix">
+                    <span class="w100 fl">取货方式  </span>
+                    <p class="fl coInp" style="width:350px;">
+                        <label class="mgl19">
+                            @Html.RadioButtonFor(model => model.waytoget, 0, new { @checked = "checked" , @onchange = "waytogetChange()" })
+                            来店自提
+                        </label>
+                        <label class="mgl19">
+                            @Html.RadioButtonFor(model => model.waytoget, 1,new { @onchange = "waytogetChange()" })
+                            快递到家
+                        </label>
+                        <label class="mgl19">
+                            @Html.RadioButtonFor(model => model.waytoget, 2,new { @onchange = "waytogetChange()" })
+                            自提或快递到家
+                        </label>
+                        <br />
+                    </p>
+                </div>
+                <div class="inputText-Tap mgb20 clearfix ltidsetting" @if (Model.waytoget == (int)EWayToGet.自提 ||Model.waytoget == null) {@("style=display:none")}>
+                    <span class="w100 fl">设置邮费模板 </span>
+                    <p class="fl">
+                        <label class="mgl19">
+                            @Html.DropDownList("ltid", list, new { @class = "coInp", style = "width: 281px;" })
+                        </label>
+                        <span id="ltidMsg" class="red" style="display: none">请设置邮费模板！</span>
+                        <label class="mgl19"><a href="javascript:refreshLtid()">刷新</a></label>
+                        <label class="mgl5"><a href="/Logistics" target="_blank">查看邮费模板>></a></label>
+                        <br />
+                    </p>
+                </div>
+                <div class="inputText-Tap mgb20 clearfix">
+                    <span class="w100 fl">开启自动成团</span>
+                    <p class="fl coInp">
+                        <label class="mgl19">
+                            @if (ViewBag.userobot == 1)
+                            {
+                                @Html.RadioButtonFor(model => model.userobot, 1, new { @checked = "checked" });
+                                <span>是</span>
+                            }
+                            else
+                            {
+                                @Html.RadioButtonFor(model => model.userobot, 1);
+                                <span>是</span>
+                            }
+                        </label>
+                        <label class="mgl19">
+                            @if (ViewBag.userobot == 0)
+                            {
+                                @Html.RadioButtonFor(model => model.userobot, 0, new { @checked = "checked" });
+                                <span>否</span>
+                            }
+                            else
+                            {
+                                @Html.RadioButtonFor(model => model.userobot, 0);
+                                <span>否</span>
+                            }
+                        </label>
+                    </p>
+                    <span style="font-size:12px;"> 备注：开启自动成团后，组团即将失败的团，会在最后半小时内自动匹配机器人成团。</span>
+                    <br />
+                </div>
+                <div class="inputText-Tap mgb20 clearfix">
+                    <span class="w100 fl">是否显示正在拼团</span>
+                    <p class="fl coInp">
+                        <label class="mgl19">
+                            @Html.RadioButtonFor(model => model.isshowpting, 1, new { @checked = "checked" })
+                            是
+                        </label>
+                        <label class="mgl19">
+                            @Html.RadioButtonFor(model => model.isshowpting, 0)
+                            否
+                        </label>
+                        <br />
+                    </p>
+                </div>
+                <div class="inputText-Tap mgb20">
+                    <span class="w100">成团人数</span>
+                    @if (ViewBag.status == (int)EGroupStatus.已发布)
+                    {
+                        //background-color:gainsboro;
+                        @Html.TextBoxFor(model => model.person_quota, new { @class = "coInp", style = "width:146px;background-color:rgb(235, 235, 228);", placeholder = "成团人数", @readonly = "readonly" })
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.person_quota, new { @class = "coInp", style = "width:146px;", placeholder = "成团人数" })
+                    }
+
+                    @Html.ValidationMessageFor(model => model.person_quota, "", new { @class = "red" })
+                </div>
+
+                <div class="inputText-Tap mgb20">
+                    <span class="w100">拼团价格(单位：元)</span>
+                    @if (ViewBag.status == (int)EGroupStatus.已发布)
+                    {
+                        <input id="price_1" style="width: 146px;background-color:rgb(235, 235, 228);" class="coInp" type="text" placeholder="拼团价格(单位:元)" readonly="readonly" />
+                    }
+                    else
+                    {
+                        <input id="price_1" style="width: 146px;" class="coInp" type="text" placeholder="拼团价格(单位:元)" />
+                    }
+                    <span id="spanprice" class="red" style="display: none">请输入数字，且小数点最多两位！</span>
+                    @Html.TextBoxFor(model => model.group_price, new { style = "display: none" })
+                </div>
+
+                <div class="inputText-Tap mgb20">
+                    <span class="w100">团长优惠(单位：元)</span>
+                    @if (ViewBag.status == (int)EGroupStatus.已发布)
+                    {
+                        <input id="price_2" style="width: 146px;background-color:rgb(235, 235, 228);" class="coInp" type="text" placeholder="团长优惠(单位:元)" readonly="readonly" />
+                    }
+                    else
+                    {
+                        <input id="price_2" style="width: 146px;" class="coInp" type="text" placeholder="团长优惠(单位:元)" />
+                    }
+                    <span id="spanleader_price" class="red" style="display: none">请输入数字，且小数点最多两位！</span>
+                    <span id="spanleader_price2" class="red" style="display: none">不能大于或者等于拼团价格！</span>
+                    @Html.TextBoxFor(model => model.leader_price, new { style = "display: none" })
+                </div>
+                <div class="inputText-Tap mgb20">
+                    <span class="w100">推广佣金(单位：元)</span>
+                    @if (ViewBag.status == (int)EGroupStatus.已发布)
+                    {
+                        <input id="txt_Commission" style="width: 146px;background-color:rgb(235, 235, 228);" class="coInp" type="text" placeholder="分销佣金(单位:元)" readonly="readonly" />
+                    }
+                    else
+                    {
+                        <input id="txt_Commission" style="width: 146px;" class="coInp" type="text" placeholder="分销佣金(单位:元)" value="0"/>
+                    }
+                    <span id="spanCommission" class="red" style="display: none">请输入大于0的数字！</span>
+                    <span id="spanCommission2" class="red" style="display: none">不能大于或者等于拼团价格！</span>
+                    <span font-size:12px;">备注：该推广功能只针对门店核销员。</span>
+                    @Html.TextBoxFor(model => model.Commission, new { style = "display: none" })
+                </div>
+                <div class="inputText-Tap mgb20">
+                    <span class="w100">商品库存</span>
+                    @if (ViewBag.status == (int)EGroupStatus.已发布)
+                    {
+                        @Html.TextBoxFor(model => model.product_quota, new { @class = "coInp", style = "width:146px;", placeholder = "商品总数", @readonly = "readonly" })
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.product_quota, new { @class = "coInp", style = "width:146px;", placeholder = "商品总数" })
+                    }
+                    @Html.ValidationMessageFor(model => model.product_quota, "", new { @class = "red" })
+                    <span id="spanproduct_quota" class="red" style="display: none">库存量必须为成团人数的整数倍！</span>
+                    <span font-size:12px;">备注：抽奖团该设置为活动参与人数上限。</span>
+                </div>
+                <div class="inputText-Tap mgb20">
+                    <span class="w100">限制购买次数</span>
+                    @Html.TextBoxFor(model => model.order_limit, new { @class = "coInp", style = "width:146px;", placeholder = "限制购买次数" })
+                    <span id="span_order_limit" class="red" style="display: none">必须录入正整数！</span>
+                    <span id="spanproduct_quota" class="red">0表示无限制！</span>
+                </div>
+                <div class="inputText-Tap mgb20 clearfix">
+                    <span class="w100 fl">活动门店</span>
+                    <ul class="fl coInp" style="width:550px;">
+                        @foreach (var wopt in Model.WriteOffPoints)
+                        {
+                            <li style="width:30%;float:left;">
+                                @if (Model.activity_point.Contains(wopt.woid.ToString()))
+                                {
+                                    <input type="checkbox" name="activity_point" value="@wopt.woid" id="@wopt.woid" checked="checked" />
+                                    <label for="@wopt.woid">@wopt.name</label>
+                                }
+                                else
+                                {
+                                    <input type="checkbox" name="activity_point" value="@wopt.woid" id="@wopt.woid" />
+                                    <label for="@wopt.woid">@wopt.name</label>
+                                }
+                            </li>
+                        }
+                    </ul>
+                    <span id="span_activitypoint" class="red" style="display:none;">请选择活动门店！</span>
+                </div>
+
+                <input type="text" name="gid" value="@Model.gid" style="display: none" />
+                <input type="text" name="pid" value="@Model.pid" style="display: None">
+                <input type="text" name="mid" value="@Model.mid" style="display: None">
+                <input type="text" name="product_setting_count" value="@Model.product_setting_count" style="display: None">
+                <input type="text" name="status" value="@Model.status" style="display: None">
+                <input style="margin-left: 143px;" class="inputBtn-Tap" onclick="submitFormGroup()" value="确认下一步" readonly="readonly" />
+            </form>
+        </div>
+    </div>
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+
+</body>
+<script>
+    function waytogetChange() {
+        var val = $('input:radio[name="waytoget"]:checked').val();
+        if (val == 1 || val == 2) {
+            $(".ltidsetting").show();
+        } else {
+            $(".ltidsetting").hide();
+        }
+    }
+    function refreshLtid() {
+        $.post('/Logistics/GetTemplatesIdNames', {}, function (res) {
+            if (res.Data && res.Data.length > 0) {
+                var html = "";
+                var d = res.Data;
+                for (var i = 0; i < d.length; i++) {
+                    html += '<option value="' + d[i].ltid + '">' + d[i].name + '</option>';
+                }
+                $("#ltid").html(html);
+            }
+        });
+    }
+</script>
+</html>

@@ -1,0 +1,136 @@
+﻿@using MD.Lib.DB.Repositorys
+@model MD.Model.DB.Product
+@{
+    Layout = null;
+    var categoryItems = new List<SelectListItem>();
+    using (CodeRepository repo = new CodeRepository())
+    {
+        foreach (KeyValuePair<int, string> pair in repo.ProductCategoryDic)
+        {
+            categoryItems.Add(new SelectListItem() {Value = pair.Key.ToString(),Text=pair.Value});
+        }
+    }
+
+    //设置下拉框默认值
+    if (Model.status != null)
+    {
+        categoryItems[Model.status.Value].Selected = true;
+    }
+    else
+    {
+        categoryItems[0].Selected = true;
+    }
+
+    //设置pid
+    var pidStr = Model.pid.ToString();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>03 商品管理 添加商品</title>
+	<link rel="stylesheet" type="text/css" href="/Content/main.css">
+	<link rel="stylesheet" type="text/css" href="/Content/ico.css">
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="/Scripts/product/pcommon.js"></script>
+    <style type="text/css">
+        .red {
+            color: #F00;
+        }
+    </style>
+    @*创建内联辅助器方法用于生成value值和显示内容不一样的dropdownlist*@
+</head>
+<body>
+	<!--header-->
+    @Html.Partial("Header/_headerProduct")
+
+	<div class="SYS-set">
+		<div class="SYS-set-c mgc">
+			
+			<form id="edit_form"class="ft14" action="/Product/ProductSave" method="post" enctype="multipart/form-data">
+				
+				<div class="inputText-Tap mgb20 mgt19"><span class="w100">商品名称</span>@Html.TextBoxFor(model=>model.name, new { @class="coInp",type="text",placeholder="商品名称"})@Html.ValidationMessageFor(model=>model.name,"", new { @class="red"})</div>
+
+				<div class="xiala-Tap mgb20">
+				<span class="w100">商品分类</span>
+                    @Html.DropDownList("category", categoryItems,new {@class="coInp",style= "width: 281px;"})
+			</div>
+                <div class="inputText-Tap mgb20"><span class="w100">商品价格(单位：元)</span><input id="price1" type="text" class="coInp"><span id="spanprice" class="red" style="display: none">请输入数字，且小数点最多两位！</span><span class="ft12 mgl5 wine">市场价</span></div>
+				@Html.TextBoxFor(model=>model.price, new { @class="coInp",style="display: none"})
+
+				<div class="inputText-Tap mgb20"><span class="w100">商品规格</span>@Html.TextBoxFor(model=>model.standard, new { @class="coInp",type="text",placeholder="商品规格"})@Html.ValidationMessageFor(model=>model.standard,"", new { @class="red"})<span class="ft12 mgl5 wine">例：200ml、5片装等</span></div>
+			    <div class="inputText-Tap mgb20">
+			        <input type="text" value="@pidStr" name="pid" id="pid" readonly="readonly" style="display: none">
+			        <input type="text" value="@ViewBag.mid" name="mid" id="mid" readonly="readonly" style="display: none">
+			    </div>
+
+			    <div class="inputFile-Tap mgb20" name="pics">
+			        <span class="w100">商品展示图片</span>@*<input class="coInp" type="file" name="img" readonly="readonly" hidden="hidden"/><span class="ft12 mgl5"></span>*@<span class="w150">       (建议尺寸750px*420px)</span><span id="spanpics" for="pics" class="w100 red" style="display: none">请传输三张图片!</span>
+			        <div class="clearfix">
+			            <div id="dpic1"class="Add-ImgCuber fl rela" style="width: 185px; height: 122px;">
+			                <i id="ipic1"class="MMda i-add pdr5 green"></i>
+			                @Html.TextBoxFor(model => model.advertise_pic_1, new {style = "display: none"})@Html.ValidationMessageFor(model => model.advertise_pic_1, "", new {@class = "red"})
+			                <input class="AddCub" type="file" id="pic1" name="pic1">
+			            </div>
+
+			            <div id="dpic2"class="Add-ImgCuber fl" style="margin-left: 19px; position: relative; overflow: hidden; width: 185px; height: 122px;">
+			                <i id="ipic2"class="MMda i-add pdr5 green"></i>
+			                @Html.TextBoxFor(model => model.advertise_pic_2, new {style = "display: none"})@Html.ValidationMessageFor(model => model.advertise_pic_2, "", new {@class = "red"})
+			                <input class="AddCub" type="file" id="pic2" name="pic2">
+			            </div>
+
+			            <div id="dpic3"class="Add-ImgCuber fl" style="margin-left: 19px; position: relative; overflow: hidden; width: 185px; height: 122px;">
+			                <i id="ipic3"class="MMda i-add pdr5 green"></i>
+			                @Html.TextBoxFor(model => model.advertise_pic_3, new {style = "display: none"})@Html.ValidationMessageFor(model => model.advertise_pic_3, "", new {@class = "red"})
+			                <input class="AddCub" type="file" id="pic3" name="pic3">
+			            </div>
+
+
+			        </div>
+
+			    </div>
+
+
+				<div class="inputText-Tap mgb20"><span class="w100">产品详细介绍</span> <span id="spanintro" class="w100 red" style="display: none">请输入详细描述!</span></div>
+
+				<div class="myEditorBox" style="margin-left: 146px;">
+				    <textarea id="description2" disabled="disabled"></textarea>@Html.ValidationMessageFor(model=>model.description,"", new { @class="red"})
+				</div>
+                <div hidden="hidden">
+                    @Html.TextAreaFor(model => model.description, new { style="display: none"})
+                </div>
+				<input style="margin-left: 146px;" class="inputBtn-Tap" name="" onclick="submitForm()" value="确定" readonly="readonly"/>
+			
+		   </form>
+
+		</div>
+	</div>
+
+		<!--footer-->
+	<div class="footer">
+		<div class="footer-c mgc">
+			<p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+		</div>
+	</div>
+
+</body>
+</html>
+<script charset="utf-8" src="/Scripts/editor/kindeditor-all-min.js"></script>
+<script charset="utf-8" src="/Scripts/editor/lang/zh-CN.js"></script>
+<script>
+    KindEditor.ready(function(K) {
+        window.editor = K.create('#description2', {
+            allowImageUpload: true,
+            //kindeditor上传图片到阿里云的程序，需要传递一个pid
+            uploadJson: '@Url.Action("UploadImg", "KindEditor",new {pid=Model.pid})',
+            items: ['undo', 'redo', 'preview', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                    'justifyfull','|', 'bold', 'italic', 'underline', 'strikethrough', 'removeformat', '|', 'insertorderedlist', 'insertunorderedlist',
+                     'forecolor', 'hilitecolor', 'fontname', 'fontsize','formatblock', '|', 'link', 'unlink', 'emoticons',
+                     'image','multiimage', 'baidumap', 'quote','|','fullscreen']
+    });
+    });
+</script>
+
+
+

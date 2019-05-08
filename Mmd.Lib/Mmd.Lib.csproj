@@ -1,0 +1,302 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3F9AF220-C1B0-4575-9D2D-E8947564CA15}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MD.Lib</RootNamespace>
+    <AssemblyName>mmd.lib</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Aliyun.OSS, Version=2.3.0.0, Culture=neutral, PublicKeyToken=0ad4175f0dac0b9b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Aliyun.OSS.SDK.2.3.0\lib\Aliyun.OSS.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Elasticsearch.Net, Version=1.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
+      <HintPath>..\packages\Elasticsearch.Net.1.5.1\lib\net45\Elasticsearch.Net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\packages\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.9.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.8\lib\net45\MySql.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MySql.Data.Entity.EF6, Version=6.9.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.Entity.6.9.8\lib\net45\MySql.Data.Entity.EF6.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Nest, Version=1.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
+      <HintPath>..\packages\NEST.1.5.1\lib\net45\Nest.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="RabbitMQ.Client, Version=3.6.1.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
+      <HintPath>..\packages\RabbitMQ.Client.3.6.1\lib\net45\RabbitMQ.Client.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="StackExchange.Redis, Version=1.0.316.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\StackExchange.Redis.1.0.488\lib\net45\StackExchange.Redis.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="zxing">
+      <HintPath>C:\Users\Administrator\Desktop\222\zxing.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Aliyun\OSS\AliyunOssHelper.cs" />
+    <Compile Include="Aliyun\OSS\Biz\OssPicManager.cs" />
+    <Compile Include="DB\Context\MDActivityContext.cs" />
+    <Compile Include="DB\Context\MDAddressContext.cs" />
+    <Compile Include="DB\Context\MdAttContext.cs" />
+    <Compile Include="DB\Context\MDCodeContext.cs" />
+    <Compile Include="DB\Context\MDProContext.cs" />
+    <Compile Include="DB\Context\MDStaContext.cs" />
+    <Compile Include="DB\Mysql\MysqlHelper.cs" />
+    <Compile Include="DB\Redis\BK\ops\MessageRedisOp.cs" />
+    <Compile Include="DB\Redis\BK\ops\NameCardAccessCountOP.cs" />
+    <Compile Include="DB\Redis\BK\ops\NoticeRedisOp.cs" />
+    <Compile Include="DB\Redis\BK\ops\OpenIdToUserUUID.cs" />
+    <Compile Include="DB\Redis\BK\ops\UserLoginBehaviorOp.cs" />
+    <Compile Include="DB\Redis\MD\ForTest\RedisForTestOp.cs" />
+    <Compile Include="DB\Redis\MD\RedisMerchantOp.cs" />
+    <Compile Include="DB\Redis\MD\RedisMerchantStatisticsOp.cs" />
+    <Compile Include="DB\Redis\MD\RedisUserOp.cs" />
+    <Compile Include="DB\Redis\MD\RedisVectorOp.cs" />
+    <Compile Include="DB\Redis\MD\WxStatistics\WxStatisticsOp.cs" />
+    <Compile Include="DB\Redis\RedisCommonHelper.cs" />
+    <Compile Include="DB\Redis\RedisKeyMap.cs" />
+    <Compile Include="DB\Redis\RedisManager2.cs" />
+    <Compile Include="DB\Repositorys\ActivityRepository.cs" />
+    <Compile Include="DB\Repositorys\AddressRepository.cs" />
+    <Compile Include="DB\Repositorys\AttRepository.cs" />
+    <Compile Include="DB\Repositorys\CodeRepository.cs" />
+    <Compile Include="DB\Repositorys\helper\RepositoryHelper.cs" />
+    <Compile Include="DB\Repositorys\ProRepository.cs" />
+    <Compile Include="DB\Repositorys\StaRepository.cs" />
+    <Compile Include="ElasticSearch\ESHelper.cs" />
+    <Compile Include="ElasticSearch\LocationManager.cs" />
+    <Compile Include="ElasticSearch\LogESManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsAct_boxManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsAct_boxtreasureManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsAct_signManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsAct_usersignManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsAct_usertreasureManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsBlacklistManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsCommentManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsCommunityBizManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsCommunityManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsComReplyManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsGroupManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsGroupOrderManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsLadderGroupManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsLadderGroupOrderManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsLadderOrderManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsLogisticsregionManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsLogisticsTemplateManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsLogStatistics.cs" />
+    <Compile Include="ElasticSearch\MD\EsNoticeBoardManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsOrderManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsProductCommentManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsProductCommentPraiseManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsProductGrassManager.cs" />
+    <Compile Include="ElasticSearch\MD\ESProductManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsSupplyManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsUserManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsWriteOfferManager.cs" />
+    <Compile Include="ElasticSearch\MD\EsWriteOffPointManager.cs" />
+    <Compile Include="ElasticSearch\ScrollHelper.cs" />
+    <Compile Include="Exceptions\Pay\PrePayExceptions.cs" />
+    <Compile Include="Log\MDLogger.cs" />
+    <Compile Include="MMBizRule\Merchant\MBizRule.cs" />
+    <Compile Include="MQ\LogMQOP.cs" />
+    <Compile Include="MQ\MD\MqEmailManager.cs" />
+    <Compile Include="MQ\MD\MqPayResultManager.cs" />
+    <Compile Include="MQ\MD\MqRefundManager.cs" />
+    <Compile Include="MQ\MD\MqVectorManager.cs" />
+    <Compile Include="MQ\MD\MqWxTempMsgManager.cs" />
+    <Compile Include="MQ\MQHelper.cs" />
+    <Compile Include="MQ\MQManager.cs" />
+    <Compile Include="MQ\RPC\ArgsAndRets\GetAuthorizerAtFunc.cs" />
+    <Compile Include="MQ\RPC\ArgsAndRets\GetComponentAtFunc.cs" />
+    <Compile Include="MQ\RPC\RpcFactory.cs" />
+    <Compile Include="MQ\WeChatMessagMQ.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Qiniu\QiniuHelper.cs" />
+    <Compile Include="Util\AddressUtil\AddressHelper.cs" />
+    <Compile Include="Util\AsyncHelper.cs" />
+    <Compile Include="Util\BinarySerializationHelper.cs" />
+    <Compile Include="Util\Cache\LRUCache.cs" />
+    <Compile Include="Util\Cache\RWLock.cs" />
+    <Compile Include="Util\Cache\UserCache.cs" />
+    <Compile Include="Util\CommonHelper.cs" />
+    <Compile Include="Util\Data\ExportToCsv.cs" />
+    <Compile Include="Util\EmojiHelper.cs" />
+    <Compile Include="Util\Encryption.cs" />
+    <Compile Include="Util\Exception\MDException.cs" />
+    <Compile Include="Util\Files\ImageHelper.cs" />
+    <Compile Include="Util\Files\ZipFileHelper.cs" />
+    <Compile Include="Util\GeographyHelper.cs" />
+    <Compile Include="Util\GuidHelper.cs" />
+    <Compile Include="Util\HttpUtil\Get.cs" />
+    <Compile Include="Util\HttpUtil\HttpRequest.cs" />
+    <Compile Include="Util\HttpUtil\Post.cs" />
+    <Compile Include="Util\JsonHelper.cs" />
+    <Compile Include="Util\Mail\QQEmailHelper.cs" />
+    <Compile Include="Util\ValidationCode\ValidationCodeHelper.cs" />
+    <Compile Include="Util\WatchStopHelper.cs" />
+    <Compile Include="Util\WebApiHelper.cs" />
+    <Compile Include="Weixin\Component\ComponentHelper.cs" />
+    <Compile Include="Weixin\Component\ComponentUserHelper.cs" />
+    <Compile Include="Weixin\JsSdk\JsSdkHelper.cs" />
+    <Compile Include="Weixin\Message\Enum.cs" />
+    <Compile Include="Weixin\Message\TemplateMessageObjects\MessageBase.cs" />
+    <Compile Include="Weixin\Message\TemplateMessageObjects\NotifyMessageObject.cs" />
+    <Compile Include="Weixin\Message\TemplateMessageObjects\PaySuccessObject.cs" />
+    <Compile Include="Weixin\Message\TemplateMessageObjects\PtFailObject.cs" />
+    <Compile Include="Weixin\Message\TemplateMessageObjects\PtSuccessObject.cs" />
+    <Compile Include="Weixin\Message\TemplateMsgHelper.cs" />
+    <Compile Include="Weixin\MmdBiz\ActivityWxSettingUpHelper.cs" />
+    <Compile Include="Weixin\MmdBiz\MdOrderBizHelper.cs" />
+    <Compile Include="Weixin\MmdBiz\MdInventoryHelper.cs" />
+    <Compile Include="Weixin\MmdBiz\MdUserHelper.cs" />
+    <Compile Include="Weixin\MmdBiz\MdWxSettingUpHelper.cs" />
+    <Compile Include="Weixin\MyExtension\MyOAuthApi.cs" />
+    <Compile Include="Weixin\MyExtension\MyTemplateApi.cs" />
+    <Compile Include="Weixin\Pay\MdWxPayUtil.cs" />
+    <Compile Include="Weixin\Pay\TenPayHelper.cs" />
+    <Compile Include="Weixin\Robot\RobotHelper.cs" />
+    <Compile Include="Weixin\ServicesWrapper\WxServiceHelper.cs" />
+    <Compile Include="Weixin\Token\WXTokenHelper.cs" />
+    <Compile Include="Weixin\User\WXAuthHelper.cs" />
+    <Compile Include="Weixin\Vector\IVectorProcessor.cs" />
+    <Compile Include="Weixin\Vector\VectorCommonHelper.cs" />
+    <Compile Include="Weixin\Vector\VectorProcessorManager.cs" />
+    <Compile Include="Weixin\Vector\Vectors\PtSuccessVectorProcessor.cs" />
+    <Compile Include="Weixin\Vector\Vectors\TimeLineVectorProcessor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\mmd.configuration\Mmd.Configuration.csproj">
+      <Project>{61c4d99a-e212-45c3-b3dd-b3e7cc740921}</Project>
+      <Name>Mmd.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\mmd.model\Mmd.Model.csproj">
+      <Project>{5f2379bf-c239-43a5-b947-af9e70891141}</Project>
+      <Name>Mmd.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\mmd.Qiniu\Qiniu.csproj">
+      <Project>{ad4ea9d1-11c2-4bf6-8a06-72a966bc1b80}</Project>
+      <Name>Qiniu</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Senparc\Senparc.Weixin.MP\Senparc.Weixin.MP.csproj">
+      <Project>{1d815fbf-451c-4e23-939c-cb80172f445c}</Project>
+      <Name>Senparc.Weixin.MP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Senparc\Senparc.Weixin.Open\Senparc.Weixin.Open.csproj">
+      <Project>{54732c3d-b673-4bbf-b0c3-6432e3d6f522}</Project>
+      <Name>Senparc.Weixin.Open</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Senparc\Senparc.Weixin\Senparc.Weixin.csproj">
+      <Project>{814092cd-9cd0-4fb7-91e8-d147f476f1fb}</Project>
+      <Name>Senparc.Weixin</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ElasticSearch\Readme.txt" />
+    <Content Include="MQ\README.txt" />
+    <Content Include="MQ\RPC\Rpc_Readme.txt" />
+    <Content Include="Weixin\Component\READMEs\为公众号添加自定义菜单.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="MMBizRule\Group\" />
+    <Folder Include="MMBizRule\Order\" />
+    <Folder Include="MMBizRule\Product\" />
+    <Folder Include="MMBizRule\User\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

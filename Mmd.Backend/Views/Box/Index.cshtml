@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>工具箱-寻宝</title>
+    <link rel="stylesheet" type="text/css" href="~/Content/main.css?v=20161017">
+    <link rel="stylesheet" type="text/css" href="~/Content/ico.css">
+</head>
+<body>
+    <!--header-->
+    @Html.Partial("Header/_headerActivity")
+    <!--mian-->
+    <div class="Lorelei-table-box">
+        <div class="">
+            <div class="main margin-top-40">
+                <div class="leftList">
+                    @Html.Partial("ActivityLeftMenuPartial")
+                </div>
+                <div class="rightMain">
+                    <h3 class="color-e6">寻宝地址：<span class="ft12" style="color:#666; word-wrap:break-word">@ViewBag.ProUrl</span></h3>
+                    <div class="Lorelei-addBtn-l margin-top-40" style="overflow: hidden;">
+                        <a href="/Box/Add">宝箱设置</a>
+                    </div>
+                    <div class="Lorelei-commonTable margin-top-40" id="list_table">
+                        @Html.Action("BoxListPartial", new { pageIndex = 1,pageSize=20, q = "", status = 0 })  
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+
+</body>
+<script src="~/Scripts/jquery-1.7.2.min.js"></script>
+<script src="~/Scripts/activity/boxpage.js?v=20161017"></script>
+<script>
+    var tar = $(".g-listBox.a-box");
+    tar.find("p i").addClass('xz90');
+    tar.find("p").next().show();
+    tar.find(".y-box li").eq(0).children("a").addClass("y-acti");
+	$(".g-listBox p").click(function(){
+		if(!$(this).find('i').hasClass("xz90")){
+			$(".y-box").hide();
+			$(".sjx").removeClass("xz90");
+		}
+		$(this).next().toggle();
+		$(this).find('i').toggleClass('xz90');
+	});
+	function goToModify(id, status) {
+	    if (status == 1) {
+	        alert("活动已上线，不能编辑！");
+	        return;
+	    }
+	    if (status == 2) {
+	        alert("活动已下线，不能编辑！");
+	        return;
+	    }
+	    location = "Box/Modify/" + id;
+	}
+</script>
+</html>

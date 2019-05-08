@@ -1,0 +1,183 @@
+﻿@using MD.Lib.Util;
+@using MD.Model.DB;
+@using MD.Model.DB.Activity;
+@{
+    var timeStart = CommonHelper.FromUnixTime(Model.timeStart).ToString("yyyy-MM-dd");
+    var timeEnd = CommonHelper.FromUnixTime(Model.timeEnd).ToString("yyyy-MM-dd");
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>工具箱-寻宝-宝箱设置</title>
+    <link rel="stylesheet" type="text/css" href="~/Content/main.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/ico.css">
+</head>
+<body>
+    <!--header-->
+    @Html.Partial("Header/_headerActivity")
+    <!--mian-->
+    <div class="Lorelei-table-box">
+        <div class="">
+            <div class="main margin-top-40">
+                <div class="leftList">
+                    @Html.Partial("ActivityLeftMenuPartial")
+                </div>
+                <div class="rightMain">
+                    <form action="" method="get">
+                        <div class="inputText-Tap mgb20 mgt19 ">
+                            <span class="w100">签到时间：</span>
+                            <input class="coInp" name="" id="ksTime" style="width:200px" readonly type="text" placeholder="请选择开始时间" value="@timeStart"><span style="margin-left: 15px;">至</span><input readonly id="endTime" class="coInp" style="width:200px" name="" type="text" placeholder="请选择结束时间" value="@timeEnd">
+                        </div>
+                        <div class="bbList" id="bbList">
+                            <div class="border-bt mgb20">
+                                <div class="inputText-Tap mgb20">
+                                    <span class="w100">本周签到福利：</span>
+                                    <input class="coInp awName" type="text" style="width:80px;" placeholder="福利名称" value="@Model.awardName">
+                                    <span class="w100">福利数量：</span>
+                                    <input class="coInp awCount" type="number" style="width:80px;" placeholder="福利数量" value="@Model.awardCount">
+                                </div>
+                                <div class="inputText-Tap mgb20 mgt19" style="overflow:hidden;">
+                                    <span class="w100" style="float:left;">福利说明：</span>
+                                    <textarea class="coInp awDes" style="height:80px;width:500px;" type="text" placeholder="福利说明">@Model.awardDescription</textarea>
+                                    <span style="font-size: 12px;color:#333;">(50字内)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="inputFile-Tap mgb20">
+                            <span class="w100">福利图片</span><input class="coInp awPic" type="file" onchange="uploadImg(this)"><span class="ft12 mgl5">建议尺寸162px*154px</span>
+                            <div class="clearfix">
+                                <div class="Add-ImgCuber fl rela" style="width: 185px;height: 122px;">
+                                    <img src="@(string.IsNullOrEmpty(Model.awardPic)?"/Content/images/pic.jpg":Model.awardPic)" >
+                                </div>
+                            </div>
+                        </div>
+                        @if (ViewBag.Type == "detail")
+                        {
+                            <div class="Lorelei-addBtn-l margin-top-40 addBb">
+                                <a href="javascript:;" onclick="location = document.referrer;" style="width:100px;">
+                                    返回
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <input type="hidden" id="hid_type" value="@ViewBag.Type" />
+                            <div class="Lorelei-addBtn-l margin-top-40 addBb">
+                                <a href="javascript:submit();" style="width:100px;" id="iddBb">
+                                    确定
+                                </a>
+                            </div>
+                        }
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+
+</body>
+<script src="~/Scripts/jquery-1.7.2.min.js"></script>
+<script src="~/Scripts/laydate.dev.js"></script>
+<script>
+    var tar = $(".g-listBox.a-sign");
+    tar.find("p i").addClass('xz90');
+    tar.find("p").next().show();
+    tar.find(".y-box li").eq(1).children("a").addClass("y-acti");
+	$(".g-listBox p").click(function(){
+		if(!$(this).find('i').hasClass("xz90")){
+			$(".y-box").hide();
+			$(".sjx").removeClass("xz90");
+		}
+		$(this).next().toggle();
+		$(this).find('i').toggleClass('xz90');
+	});
+    laydate({
+        elem: '#ksTime',
+		format:'YYYY-MM-DD',
+		istime : false
+    });
+    laydate({
+        elem: '#endTime',
+		format:'YYYY-MM-DD',
+		istime: false
+    });
+    function uploadImg(obj) {
+        var selectedFile = ($(obj))[0].files[0];
+        if (selectedFile) {
+            var imageType = /image.*/;
+            if (selectedFile.type.match(imageType) && selectedFile.size <= 2097152) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var dataURL = e.target.result;
+                    var img = new Image();
+                    img.src = dataURL;
+                    $(obj).siblings(".clearfix").children(".Add-ImgCuber").html(img);
+                };
+                reader.readAsDataURL(selectedFile);
+            }
+            else {
+                if (!selectedFile.type.match(imageType)) {
+                    alert("只能录入图片文件！");
+                } else if (selectedFile.size > 2097152) {
+                    alert("上传图片大小不能超过2Mb！");
+                }
+            }
+        }
+    }
+    function submit() {
+        var values = [$("#ksTime").val(), $("#endTime").val(), $(".awName").val(), $(".awCount").val()];
+        var messages = ["请选择开启时间！", "请选择结束时间！", "请输入福利说明！", "请输入福利数量！"];
+        for (var i = 0; i < values.length; i++) {
+            if (!values[i]) {
+                alert(messages[i]);
+                return;
+            }
+        }
+        if (values[3] < 0) {
+            alert("福利数量请输入正数！");
+            return;
+        }
+        var pic = $(".Add-ImgCuber img").attr("src");
+        if (!pic || pic == '/Content/images/pic.jpg') {
+            alert("请选择福利图片！");
+            return;
+        }
+        var json = {};
+        json.timeStart = new Date(values[0]).getTime() / 1000;
+        json.timeEnd = new Date(values[1]).getTime() / 1000;
+        json.sid = '@Model.sid';
+        json.awardName = values[2];
+        json.awardCount = values[3];
+        json.awardDescription = $(".awDes").val();
+        json.awardPic = pic;
+        $.ajax({
+            url: '/Sign/DoModify',
+            type: "post",
+            data: { sign: json, type: $("#hid_type").val() },
+            success: function (res) {
+                if (res.status && res.status == true) {
+                    alert("保存成功");
+                    location = "/Sign";
+                } else if (res.status && res.status == "CanNotModified") {
+                    alert("活动已上线，不能编辑！");
+                } else if (res.status && res.status == "UploadImgFail") {
+                    alert(res.message);
+                } else if (res.status && res.status == "SessionTimeOut") {
+                    alert("登录超时，请重新登录！");
+                    location = "/";
+                } else {
+                    alert("保存失败");
+                    console.log(res);
+                }
+            }
+        })
+    }
+</script>
+</html>

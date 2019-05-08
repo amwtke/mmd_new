@@ -1,0 +1,360 @@
+﻿@using MD.Lib.DB.Repositorys
+@model MD.Model.DB.Supply
+@{
+    Layout = null;
+    var categoryItems = new List<SelectListItem>();
+    var brandItems = new List<SelectListItem>();
+    using (CodeRepository repo = new CodeRepository())
+    {
+        foreach (KeyValuePair<int, string> pair in repo.ProductCategoryDic)
+        {
+            if (Model.category.ToString() == pair.Value)
+            {
+                categoryItems.Add(new SelectListItem() { Value = pair.Key.ToString(), Text = pair.Value, Selected = true });
+            }
+            else
+            {
+                categoryItems.Add(new SelectListItem() { Value = pair.Key.ToString(), Text = pair.Value });
+            }
+        }
+        foreach (var pair in repo.ProductBrandDic)
+        {
+            if (Model.brand.ToString() == pair.Value)
+            {
+                brandItems.Add(new SelectListItem() { Value = pair.Key.ToString(), Text = pair.Value, Selected = true });
+            }
+            else
+            {
+                brandItems.Add(new SelectListItem() { Value = pair.Key.ToString(), Text = pair.Value });
+            }
+        }
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>供货管理-添加商品</title>
+    <link href="/Content/style.css" rel="stylesheet" />
+    <link href="/Content/ico.css" rel="stylesheet" />
+    <style type="text/css">
+        .red {
+            color: #F00;
+        }
+    </style>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(function () {
+            initPrice();
+            initUploadPics();
+            initPics();
+            initKindEditor();
+        });
+        function initPrice() {
+            var market_price = $("#market_price").val();
+            if (market_price.length !== 0) {
+                market_price = parseInt($('#market_price').val());
+                market_price = market_price / 100;
+                $('#market_price1').val(market_price);
+            }
+            var supply_price = $("#supply_price").val();
+            if (supply_price.length !== 0) {
+                supply_price = parseInt($('#supply_price').val());
+                supply_price = supply_price / 100;
+                $('#supply_price1').val(supply_price);
+            }
+            var group_price = $("#group_price").val();
+            if (group_price.length !== 0) {
+                group_price = parseInt($('#group_price').val());
+                group_price = group_price / 100;
+                $('#group_price1').val(group_price);
+            }
+        }
+        function submitFormGroup() {
+            onFormSubmit();
+            if (validate()) {
+                $("#supply_from").submit();
+            }
+        }
+        function validate_market_price() {
+            var market_price1 = $("#market_price1").val();
+            var pattPrice = new RegExp(/^[0-9]+([.][0-9]+){0,1}$/);
+            if (market_price1.match(pattPrice)) {
+                market_price1 = parseFloat(market_price1);
+                market_price1 = parseFloat(100 * market_price1).toFixed(0);
+                $("#market_price").val(market_price1);
+                $("#span_market_price").css('display', 'none');
+                return true;
+            }
+            else
+            {
+                $("#span_market_price").removeAttr("style");
+                return false;
+            }        }
+        function validate_supply_price() {
+            var supply_price1 = $("#supply_price1").val();
+            var pattPrice = new RegExp(/^[0-9]+([.][0-9]+){0,1}$/);
+            if (supply_price1.match(pattPrice)) {
+                supply_price1 = parseFloat(supply_price1);
+                supply_price1 = parseFloat(100 * supply_price1).toFixed(0);
+                $("#supply_price").val(supply_price1);
+                $("#span_supply_price").css('display', 'none');
+                return true;
+            } else {
+                $("#span_supply_price").removeAttr("style");
+            }
+            return false;
+        }
+        function validate_group_price() {
+            var group_price1 = $("#group_price1").val();
+            var pattPrice = new RegExp(/^[0-9]+([.][0-9]+){0,1}$/);
+            if (group_price1.match(pattPrice)) {
+                group_price1 = parseFloat(group_price1);
+                group_price1 = parseFloat(100 * group_price1).toFixed(0);
+                $("#group_price").val(group_price1);
+                $("#span_group_price").css('display', 'none');
+                return true;
+            }
+            else {
+                $("#span_group_price").removeAttr("style");
+            }
+            return false;
+        }
+        function validate() {
+            if (!validate_market_price())
+                return false;
+            if (!validate_supply_price())
+                return false;
+            if (!validate_group_price())
+                return false;
+            if ($('#advertise_pic_1').val() === "") {
+                $('#spanpics').removeAttr("style");
+                return false;
+            }
+            if ($('#advertise_pic_2').val() === "") {
+                $('#spanpics').removeAttr("style");
+                return false;
+            }
+            if ($('#advertise_pic_3').val() === "") {
+                $('#spanpics').removeAttr("style");
+                return false;
+            }
+            if ($('#description').val() === "") {
+                $('#spanintro').removeAttr("style");
+                return false;
+            }
+            $("#spanintro").css('display', 'none');
+            $("#spanpics").css('display', 'none');
+            return true;
+        }
+        function initUploadPics() {
+            $('#pic1').change(function (evt) { fileSelected(evt, "dpic1", "ipic1", "pic1", "advertise_pic_1", "thumb1"); });
+            $('#pic2').change(function (evt) { fileSelected(evt, "dpic2", "ipic2", "pic2", "advertise_pic_2", "thumb2"); });
+            $('#pic3').change(function (evt) { fileSelected(evt, "dpic3", "ipic3", "pic3", "advertise_pic_3", "thumb3"); });
+        }
+        function fileSelected(evt, divId, iId, inputId, textBoxId, thumbId) {
+            //var selectedFile = evt.target.files can use this  or select input file element and access it's files object
+            var selectedFile = ($('#' + inputId))[0].files[0];//FileControl.files[0];
+
+            if (selectedFile) {
+                var imageType = /image.*/;
+
+                if (selectedFile.type.match(imageType) && selectedFile.size <= 2097152) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+
+                        $("#" + thumbId).remove();//删除缩略图
+                        $("#" + iId).remove();//删除加号
+                        var dataURL = reader.result;
+                        var img = new Image();
+                        img.src = dataURL;
+                        img.className = "thumb";
+                        img.id = thumbId;
+                        $("#" + divId).append(img);
+                    };
+                    reader.readAsDataURL(selectedFile);
+                    $('#' + textBoxId).val(selectedFile.name);
+                } else {
+                    if (!selectedFile.type.match(imageType)) {
+                        alert("只能录入图片文件！");
+                        $('#' + inputId).val("");
+                    } else if (selectedFile.size > 2097152) {
+                        alert("上传图片大小不能超过2Mb！");
+                        $('#' + inputId).val("");
+                    }
+
+                    $('#' + textBoxId).val("");
+                    $("#" + thumbId).remove();//删除缩略图
+                    //如果没有加号则加上，防止多加
+                    if ($('#' + iId).length === 0) {
+                        $("#" + divId).append("<i id=" + iId + " class=\"MMda i-add pdr5 green\"></i>");
+                    }
+                }
+            }
+        }
+        //初始化图片框
+        function initPics() {
+            onLoadPics("dpic1", "ipic1", "advertise_pic_1", "thumb1");
+            onLoadPics("dpic2", "ipic2", "advertise_pic_2", "thumb2");
+            onLoadPics("dpic3", "ipic3", "advertise_pic_3", "thumb3");
+        }
+        function onLoadPics(divId, iId, textBoxId, thumbId) {
+            var imgName = $('#' + textBoxId).val();
+            if (imgName) {
+                if (imgName.indexOf("mmpintuan") > 0) {
+                    $("#" + iId).remove();//删除加号
+                    $("#" + divId).append("<img src=\"" + imgName + "\" id=\"" + thumbId + "\" class=\"thumb\">");//添加图片链接
+                }
+            }
+        }
+        //edit模式
+        function initKindEditor() {
+            var html = $('#description').val();
+            if (html) {
+                html = htmlDecode(html);//解码
+                $('#description2').val(html);
+            }
+        }
+        //提交模式
+        function onFormSubmit() {
+            editor.sync();
+            if ($('#description2').val().trim() === "") {
+                $('#description').val("");
+            } else {
+                var html = htmlEncode($('#description2').val());
+                $('#description').val(html);
+            }
+            //alert($('#description').val());
+        }
+       //初始化kindeditor
+        function htmlEncode(value) {
+            return $('<div/>').text(value).html();
+        }
+        //Html解码获取Html实体
+        function htmlDecode(value) {
+            return $('<div/>').html(value).text();
+        }
+    </script>
+</head>
+<body>
+    <!--header-->
+    @Html.Partial("Backyard/Header/_HeaderSupply")
+    <!--mian-->
+    <div class="Lorelei-table-box">
+        <div class="Lorelei-table-box-c mgc">
+            <form id="supply_from" class="ft14" action="/Supply/SupplySave" method="post" enctype="multipart/form-data">
+                <div class="inputText-Tap mgb20 mgt19">
+                    <span class="w100">品牌名称：</span>
+                    @Html.DropDownList("brand", brandItems, new { @class = "coInp", style = "width: 281px;" })
+                </div>
+                <div class="inputText-Tap mgb20 mgt19">
+                    <span class="w100">商品名称：</span>
+                    @Html.TextBoxFor(model => model.name, new { @class = "coInp", @placeholder = "商品名称" })
+                    @Html.ValidationMessageFor(model => model.name, null, new { @class = "red" })
+                </div>
+                <div class="xiala-Tap mgb20">
+                    <span class="w100">商品分类：</span>
+                    @Html.DropDownList("category", categoryItems, new { @class = "coInp", style = "width: 281px;" })
+                </div>
+                <div class="inputText-Tap mgb20">
+                    <span class="w100">商品规格：</span>
+                    @Html.TextBoxFor(model => model.standard, new { @class = "coInp", @placeholder = "商品规格" })
+                    @Html.ValidationMessageFor(model => model.standard, null, new { @class = "red" })
+                </div>
+                <div class="inputText-Tap mgb20">
+                    <span class="w100">商品包装：</span>
+                    @Html.TextBoxFor(model => model.pack, new { @class = "coInp", @placeholder = "商品包装" })
+                    @Html.ValidationMessageFor(model => model.pack, null, new { @class = "red" })
+                </div>
+                <div class="inputText-Tap mgb20">
+                    <span class="w100">市场价：</span>
+                    <input id="market_price1" type="text" class="coInp" placeholder = "市场价">
+                    <span id="span_market_price" class="red" style="display: none">请输入数字，且小数点最多两位！</span>
+                    @Html.TextBoxFor(model => model.market_price, new { @class = "coInp", style = "display: none" })
+                </div>
+                <div class="inputText-Tap mgb20">
+                    <span class="w100">供货价：</span>
+                    <input id="supply_price1" type="text" class="coInp" placeholder = "供货价">
+                    <span id="span_supply_price" class="red" style="display: none">请输入数字，且小数点最多两位！</span>
+                    @Html.TextBoxFor(model => model.supply_price, new { @class = "coInp", style = "display: none" })
+                </div>
+                <div class="inputText-Tap mgb20">
+                    <span class="w100">拼团价：</span>
+                    <input id="group_price1" type="text" class="coInp" placeholder = "拼团价">
+                    <span id="span_group_price" class="red" style="display: none">请输入数字，且小数点最多两位！</span>
+                    @Html.TextBoxFor(model => model.group_price, new { @class = "coInp", style = "display: none" })
+                </div>
+                <div class="inputText-Tap mgb20 mgt19">
+                    <span class="w100">限购数量：</span>
+                    @Html.TextBoxFor(model => model.quota_min, new { @class = "coInp", @placeholder = "最小限购数量", style = "width: 100px;" })
+                    @Html.ValidationMessageFor(model => model.quota_min, null, new { @class = "red" })
+                    <span style="margin-left: 16px;">至</span>
+                    @Html.TextBoxFor(model => model.quota_max, new { @class = "coInp", @placeholder = "最大限购数量", style = "width: 100px;" })
+                    @Html.ValidationMessageFor(model => model.quota_max, null, new { @class = "red" })
+                </div>
+                <div class="inputFile-Tap mgb20">
+                    <span class="w100">商品展示图片</span><span style="padding-left:50px;">       (建议尺寸380px*250px)</span><span id="spanpics" for="pics" class="w100 red" style="display: none">请传输三张图片!</span>
+                    <div class="clearfix">
+                        <div id="dpic1" class="Add-ImgCuber fl rela" style="width: 190px; height: 142.5px;">
+                            <i id="ipic1" class="MMda i-add pdr5 green"></i>
+                            @Html.TextBoxFor(model => model.advertise_pic_1, new { style = "display: none" })@Html.ValidationMessageFor(model => model.advertise_pic_1, "", new { @class = "red" })
+                            <input class="AddCub" type="file" id="pic1" name="pic1">
+                        </div>
+
+                        <div id="dpic2" class="Add-ImgCuber fl" style="margin-left: 19px; position: relative; overflow: hidden; width: 190px; height: 142.5px;">
+                            <i id="ipic2" class="MMda i-add pdr5 green"></i>
+                            @Html.TextBoxFor(model => model.advertise_pic_2, new { style = "display: none" })@Html.ValidationMessageFor(model => model.advertise_pic_2, "", new { @class = "red" })
+                            <input class="AddCub" type="file" id="pic2" name="pic2">
+                        </div>
+
+                        <div id="dpic3" class="Add-ImgCuber fl" style="margin-left: 19px; position: relative; overflow: hidden; width: 190px; height: 142.5px;">
+                            <i id="ipic3" class="MMda i-add pdr5 green"></i>
+                            @Html.TextBoxFor(model => model.advertise_pic_3, new { style = "display: none" })@Html.ValidationMessageFor(model => model.advertise_pic_3, "", new { @class = "red" })
+                            <input class="AddCub" type="file" id="pic3" name="pic3">
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="inputText-Tap mgb20"><span class="w100">产品详细介绍</span><span id="spanintro" class="w100 red" style="display: none">请输入详细描述!</span></div>
+
+                <div class="myEditorBox mgb20" >
+                    <div class="myEditorBox" >
+                        <textarea id="description2" disabled="disabled"></textarea>
+                    </div>
+                    @Html.TextAreaFor(model => model.description, new { style = "display: none" })
+                    @Html.ValidationMessageFor(model => model.description, null, new { @class = "red" })
+                </div>
+
+                <input style="margin-left: 146px;" class="inputBtn-Tap mgt19" onclick="submitFormGroup()" value="确定" />
+                <input type="hidden" id="sid" name="sid" value="@Model.sid" />
+            </form>
+        </div>
+    </div>
+
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+</body>
+</html>
+<script charset="utf-8" src="/Scripts/editor/kindeditor-all-min.js"></script>
+<script charset="utf-8" src="/Scripts/editor/lang/zh-CN.js"></script>
+<script>
+    KindEditor.ready(function(K) {
+        window.editor = K.create('#description2', {
+            allowImageUpload: true,
+            //kindeditor上传图片到阿里云的程序，需要传递一个pid
+            uploadJson: '@Url.Action("UploadSupplyImg", "KindEditor",new { sid = Model.sid})',
+            items: ['undo', 'redo', 'preview', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                    'justifyfull','|', 'bold', 'italic', 'underline', 'strikethrough', 'removeformat', '|', 'insertorderedlist', 'insertunorderedlist',
+                     'forecolor', 'hilitecolor', 'fontname', 'fontsize','formatblock', '|', 'link', 'unlink', 'emoticons',
+                     'image','multiimage', 'baidumap', 'quote','|','fullscreen']
+    });
+    });
+</script>

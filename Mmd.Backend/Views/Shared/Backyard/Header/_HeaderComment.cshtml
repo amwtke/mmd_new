@@ -1,0 +1,22 @@
+﻿
+<div class="admin-header dark">
+    <div class="admin-header-c clearfix mgc">
+        <div class="logo fl"><img width="122px" height="69px" src="/Content/images/logo.png"></div>
+        <div class="mainNav fl">
+            <ul class="clearfix">
+                <li><a href=@Url.Action("Index","MerchantCheck")>审核管理</a></li>
+                <li><a href=@Url.Action("Index","NoticeBoardMana",new { status=1})>资讯管理</a></li>
+                <li><a href=@Url.Action("Index","Supply")>供货管理</a></li>
+                <li><a href=@Url.Action("Index","Brand")>品牌管理</a></li>
+                <li><a class="cur" href="/Comment">评分管理</a></li>
+                <li style="display: none"><a href="index.html">数据统计</a></li>
+                <li style="display: none"><a href="24 总后台 商家管理.html">商家管理</a></li>
+                <li style="display: none"><a href="25 总后台 系统设置.html">系统设置</a></li>
+            </ul>
+        </div>
+        <div class="loginInfo fr">
+            <span class="green ellip fl">Admin</span>
+            <a class="mgl5 fl" href=@Url.Action("Merchant_Home","Home")>返回拼团</a>
+        </div>
+    </div>
+</div>

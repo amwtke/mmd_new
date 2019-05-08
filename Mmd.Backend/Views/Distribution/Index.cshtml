@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>推广大使</title>
+    <link rel="stylesheet" type="text/css" href="/Content/main.css?v=20161212">
+    <link rel="stylesheet" type="text/css" href="/Content/style.css?v=20161212">
+    @Scripts.Render("~/bundles/jquery")
+    <script src="~/Scripts/distribute/distributepaging.js"></script>
+    <style type="text/css">
+        .red {
+            color: #F00;
+        }
+    </style>
+</head>
+<body>
+    <!--header-->
+    @Html.Partial("Header/_headerDistribute")
+
+    <!--mian-->
+    <div class="Lorelei-table-box">
+        <div class="Lorelei-table-box-c mgc">
+
+            <div class="Lorelei-search-r" style="display: none">
+                <input id="s_text" name="user_search" type="search" placeholder="团名称" /><a class="wine" href="javascript:;" onclick="onSearch()"><i class="MMda i-search"></i></a>
+            </div>
+            <div class="lineWidget"></div>
+            <a href="/Distribution/Export">导出数据</a>
+            <div class="lineWidget"></div>
+            <div id="list_table" class="Lorelei-commonTable">
+                @Html.Action("WoerGetPartial", new { pageIndex = 1, q = "", status = 1 })
+            </div>
+        </div>
+    </div>
+    <!--弹出层-->
+    <div id="ADialog" class="AlertDialog">
+        <p class="rela">结算<a href="javascript:;"><i onclick="closeClick()" class="zonght i-close"></i></a></p>
+        <div class="storeName"><span>核销员</span><span id="span_merName"></span></div>
+        <div class="storeCZ"><span>结算金额</span><input class="czinput" id="czinput" name="czinput" type="text" /><span id="txmessage" class="red" style="display:none;">格式错误</span></div>
+        <input id="hidden_appid" type="hidden" />
+        <input type="hidden" id="hidden_commission" value="" />
+        <a class="sumbit" onclick="settle()" href="javascript:;">提交</a>
+    </div>
+    <div id="BDialog" class="AlertDialog" style="width:500px;height:400px;top:45%;left:45%;">
+        <p class="rela"><span>结算记录</span><a href="javascript:;"><i onclick="closeClick()" class="zonght i-close"></i></a></p>
+        @*<div class="storeName"><span id="span_logTitle"></span></div>*@
+        <div class="storeCZ">
+            <ul id="ul_log" class="orList" style="overflow:-Scroll;overflow-x:hidden;height:280px;display:block">
+                @*<li class="clearfix">
+                    <p>39.9元拼团包邮到家嬉色珍珠亮肤气垫修颜CC霜套盒，仅限湖北省1</p>
+                    <div class="fl">2016/04/19 23:00:00</div>
+                    <div class="fr">
+                        <span>6000</span>
+                        <span class="colorcc">7000</span>
+                    </div>
+                </li>*@              
+            </ul>
+        </div>
+    </div>
+    <div class="masklayer"></div>
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+    <script type="text/template" id="listTpl">
+        <li class="clearfix">
+            <p>{{title}}</p>
+            <div class="fl">{{getcommissiontime}}</div>
+            <div class="fr">
+                <span>{{commission}}</span>
+                <span class="colorcc">{{finalcommission}}</span>
+            </div>
+        </li>
+    </script>
+</body>
+</html>

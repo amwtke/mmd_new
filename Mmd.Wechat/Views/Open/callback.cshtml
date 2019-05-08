@@ -1,0 +1,34 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>AuthCallback</title>
+</head>
+<body>
+<div>
+    <ul>
+        <li>第三方appid：@ViewBag.appid</li>
+        <li>第三方accessToken：@ViewBag.accessToken</li>
+        <li>第三方refreshToken：@ViewBag.refreshToken</li>
+        <li>第三方ExpireIn：@ViewBag.ExpireIn</li>
+    </ul>
+
+    <ul>
+        <li>
+            nick_name:@ViewBag.name
+        </li>
+        <li>qr:@ViewBag.qr</li>
+        <li>id:@ViewBag.id</li>
+        <li>user_name:@ViewBag.user_name</li>
+        <li>alias:@ViewBag.alias</li>
+        <li>funcs:@ViewBag.FuncInfo</li>
+    </ul>
+</div>
+</body>
+</html>

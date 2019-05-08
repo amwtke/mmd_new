@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>社区管理</title>
+    <link rel="stylesheet" type="text/css" href="~/Content/gallery/zoom.css">
+    <link rel="stylesheet" type="text/css" href="/Content/style.css">
+    <link rel="stylesheet" type="text/css" href="/Content/main.css">
+    <link rel="stylesheet" type="text/css" href="/Content/ico.css">
+    <script src="~/Scripts/jquery-1.7.2.min.js"></script>
+    <script src="~/Scripts/gallery/zoom.min.js"></script>
+    <script src="~/Scripts/backyard/mercheck/community.js"></script>
+    <style>
+        body { overflow-y: scroll; background: #f4f4f4; padding: 0; margin: 0; }
+        h1 { font-size: 31px; line-height: 32px; font-weight: normal; margin-bottom: 25px; }
+        a, a:hover { border: none; text-decoration: none; }
+        img, a img { border: none; }
+        pre { overflow-x: scroll; background: #ffffff; border: 1px solid #cecece; padding: 10px; }
+        .clear { clear: both; }
+        .zoomed > .container { -webkit-filter: blur(3px); filter: blur(3px); }
+        .container { width: 690px; position: absolute; top: 30%; left: 25%; z-index: 99; background: #ffffff; }
+        .gallery { float: left; background: #ffffff; padding: 20px 20px 10px 20px; margin: 0; -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.25); -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.25); box-shadow: 0 1px 3px rgba(0,0,0,0.25); -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; }
+        .gallery div { float: left; padding: 0 10px 10px 0; }
+        .gallery div:nth-child(6n) { padding-right: 0; }
+        .gallery a, .gallery img { float: left; width: 200px; height: 160px; }
+    </style>
+</head>
+<body>
+    @Html.Partial("Header/_headerCommunity")
+    <!--mian-->
+    <div class="Lorelei-table-box">
+        <div class="Lorelei-table-box-c mgc">
+            <div class="Lorelei-search-r mgb19" style="padding-left:0px;padding-right:6px;margin-top:20px;">
+                <div style="float:right;">
+                    <input id="s_proname" type="search" placeholder="用户昵称/内容" />
+                    <a class="wine" href="javascript:;" onclick="onSearch()"><i class="MMda i-search"></i></a>
+                </div>
+            </div>
+            <div id="list_table" class="Lorelei-commonTable">
+                @Html.Action("GetCommunityList", new { pageIndex = 1, pageSize = 10, query = "" })
+            </div>
+        </div>
+    </div>
+    <!--弹出层-->
+    <div class="alertForm ft14" style="display:none">
+        <div class="inputText-Tap mgb20 mgt19" style="text-align: right;">
+            <a href="javascript:;"><i class="MMda i-close pdr5" style="font-size: 26px;padding-right: 19px;"></i></a>
+        </div>
+        <div class="inputText-Tap mgb20 mgt19"><span class="w100">昵称</span><input id="tan_gname" class="coInp" type="text" value="" readonly /></div>
+        <div class="inputText-Tap mgb20 mgt19"><span class="w100 fl">禁言时间</span>
+        <input id="dayscount" class="coInp" value="1"/><span>天</span>
+        </div>
+        <input type="hidden" id="uid" value="" />
+        <input style="margin-left:162px;" class="inputBtn-Tap mgb19 i-close" type="button" value="确定" onclick="forbid()" />
+    </div>
+    <div class="maskLayer"></div>
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="inputText-Tap mgb10 mgt5" style="text-align: right;display:none;">
+            <a href="javascript:;"><i class="MMda i-close pdr5" style="font-size: 26px;padding-right: 19px;"></i></a>
+        </div>
+        <div class="gallery" style="display:none;"></div>
+    </div>
+    <div class="clear"></div>
+    <div class="maskLayer"></div>
+</body>
+</html>

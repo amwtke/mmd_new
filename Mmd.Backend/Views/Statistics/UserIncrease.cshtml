@@ -1,0 +1,130 @@
+﻿<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<head>
+    <title>新增用户统计</title>
+    <link rel="stylesheet" type="text/css" href="/Content/main.css">
+    <link rel="stylesheet" type="text/css" href="/Content/style.css">
+    <link rel="stylesheet" type="text/css" href="/Content/ico.css">
+    <link href="/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="/Content/daterangepicker-bs3.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.7.2.min.js"></script>
+    <script src="/Scripts/bootstrap.min.js"></script>
+    <script src="/Scripts/moment.js"></script>
+    <script src="/Scripts/daterangepicker.js"></script>
+    <script src="/Scripts/Chart-1.0.1-beta.4.js"></script>
+</head>
+
+<body>
+    <div class="myachievements-box">
+        <div class="myachievements-box-c" style="margin-left:13%">
+            <div class="tool">
+                <div><span>时间段 :</span></div>
+                <div class="input-prepend input-group" style="width:500px;">
+                    <span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+                    <input type="text" readonly style="width: 240px" name="reservation" id="reservation" class="form-control" value="@ViewBag.seachDate" />
+                    @*<select class="form-control" id="select_writeoffpoint" style="height:34px;width: 240px"></select>*@
+                    <input type="button" name="" class="query" value="查询" onclick="search()">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="Lorelei-table-box">
+        <div class="main">
+            <div style="min-height: 500px;width: 13%;padding: 20px;float:left">
+                <ul>
+                    <li class="g-listBox a-box">
+                        <p><a href="/Statistics"><i class="sjx">▶</i>用户分布统计</a></p>
+                        <p><a href="/Statistics/Merview"><i class="sjx">▶</i>浏览量统计</a></p>
+                        <p><a class="y-acti" href="/Statistics/UserIncrease"><i class="sjx">▶</i>新增用户统计</a></p>
+                    </li>
+                </ul>
+            </div>
+            <div id="lineChartParent" style="float:left;width:75%;height:85%;border: 1px #ababab solid;padding:20px;">
+            </div>
+        </div>
+    </div>
+    <script>
+        var h, w;
+        $(document).ready(function () {
+            $('#reservation').daterangepicker(null, function (start, end, label) {
+                console.log(start.toISOString(), end.toISOString(), label);
+            });
+            var dateNow = new Date();
+            var y = dateNow.getFullYear();
+            var m = dateNow.getMonth();
+            var d = dateNow.getDate();
+            if (m == 0) { y = y - 1; m = 12; }
+            var dateStart = new Date(y, m, d);
+            var start = y + "-" + m + "-" + d;
+            var end = dateStart.getFullYear() + "-" + (dateStart.getMonth() + 1) + "-" + dateStart.getDate();
+            h = $("#lineChartParent").height();
+            w = $("#lineChartParent").width();
+            $('#lineChartParent').append('<canvas id="myChart" height="' + h + '" width="' + w + '"></canvas>');
+            renderData(start, end);
+        });
+        function search() {
+            var time = $("#reservation").val();
+            if (time) {
+                var str = time.split(" - ");
+                $('#myChart').remove(); 
+                $('#lineChartParent').append('<canvas id="myChart" height="' + h + '" width="' + w + '"></canvas>');
+                renderData(str[0], str[1]);
+            }
+        }
+        var chartBar = null;
+        function renderData(timeStart,timeEnd) {
+            $.ajax({
+                url: '/Statistics/GetUserIncrease',
+                type: "POST",
+                data: { mid: "@Model.mid", timeStart: timeStart, timeEnd: timeEnd },
+                success: function (res) {
+                    var labels = [];
+                    var dataCount = [];
+                    var data = res.data;
+                    if (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            labels.push(data[i].KeyAsString);
+                            dataCount.push(data[i].DocCount);
+                        }
+                        var dataSet = {
+                            labels: labels,
+                            datasets: [
+                                {
+                                    barItemName: "test1",
+                                    fillColor: "rgba(87, 193, 123,0.8)",
+                                    strokeColor: "rgba(87, 193, 123,1)",
+                                    data: dataCount
+                                }
+                            ]
+                        };
+                        var ctx = document.getElementById("myChart").getContext("2d");
+                        chartBar = new Chart(ctx).Bar(dataSet);
+                        initEvent(chartBar, clickCall);
+                    }
+                }
+            });
+        }
+
+        function clickCall(evt) {
+            var activeBar = chartBar.getBarSingleAtEvent(evt);
+            //if (activeBar !== null)
+            //    alert(activeBar.label + ": " + activeBar.barItemName + " ____ " + activeBar.value);
+        }
+
+        function initEvent(chart, handler) {
+            var method = handler;
+            var eventType = "click";
+            var node = chart.chart.canvas;
+
+            if (node.addEventListener) {
+                node.addEventListener(eventType, method);
+            } else if (node.attachEvent) {
+                node.attachEvent("on" + eventType, method);
+            } else {
+                node["on" + eventType] = method;
+            }
+        }
+
+    </script>
+</body>
+</html>

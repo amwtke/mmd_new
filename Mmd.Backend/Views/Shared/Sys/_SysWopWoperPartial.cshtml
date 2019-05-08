@@ -1,0 +1,67 @@
+﻿@{ 
+    //var pageIndex = Model.PageIndex;
+    //var totalCount = Model.TotalCount;
+    //var pageSize = Model.PageSize;
+
+
+    //int row = (pageIndex - 1) * pageSize;//当前页的其实序号
+
+    //int totalPages = 0;
+    //if (totalCount % pageSize == 0)
+    //{
+    //    totalPages = totalCount / pageSize;
+    //}
+    //else
+    //{
+    //    totalPages = totalCount / pageSize + 1;
+    //}
+    int index = 0;
+    int itemIndex = 0;
+    var list = Model;
+}
+<div class="Lorelei-topSearch clearfix">
+    <div class="Lorelei-search-r"><input id="s_text" name="user_search" type="search" value="" placeholder="姓名/电话/微信昵称" /><a class="wine" href="javascript:;" onclick="highlight()"><i class="MMda i-search"></i></a></div>
+</div>
+<div class="Lorelei-commonTable">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td>序号</td>
+            <td>店铺名称</td>
+            <td>姓名</td>
+            <td>电话</td>
+            <td>微信昵称</td>
+            <td>操作</td>
+        </tr>
+        @foreach (var wo in list)
+        {
+            if (wo.listWriteOffer.Count > 0)
+            {
+                index++;
+            }
+            itemIndex = 0;
+            foreach (var item in wo.listWriteOffer)
+            {
+                itemIndex++;
+                <tr>
+                    @if (itemIndex == 1)
+                    {
+                        <td rowspan="@wo.listWriteOffer.Count">@index</td>
+                    }
+                    <td id="woid_@index" style="display: none">@wo.woid</td>
+                    @if (itemIndex == 1)
+                    {
+                        <td id="name_@index" rowspan="@wo.listWriteOffer.Count">@wo.name</td>
+                    }
+                    <td>@item.realname</td>
+                    <td>@item.phone</td>
+                    <td>@item.nickName</td>
+                    <td data-woid="@wo.woid" data-woerid="@item.id">
+                    @*<a id="@row" href="javascript:;" onclick="onEditWOP(this.id)">编辑</a>*@
+                    <a class="mg7" href="javascript:;" onclick="onDelWoper(this)">删除</a>
+                    @*<a id="@row" href="javascript:;" onclick="onAddWoer(this.id)">添加核销员</a>*@
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+</div>

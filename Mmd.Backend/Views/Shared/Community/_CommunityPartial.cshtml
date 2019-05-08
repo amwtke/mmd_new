@@ -1,0 +1,66 @@
+﻿@using MD.Lib.ElasticSearch.MD;
+@using MD.Lib.Util;
+@model Mmd.Backend.Controllers.CommunityController.CommunityPartialObject
+@{
+    Layout = null;
+    int pageNo = Model.PageIndex;//当前页数
+    int pageSize = Model.PageSize;//每页的大小
+    int row = (pageNo - 1) * pageSize;//当前页的其实序号
+    int totalCount = Model.TotalCount;
+    var list = Model.List;
+    int totalPages = 0;
+    if (totalCount % pageSize == 0)
+    {
+        totalPages = totalCount / pageSize;
+    }
+    else
+    {
+        totalPages = totalCount / pageSize + 1;
+    }
+}
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td>序号</td>
+        <td style="width:305px;">内容</td>
+        <td>图片</td>
+        <td>昵称</td>
+        @*<td>浏览</td>*@
+        <td>点赞</td>
+        @*<td>转发</td>*@
+        <td>时间</td>
+        <td>操作</td>
+    </tr>
+    @foreach (var p in list)
+    {
+        var user = EsUserManager.GetById(Guid.Parse(p.uid));
+        string UserName = user == null ? "" : user.name;
+        string imgs = p.imgs == null || p.imgs.Count <= 0 ? "" : string.Join(",", p.imgs);
+        row = row + 1;
+        <tr>
+            <td>@row</td>
+            <td id="pno_@row">@p.content</td>
+            <td class="imglist" data-img="@imgs"><a href="javascript:;" onclick="imgView(this);">查看图片</a></td>
+            <td class="username" data-uid="@p.uid">@UserName</td>
+            @*<td>@p.hits</td>*@
+            <td>@p.praises</td>
+            @*<td>@p.transmits</td>*@
+            <td>@CommonHelper.FromUnixTime((double)p.createtime).ToString("yyyy/MM/dd HH:mm:ss")</td>
+            <td>
+                <a href="javascript:;" onclick="onDel(this,'@p.Id')">删除</a>
+                <a href="javascript:;" onclick="onForbid(this,'@p.uid')">禁言设置</a>
+            </td>
+        </tr>
+    }
+</table>
+<div class="Lorelei-commonTable-btnbox clearfix">
+    <div class="Lorelei-cT-btnbox-l">总计<span id="spantotal" class="wine">@totalCount</span></div>
+    <div class="Lorelei-cT-btnbox-r">
+        <a id="left" href="javascript:;" onclick="onLeftClick()">◀</a><span id="currentPage" class="wine mgl5">@pageNo</span>/<span id="totalPages" class="mgr5">@totalPages</span><a id="right" href="javascript:;" onclick="onRightClick()">▶</a>
+        <input class="pd5 mg7" id="page_count" type="text" /><a id="jump" href="javascript:;" onclick="onJump()">跳转</a>
+    </div>
+</div>
+
+
+
+
+

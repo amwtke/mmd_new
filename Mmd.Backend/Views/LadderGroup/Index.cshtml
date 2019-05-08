@@ -1,0 +1,102 @@
+﻿@using MD.Model.DB.Code;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>工具箱-砍价团管理</title>
+    <link rel="stylesheet" type="text/css" href="~/Content/main.css?v=20161017">
+    <link rel="stylesheet" type="text/css" href="~/Content/style.css" />
+    <link rel="stylesheet" type="text/css" href="~/Content/ico.css">
+</head>
+<body>
+    <!--header-->
+    @Html.Partial("Header/_headerActivity")
+    <!--mian-->
+    <div class="Lorelei-table-box">
+        <div class="">
+            <div class="main margin-top-40">
+                <div class="leftList">
+                  @Html.Partial("ActivityLeftMenuPartial")
+                </div>
+                <div class="rightMain">
+                    <h3 class="color-e6">砍价团地址：<span class="ft12" style="color:#666; word-wrap:break-word">@ViewBag.ProUrl</span></h3>
+                    <div class="LoreleitopMenu">
+                        <a href="javascript:changeType(1)">已发布</a>
+                        <a href="javascript:changeType(2)">已结束</a>
+                        <a class="cur" href="javascript:changeType(0)">待发布</a>
+                        <span id="s_status" style="display: none">0</span>
+                    </div>
+                    <div class="Lorelei-commonTable margin-top-40" id="list_table">
+                        @Html.Action("GroupListPartial", new { pageIndex = 1, pageSize = 20, q = "", status = 0 })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--弹出层，预览-->
+    <div id="ADialog" class="AlertDialog" style="display:none; height:350px;">
+        <p class="rela">使用微信扫一扫预览<a href="javascript:;"><i onclick="oncloseADialog()" class="zonght i-close"></i></a></p>
+        <div style="text-align:center;padding-top:20px;" id="woer_qrcode"></div>
+        <input id="hidden_appid" type="hidden" value="@ViewBag.appid" />
+    </div>
+    <!--弹出层，增加库存-->
+    <div id="BDialog" class="AlertDialog" style="width:430px; height:290px;">
+        <p class="rela">增加库存<a href="javascript:;"><i onclick="oncloseADialog()" class="zonght i-close"></i></a></p>
+        <div class="storeName"><span>拼团标题：</span><span id="span_groupName"></span></div>
+        <div class="storeCZ"><span>增加数量：</span><input class="czinput" id="quotainput" name="quotainput" type="text" placeholder="增加库存数量" /><span id="txmessage" class="red" style="display:none;">格式错误</span></div>
+        <a class="sumbit" onclick="onAddProduct_quota()" href="javascript:;">提交</a>
+        <input type="hidden" id="hidden_gid" />
+    </div>
+    <!--弹出层-->
+    <div class="alertForm ft14" style="display:none">
+
+        <div class="inputText-Tap mgb20 mgt19" style="text-align: right;">
+            <a href="javascript:;"><i class="MMda i-close pdr5" style="font-size: 26px;padding-right: 19px;"></i></a>
+        </div>
+
+        <div class="inputText-Tap mgb20 mgt19"><span class="w100">团购名称</span><input id="tan_gname" class="coInp" name="" type="text" placeholder="团购名称" value="" /></div>
+
+        <div class="inputText-Tap mgb20 mgt19"><span class="w100 fl">团购链接</span><textarea id="tan_url" class="coInp" style="resize:none" name="" cols="" rows="9"></textarea></div>
+        <input style="margin-left:162px;" class="inputBtn-Tap mgb19 i-close" type="button" value="关闭" />
+    </div>
+    <div class="maskLayer"></div>
+    <!--footer-->
+    <div class="footer">
+        <div class="footer-c mgc">
+            <p>美美哒科技 版权所有 / 鄂 ICP 备 16005905号-1</p>
+        </div>
+    </div>
+
+</body>
+<script src="~/Scripts/jquery-1.7.2.min.js"></script>
+<script src="~/Scripts/activity/grouppage.js?v=20161017"></script>
+<script src="/Scripts/qrcode.min.js"></script>
+<script src="/Scripts/jquery.qrcode.min.js"></script>
+<script src="~/Scripts/html2canvas.min.js"></script>
+<script>
+    var tar = $(".g-listBox.a-ladder");
+    tar.find("p i").addClass('xz90');
+    tar.find("p").next().show();
+    tar.find(".y-box li").eq(1).children("a").addClass("y-acti");
+	$(".g-listBox p").click(function(){
+		if(!$(this).find('i').hasClass("xz90")){
+			$(".y-box").hide();
+			$(".sjx").removeClass("xz90");
+		}
+		$(this).next().toggle();
+		$(this).find('i').toggleClass('xz90');
+	});
+	function changeType(s) {
+	    $(".LoreleitopMenu a").removeClass("cur");
+	    if (s==0) {
+	        $(".LoreleitopMenu a").eq(2).addClass("cur");
+	    } else if (s == 1) {
+	        $(".LoreleitopMenu a").eq(0).addClass("cur");
+	    } else {
+	        $(".LoreleitopMenu a").eq(1).addClass("cur");
+	    }
+	    $('#s_status').html(s);
+	    refresh(1);
+	}
+</script>
+</html>

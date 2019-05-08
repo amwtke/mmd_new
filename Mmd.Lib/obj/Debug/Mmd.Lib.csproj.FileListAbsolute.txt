@@ -1,0 +1,2 @@
+/Users/jxiao/Workshop/mmd/MMD/Mmd.Lib/obj/Debug/Mmd.Lib.csprojResolveAssemblyReference.cache
+/Users/jxiao/Workshop/mmd/MMD/Mmd.Lib/obj/Debug/Mmd.Lib.csproj.CoreCompileInputs.cache
